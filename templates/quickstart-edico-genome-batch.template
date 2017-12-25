@@ -32,19 +32,17 @@ Parameters:
     Type: String
     Description: Path to DRAGEN docker image repository URI.
   DragenVcpus:
-    Type: String
-    Description: vCPUs for job definition. Suggest using default of 8.
+    Type: Number
+    Description: vCPUs for job definition. Suggest using default of 8. Should be an integer.
     Default: 8
-    MinLength: 1
-    MaxLength: 2
-    AllowedPattern: "[0-9]+"
+    MinValue: 1
+    MaxValue: 64
   DragenMemory:
-    Type: String
-    Description: Memory in MB. Suggest using default of 120000.
+    Type: Number
+    Description: Memory in MB. Suggest using default of 120000. Should be an integer.
     Default: 120000
-    MinLength: 5
-    MaxLength: 6
-    AllowedPattern: "[1-9][0-9]+"
+    MinValue: 0
+    MaxValue: 500000
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: VpcId - should correspond to subnet IDs
