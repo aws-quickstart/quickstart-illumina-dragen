@@ -1,0 +1,15 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: This CloudFormation Template creates the ECR Repository and Artifact
+  Bucket for the Docker Pipeline. Taken from
+  https://github.com/aws-quickstart/saas-identity-cognito/blob/master/templates/docker-bucket-repository.template
+Resources:
+  Repository:
+    Type: AWS::ECR::Repository
+  ArtifactBucket:
+    Type: AWS::S3::Bucket
+Outputs:
+  ArtifactBucket:
+    Value: !Ref ArtifactBucket
+  Repository:
+    Value: !Ref Repository
