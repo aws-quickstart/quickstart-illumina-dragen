@@ -1,0 +1,184 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: This template deploys an environment to run Edico Genome's DRAGEN software using AWS Batch
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: Network Configuration
+      Parameters:
+      - VPCID
+      - PrivateSubnet1ID
+      - PrivateSubnet2ID
+    - Label:
+        default: AWS Quick Start Configuration
+      Parameters:
+      - QSS3BucketName
+      - QSS3KeyPrefix
+    - Label:
+        default: DRAGEN Quick Start Configuration
+      Parameters:
+      - AnalysisType
+      - KeyPairName
+      - InstanceType
+      - BidPercentage
+      - MinvCpus
+      - MaxvCpus
+      - DesiredvCpus
+      - S3GenomicsBucket
+      - RetryNumber
+      - ImageId
+    ParameterLabels:
+      KeyPairName:
+        default: Key Pair Name
+      PrivateSubnet1ID:
+        default: Private Subnet 1 ID
+      PrivateSubnet2ID:
+        default: Private Subnet 2 ID
+      VPCID:
+        default: VPC ID
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      AnalysisType:
+        default: Analysis type
+      InstanceType:
+        default: Instance Type
+      BidPercentage:
+        default: Spot Bid Percentage
+      RetryNumber:
+        default: AWS Batch Retry Number
+      MaxvCpus:
+        default: Min vCPUs
+      MaxvCpus:
+        default: Max vCPUs
+      DesiredvCpus:
+        default: Desired vCPUs
+      ImageId:
+        default: DRAGEN AMI
+
+Parameters:
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Public/private key pairs allow you to securely connect to your instance
+      after it launches
+  InstanceType:
+    Type: String
+    AllowedValues:
+    - f1.2xlarge
+    - f1.16xlarge
+  VPCID:
+    Type: AWS::EC2::VPC::Id
+    Description: The ID of the VPC.
+  PrivateSubnet1ID:
+    Type: AWS::EC2::Subnet::Id
+    Description: ID for private subnet 1 located in Availability Zone 1.
+  PrivateSubnet2ID:
+    Type: AWS::EC2::Subnet::Id
+    Description: ID for private subnet 2 located in Availability Zone 2.
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: quickstart-reference
+    Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
+      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
+      It cannot start or end with a hyphen (-).
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and a forward slash (/) at the end of the prefix.
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/).
+    Type: String
+
+Rules:
+  KeyPairsNotEmpty:
+    Assertions:
+    - Assert:
+        !Not
+        - Fn::EachMemberEquals:
+          - Fn::RefAll: AWS::EC2::KeyPair::KeyName
+          - ''
+      AssertDescription: All key pair parameters must not be empty
+  SubnetsInVPC:
+    Assertions:
+    - Assert:
+        Fn::EachMemberIn:
+        - Fn::ValueOfAll:
+          - AWS::EC2::Subnet::Id
+          - VpcId
+        - Fn::RefAll: AWS::EC2::VPC::Id
+      AssertDescription: All subnets must be in the VPC
+
+Resources:
+  DockerBucketRepository:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/docker-bucket-repository.template
+
+  CopyFiles:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+    - DockerBucketRepository
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy.template
+      Parameters:
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+
+  WaitHandleContainerBuild:
+    Type: AWS::CloudFormation::WaitConditionHandle
+
+  ContainerBuild:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+    - CopyFiles
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/container-build.template
+      Parameters:
+        ArtifactBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
+        ServiceName: Dragen
+        Repository: !GetAtt DockerBucketRepository.Outputs.Repository
+        WaitHandle: !Ref WaitHandleContainerBuild
+
+  WaitConditionContainerBuild:
+    Type: AWS::CloudFormation::WaitCondition
+    DependsOn:
+    - ContainerBuild
+    Properties:
+      Handle:
+        Ref: WaitHandleContainerBuild
+      Timeout: '3600'
+      Count: '1'
+
+  Batch:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+    - ContainerBuild
+    - WaitConditionContainerBuild
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/batch.template
+      Parameters:
+        S3GenomicsBucket:
+        DragenDockerImage: !Join ["", [!GetAtt DockerBucketRepository.Outputs.Repository, ":latest"]]
+        DragenvCpus: !Ref DragenvCpus
+        DragenMemory: !Ref DragenMemory
+        VpcId: !Ref VPCID
+        SubnetIds:
+        - !Ref PrivateSubnet1ID
+        - !Ref PrivateSubnet2ID
+        BidPercentage: !Ref BidPercentage
+        ImageId: !Ref ImageId
+        Ec2KeyPair: !Ref KeyPairName
+        MinvCpus: !Ref MinvCpus
+        MaxvCpus: !Ref MaxvCpus
+        DesiredvCpus: !Ref DesiredvCpus
+
+Outputs:
+  DragenJobQueue:
+    Value: !GetAtt Batch.Outputs.JobQueue

@@ -88,11 +88,12 @@ Parameters:
     - genome
     Description: The type of analysis you will run (Exome or Genome)
     Type: String
-  InstanceTypes:
+  InstanceType:
     AllowedValues:
     - f1.2xlarge
-    Description: Amazon EC2 instance type(s) for DRAGEN in the AWS Batch Compute Environment. Currently f1.2xlarge
-    Type: List<String>
+    - f1.16xlarge
+    Description: Amazon EC2 instance type(s) for DRAGEN in the AWS Batch Compute Environment.
+    Type: String
   KeyPairName:
     Description: The name of an existing public/private key pair, which allows you
       to securely connect to your instance after it launches
@@ -160,7 +161,7 @@ Resources:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
         KeyPairName: !Ref KeyPairName
-        InstanceTypes: !Ref InstanceTypes
+        InstanceType: !Ref InstanceType
         BidPercentage: !Ref BidPercentage
         MinvCpus: !Ref MinvCpus
         MaxvCpus: !Ref MaxvCpus
