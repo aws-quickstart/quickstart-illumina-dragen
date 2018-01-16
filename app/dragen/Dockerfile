@@ -30,6 +30,7 @@ RUN yum -y install \
   tree && \
   yum clean all && \
   pip install --upgrade pip && \
+  pip install future && \
   pip install six && \
   easy_install requests && \
   easy_install boto3
