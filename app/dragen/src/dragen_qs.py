@@ -18,6 +18,9 @@
 
 from __future__ import print_function
 
+from builtins import filter
+from builtins import str
+from builtins import object
 import datetime
 import glob
 import os
@@ -126,27 +129,27 @@ class DragenJob(object):
     # /var/log/dragen_replay_<timestamp>_pid.json
     #
     def copy_var_log_dragen_files(self):
-        files = filter(os.path.isfile, glob.glob("/var/log/dragen/dragen_run*"))
+        files = list(filter(os.path.isfile, glob.glob("/var/log/dragen/dragen_run*")))
         if files:
             newest_run_file = sorted(files, key=lambda x: os.path.getmtime(x), reverse=True)[0]
             shutil.copy2(newest_run_file, self.output_dir)
 
-        files = filter(os.path.isfile, glob.glob("/var/log/dragen/hang_diag*"))
+        files = list(filter(os.path.isfile, glob.glob("/var/log/dragen/hang_diag*")))
         if files:
             newest_hang_file = sorted(files, key=lambda x: os.path.getmtime(x), reverse=True)[0]
             shutil.copy2(newest_hang_file, self.output_dir)
 
-        files = filter(os.path.isfile, glob.glob("/var/log/dragen/pstack*"))
+        files = list(filter(os.path.isfile, glob.glob("/var/log/dragen/pstack*")))
         if files:
             newest_pstack_file = sorted(files, key=lambda x: os.path.getmtime(x), reverse=True)[0]
             shutil.copy2(newest_pstack_file, self.output_dir)
 
-        files = filter(os.path.isfile, glob.glob("/var/log/dragen/dragen_info*"))
+        files = list(filter(os.path.isfile, glob.glob("/var/log/dragen/dragen_info*")))
         if files:
             newest_info_file = sorted(files, key=lambda x: os.path.getmtime(x), reverse=True)[0]
             shutil.copy2(newest_info_file, self.output_dir)
 
-        files = filter(os.path.isfile, glob.glob("/var/log/dragen/dragen_replay*"))
+        files = list(filter(os.path.isfile, glob.glob("/var/log/dragen/dragen_replay*")))
         if files:
             newest_replay_file = sorted(files, key=lambda x: os.path.getmtime(x), reverse=True)[0]
             shutil.copy2(newest_replay_file, self.output_dir)

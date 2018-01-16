@@ -1,6 +1,6 @@
 #!/opt/workflow/python/bin/python2.7
 #
-# Copyright 2013-2016 Edico Genome Corporation. All rights reserved.
+# Copyright 2013-2018 Edico Genome Corporation. All rights reserved.
 #
 # This file contains confidential and proprietary information of the Edico Genome
 # Corporation and is protected under the U.S. and international copyright and other
@@ -11,20 +11,26 @@
 # $Change$
 # $DateTime$
 #
-# Executable script that runs in the Edico cloud instance to transfer (aka "import") a
-# customer's file on his server into Edico's S3 input bucket for a project. Once the file
-# is "imported" into the S3 bucket it can be used to run Dragen jobs.
+# Executable python script that runs in a cloud instance to copy Dragen input files
+# from S3 and output files to S3
 #
-# import ipdb
+from __future__ import division
+from __future__ import print_function
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import getopt
 import os
 import sys
-import urllib
+import urllib.request, urllib.parse, urllib.error
 # For testing multipart downloads using byte ranges
 from multiprocessing import Pool, TimeoutError
 
 import requests  # TODO: replace this with urlib2
-from urllib2 import urlopen
+from urllib.request import urlopen
 
 import scheduler.aws_utils as aws
 import scheduler.scheduler_utils as utils
@@ -50,7 +56,7 @@ nosign_flag = False
 multipart_flag = False
 
 
-class DHaul:
+class DHaul(object):
 
     ########################################################################################
     # constructor
@@ -78,7 +84,7 @@ class DHaul:
         self.file_name = main_url.split('/')[-1]
 
         # Since we are operating on a URL string, we should decode it to remove any percent encodings
-        self.file_name = urllib.unquote(self.file_name)
+        self.file_name = urllib.parse.unquote(self.file_name)
 
         # Make sure the path exists for the target directory
         utils.check_create_dir(self.download_dir)
@@ -89,13 +95,13 @@ class DHaul:
         # If multipart download is enabled, use this new method
         if self.multipart_flag:
             # Number of bytes total to download
-            urlinfo = urllib.urlopen(url).info()
+            urlinfo = urllib.request.urlopen(url).info()
             numBytes = int(urlinfo['content-length'])
 
             # Multipart download
             pool = Pool()
             numThreads = 8 # hardcoded to 8 threads
-            partialBytes = numBytes/numThreads + 1
+            partialBytes = old_div(numBytes,numThreads) + 1
             results = []
 
             # Spawn threads to download the partial files
@@ -274,23 +280,23 @@ class DHaul:
 # usage
 #
 def usage():
-    print
-    print "Usage: d_haul -m <mode> [parameters]"
-    print "  Mode 'import' (from URL to S3): 'url', 'bucket', 'key' (for object)"
-    print "  Mode 'download' (from S3): 'bucket', 'key' (used as prefix if dir download), 'path' (dir or file)"
-    print "  Mode 'upload' (to S3): 'path' (local dir or file), 'bucket', 'key' (used as prefix if dir upload)"
-    print
-    print "  -m <mode>,--mode=<mode>     Select mode: 'import','download','upload'"
-    print "  -u <url>,--url=<url>        Source URL (import only)"
-    print "  -b <name>,--bucket=<name>   S3 Bucket"
-    print "  -k <key>,--key=<name>       S3 Object Key or Prefix (dir)"
-    print "  -p <path>,--path=<path>     Local path for directory (ending with /) or file"
-    print "  -w <dir>,--work-dir=<dir>   Working directory (Optional, default to /staging/tmp/)"
-    print "  -l <dir>,--log-dir=<dir>    Logging and status directory (Optional, default to /tmp/)"
-    print "  -s,--stdout                 Log to stdout, instead of to log-dir"
-    print "  -h,--help                   This help message"
-    print
-    print
+    print()
+    print("Usage: d_haul -m <mode> [parameters]")
+    print("  Mode 'import' (from URL to S3): 'url', 'bucket', 'key' (for object)")
+    print("  Mode 'download' (from S3): 'bucket', 'key' (used as prefix if dir download), 'path' (dir or file)")
+    print("  Mode 'upload' (to S3): 'path' (local dir or file), 'bucket', 'key' (used as prefix if dir upload)")
+    print()
+    print("  -m <mode>,--mode=<mode>     Select mode: 'import','download','upload'")
+    print("  -u <url>,--url=<url>        Source URL (import only)")
+    print("  -b <name>,--bucket=<name>   S3 Bucket")
+    print("  -k <key>,--key=<name>       S3 Object Key or Prefix (dir)")
+    print("  -p <path>,--path=<path>     Local path for directory (ending with /) or file")
+    print("  -w <dir>,--work-dir=<dir>   Working directory (Optional, default to /staging/tmp/)")
+    print("  -l <dir>,--log-dir=<dir>    Logging and status directory (Optional, default to /tmp/)")
+    print("  -s,--stdout                 Log to stdout, instead of to log-dir")
+    print("  -h,--help                   This help message")
+    print()
+    print()
     sys.exit(1)
 
 
@@ -304,7 +310,7 @@ def process_args():
                                    ["mode=", "url=", "bucket=", "key=", "path=", "work-dir=",
                                     "log-dir=", "stdout", "nosign", "multipart", "help"])
     except getopt.GetoptError as err:
-        print str(err)
+        print(str(err))
         usage()
         sys.exit(1)
 
@@ -330,37 +336,37 @@ def process_args():
         elif o in ("-x", "--multipart"):
             multipart_flag=True
         else:
-            print "Unrecognized option %s %s" % (o, v)
+            print("Unrecognized option %s %s" % (o, v))
             usage()
 
     if not run_mode or run_mode not in VALID_MODES:
-        print "ERROR: Missing or invalid mode!"
+        print("ERROR: Missing or invalid mode!")
         usage()
 
     if not s3_bucket and run_mode == 'import':
-        print "ERROR: S3 Bucket option required for import mode!"
+        print("ERROR: S3 Bucket option required for import mode!")
         usage()
 
     if not source_url and not s3_obj_key:
-        print "ERROR: S3 Object Key option required!"
+        print("ERROR: S3 Object Key option required!")
         usage()
 
     if not source_url and run_mode == 'import':
-        print "ERROR: Source URL is required for import mode!"
+        print("ERROR: Source URL is required for import mode!")
         usage()
 
     if not s3_bucket and nosign_flag:
-        print "ERROR: --nosign option is only valid for bucket/key!"
+        print("ERROR: --nosign option is only valid for bucket/key!")
         usage()
 
     if not source_url and multipart_flag:
-        print "ERROR: --multipart flag is only valid for URL downloads!"
+        print("ERROR: --multipart flag is only valid for URL downloads!")
 
     if not run_mode == 'download' and multipart_flag:
-        print "ERROR: --multipart flag is only valid for URL downloads!"
+        print("ERROR: --multipart flag is only valid for URL downloads!")
 
     if not local_path and (run_mode == 'download' or run_mode == 'upload'):
-        print "ERROR: Local path is required for download or upload mode!"
+        print("ERROR: Local path is required for download or upload mode!")
         usage()
 
     return
@@ -390,7 +396,7 @@ def main():
             d_haul.run_upload()
 
     except Exception as e:
-        print str(e)
+        print(str(e))
         sys.exit(1)
 
 

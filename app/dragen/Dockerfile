@@ -16,12 +16,11 @@ RUN yum -y install \
   ipmitool \
   smartmontools \
   rsync && \
+  yum clean all && \
   mkdir -m777 -p /var/log/dragen /var/run/dragen
 
 #########################################################
 # Now install the Edico WFMS "Wrapper" functions
-
-# six, requests, boto3
 
 # Install necessary standard packages
 # Note: 'easy_install' used to workaround docker/kernel issue (https://github.com/moby/moby/issues/12327)
@@ -29,6 +28,7 @@ RUN yum -y install \
   python-devel \
   python-pip \
   tree && \
+  yum clean all && \
   pip install --upgrade pip && \
   pip install six && \
   easy_install requests && \
@@ -50,4 +50,3 @@ RUN tree /root/quickstart/
 # Default behaviour. Over-ride with --entrypoint on docker run cmd line
 ENTRYPOINT ["/root/quickstart/dragen_qs.py"]
 CMD []
-

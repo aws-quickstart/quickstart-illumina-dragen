@@ -387,9 +387,7 @@ def s3_download_dir(bucket, src_dir, tgt_dir, region='us-east-1', nosign=False):
 
     # To avoid a race condition for parallel downloads, make sure each has a directory created
     # - Create the full dir path of each object and make sure the dir exists
-    list(map(lambda x:
-        utils.check_create_dir(str(tgt_dir.rstrip('/') + '/' + x['Key']).rsplit('/', 1)[0]),
-        object_list))
+    list([utils.check_create_dir(str(tgt_dir.rstrip('/') + '/' + x['Key']).rsplit('/', 1)[0]) for x in object_list])
 
     # Convert the list of objects to a dict we can pass to the download function
     download_dict_list = [{
