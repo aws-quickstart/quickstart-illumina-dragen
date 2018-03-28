@@ -87,8 +87,8 @@ Parameters:
     Type: List<AWS::EC2::AvailabilityZone::Name>
   AnalysisType:
     AllowedValues:
-    - exome
-    - genome
+    - EXOME
+    - GENOME
     Description: The type of analysis you will run (Exome or Genome)
     Type: String
   InstanceType:
