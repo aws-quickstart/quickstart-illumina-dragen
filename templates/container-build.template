@@ -146,8 +146,8 @@ Resources:
           - Name: App
           RunOrder: 1
           Configuration:
-            S3Bucket: !Sub ${Artifact}
-            S3ObjectKey: !Sub ${Artifact}app/packages/${ServiceName}/${ServiceName}.zip
+            S3Bucket: !Sub ${ArtifactBucket}
+            S3ObjectKey: !Sub ${ArtifactBucket}/app/packages/${ServiceName}/${ServiceName}.zip
       - Name: Build
         Actions:
         - Name: Build

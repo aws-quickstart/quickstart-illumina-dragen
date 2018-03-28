@@ -25,8 +25,12 @@ Metadata:
 
 Parameters:
   S3GenomicsBucket:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: S3 genomics bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Description: S3 bucket name for the bucket to which you'll read and write genomics data. 
     Type: String
-    Description: S3 Bucket where genomics data resides
   DragenDockerImage:
     Type: String
     Description: Path to DRAGEN docker image repository URI.

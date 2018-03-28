@@ -23,7 +23,7 @@ Metadata:
       Parameters:
       - AnalysisType
       - KeyPairName
-      - InstanceTypes
+      - InstanceType
       - BidPercentage
       - MinvCpus
       - MaxvCpus
@@ -51,13 +51,13 @@ Metadata:
         default: Quick Start S3 Bucket Name
       AnalysisType:
         default: Analysis type
-      InstanceTypes:
-        default: Instance Types
+      InstanceType:
+        default: Instance Type
       BidPercentage:
         default: Spot Bid Percentage
       RetryNumber:
         default: AWS Batch Retry Number
-      MaxvCpus:
+      MinvCpus:
         default: Min vCPUs
       MaxvCpus:
         default: Max vCPUs
@@ -92,7 +92,7 @@ Parameters:
     AllowedValues:
     - f1.2xlarge
     - f1.16xlarge
-    Description: Amazon EC2 instance type(s) for DRAGEN in the AWS Batch Compute Environment.
+    Description: Amazon EC2 instance type for DRAGEN in the AWS Batch Compute Environment.
     Type: String
   KeyPairName:
     Description: The name of an existing public/private key pair, which allows you
@@ -130,6 +130,60 @@ Parameters:
     Default: 10.0.0.0/16
     Description: CIDR block for the VPC
     Type: String
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: quickstart-reference
+    Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
+      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
+      It cannot start or end with a hyphen (-).
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and a forward slash (/) at the end of the prefix.
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/).
+    Type: String
+  BidPercentage:
+    AllowedPattern: (?:\b|-)([1-9]{1,2}[0]?|100)\b
+    ConstraintDescription: Spot Bid Percentage should be between 1 and 100, inclusive
+    Description: The bid percentage set for your AWS Batch Managed Compute Environment with Spot Instances.
+    Default: 50
+    Type: String
+  RetryNumber:
+    AllowedPattern: (?:\b|-)([1-9]|10)\b
+    ConstraintDescription: AWS Batch job retry number should be between 1 and 10
+    Description: Retry number for an AWS Batch job
+    Default: 1
+    Type: String
+  MinvCpus:
+    AllowedPattern: ^(0|[1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 0 and 1000, inclusive
+    Description: Minimum vCPUs for your AWS Batch Compute Environment. Recommend 0.
+    Default: 0
+    Type: String
+  MaxvCpus:
+    AllowedPattern: ^([1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 1 and 1000, inclusive
+    Description: Maximum vCPUs for your AWS Batch Compute Environment
+    Type: String
+  DesiredvCpus:
+    AllowedPattern: ^(0|[1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 1 and 1000, inclusive
+    Description: Desired vCPUs for your AWS Batch Compute Environment. Recommend the same number as MinvCpus for cost-optimization.
+    Default: 0
+    Type: String
+  S3GenomicsBucket:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: S3 genomics bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Description: S3 bucket name for the bucket to which you'll read and write genomics data. 
+    Type: String
 
 Resources:
   VPCStack:
@@ -147,7 +201,7 @@ Resources:
         PrivateSubnet1ACIDR: !Ref PrivateSubnet1CIDR
         PrivateSubnet2ACIDR: !Ref PrivateSubnet2CIDR
         PublicSubnet1CIDR: !Ref PublicSubnet1CIDR
-        PublicSubnet2CIDR: !RefPublicSubnet2CIDR
+        PublicSubnet2CIDR: !Ref PublicSubnet2CIDR
         VPCCIDR: !Ref VPCCIDR
   WorkloadStack:
     DependsOn: VPCStack

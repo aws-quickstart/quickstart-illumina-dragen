@@ -27,7 +27,8 @@ Metadata:
       - DesiredvCpus
       - S3GenomicsBucket
       - RetryNumber
-      - ImageId
+      - DragenvCpus
+      - DragenMemory
     ParameterLabels:
       KeyPairName:
         default: Key Pair Name
@@ -57,6 +58,18 @@ Metadata:
         default: Desired vCPUs
       ImageId:
         default: DRAGEN AMI
+
+Mappings:
+  AmiRegionMap:
+    us-east-1:
+      exome: ami-6393cc19
+      genome: ami-d593ccaf
+    us-west-2:
+      exome: ami-f7ca7e8f
+      genome: ami-99cb7fe1
+    eu-west-1:
+      exome: ami-8bb121f2
+      genome: ami-df8e1ea6
 
 Parameters:
   KeyPairName:
@@ -94,6 +107,58 @@ Parameters:
     Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
+    Type: String
+  AnalysisType:
+    AllowedValues:
+      - exome
+      - genome
+    Description: The type of analysis you will run (Exome or Genome)
+    Type: String
+  KeyPairName:
+    Description: The name of an existing public/private key pair, which allows you
+      to securely connect to your instance after it launches
+    Type: AWS::EC2::KeyPair::KeyName
+  InstanceType:
+    AllowedValues:
+    - f1.2xlarge
+    - f1.16xlarge
+    Description: Amazon EC2 instance type for DRAGEN in the AWS Batch Compute Environment.
+    Type: String
+  BidPercentage:
+    AllowedPattern: (?:\b|-)([1-9]{1,2}[0]?|100)\b
+    ConstraintDescription: Spot Bid Percentage should be between 1 and 100, inclusive
+    Description: The bid percentage set for your AWS Batch Managed Compute Environment with Spot Instances.
+    Default: 50
+    Type: String
+  RetryNumber:
+    AllowedPattern: (?:\b|-)([1-9]|10)\b
+    ConstraintDescription: AWS Batch job retry number should be between 1 and 10
+    Description: Retry number for an AWS Batch job
+    Default: 1
+    Type: String
+  MinvCpus:
+    AllowedPattern: ^(0|[1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 0 and 1000, inclusive
+    Description: Minimum vCPUs for your AWS Batch Compute Environment. Recommend 0.
+    Default: 0
+    Type: String
+  MaxvCpus:
+    AllowedPattern: ^([1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 1 and 1000, inclusive
+    Description: Maximum vCPUs for your AWS Batch Compute Environment
+    Type: String
+  DesiredvCpus:
+    AllowedPattern: ^(0|[1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 1 and 1000, inclusive
+    Description: Desired vCPUs for your AWS Batch Compute Environment. Recommend the same number as MinvCpus for cost-optimization.
+    Default: 0
+    Type: String
+  S3GenomicsBucket:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: S3 genomics bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Description: S3 bucket name for the bucket to which you'll read and write genomics data. 
     Type: String
 
 Rules:
@@ -164,16 +229,14 @@ Resources:
     Properties:
       TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/batch.template
       Parameters:
-        S3GenomicsBucket:
+        S3GenomicsBucket: !Ref S3GenomicsBucket
         DragenDockerImage: !Join ["", [!GetAtt DockerBucketRepository.Outputs.Repository, ":latest"]]
-        DragenvCpus: !Ref DragenvCpus
-        DragenMemory: !Ref DragenMemory
         VpcId: !Ref VPCID
         SubnetIds:
         - !Ref PrivateSubnet1ID
         - !Ref PrivateSubnet2ID
         BidPercentage: !Ref BidPercentage
-        ImageId: !Ref ImageId
+        ImageId: !FindInMap [ AmiRegionMap, !Ref "AWS::Region", !Ref AnalysisType ]
         Ec2KeyPair: !Ref KeyPairName
         MinvCpus: !Ref MinvCpus
         MaxvCpus: !Ref MaxvCpus
