@@ -1,18 +1,67 @@
 [
     {
-        "ParameterKey": "Parameter1",
-        "ParameterValue": "Value1"
+        "ParameterKey": "AvailabilityZone",
+        "ParameterValue": ["us-east-1a", "us-east-1b"]
     },
     {
-        "ParameterKey": "Parameter2",
-        "ParameterValue": "Value2"
+        "ParameterKey": "KeyPairName",
+        "ParameterValue": "TBD"
     },
     {
-        "ParameterKey": "Parameter3",
-        "ParameterValue": "Value3"
+        "ParameterKey": "PrivateSubnet1CIDR",
+        "ParameterValue": "10.250.32.0/20"
     },
     {
-        "ParameterKey": "Parameter4",
-        "ParameterValue": "Value4"
+        "ParameterKey": "PrivateSubnet2CIDR",
+        "ParameterValue": "10.250.48.0/20"
+    },
+    {
+        "ParameterKey": "PublicSubnet1CIDR",
+        "ParameterValue": "10.250.0.0/20"
+    },
+    {
+        "ParameterKey": "PublicSubnet2CIDR",
+        "ParameterValue": "10.250.16.0/20"
+    },
+    {
+        "ParameterKey": "VPCCIDR",
+        "ParameterValue": "10.250.0.0/16"
+    },
+    {
+        "ParameterKey": "QSS3KeyPrefix",
+        "ParameterValue": "TBD"
+    },
+
+    {
+        "ParameterKey": "QSS3BucketName",
+        "ParameterValue": "TBD"
+    },
+    {
+        "ParameterKey": "AnalysisType",
+        "ParameterValue": "EXOME"
+    },
+    {
+        "ParameterKey": "BidPercentage",
+        "ParameterValue": "50"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "f1.2xlarge"
+    },
+    {
+        "ParameterKey": "RetryNumber",
+        "ParameterValue": "1"
+    },
+    {
+        "ParameterKey": "MinvCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey": "MaxvCpus",
+        "ParameterValue": "256"
+    },
+    {
+        "ParameterKey": "DesiredvCpus",
+        "ParameterValue": "0"
     }
 ]
