@@ -62,17 +62,17 @@ Metadata:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      EXOME: DRAGEN exome analysis
-      GENOME: DRAGEN genome analysis
+      EXOME: dragen-exome-2.2-180130
+      GENOME: dragen-genome-2.2-180130
     us-east-1:
-      EXOME: ami-6393cc19
-      GENOME: ami-d593ccaf
+      EXOME: ami-29172b53
+      GENOME: ami-58142822
     us-west-2:
-      EXOME: ami-f7ca7e8f
-      GENOME: ami-99cb7fe1
+      EXOME: ami-1270ce6a
+      GENOME: ami-c071cfb8
     eu-west-1:
-      EXOME: ami-8bb121f2
-      GENOME: ami-df8e1ea6
+      EXOME: ami-efa3c296
+      GENOME: ami-d4a5c4ad
 
 Parameters:
   KeyPairName:
