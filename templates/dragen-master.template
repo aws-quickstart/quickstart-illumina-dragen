@@ -203,11 +203,11 @@ Resources:
         PublicSubnet1CIDR: !Ref PublicSubnet1CIDR
         PublicSubnet2CIDR: !Ref PublicSubnet2CIDR
         VPCCIDR: !Ref VPCCIDR
-  WorkloadStack:
+  DragenStack:
     DependsOn: VPCStack
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/workload-yaml.template
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/dragen.template
       Parameters:
         PrivateSubnet1ID: !GetAtt VPCStack.Outputs.PrivateSubnet1ID
         PrivateSubnet2ID: !GetAtt VPCStack.Outputs.PrivateSubnet2ID
@@ -227,4 +227,4 @@ Resources:
 Outputs:
   JobQuee:
     Description: The Job Queue to submit jobs to
-    Value: !GetAtt WorkloadStack.Outputs.JobQueue
+    Value: !GetAtt DragenStack.Outputs.JobQueue
