@@ -65,16 +65,19 @@ Metadata:
         default: Desired vCPUs
 
 Mappings:
-  AmiRegionMap:
+  AWSAMIRegionMap:
+    AMI:
+      EXOME: DRAGEN exome analysis
+      GENOME: DRAGEN genome analysis
     us-east-1:
-      exome: ami-6393cc19
-      genome: ami-d593ccaf
+      EXOME: ami-6393cc19
+      GENOME: ami-d593ccaf
     us-west-2:
-      exome: ami-f7ca7e8f
-      genome: ami-99cb7fe1
+      EXOME: ami-f7ca7e8f
+      GENOME: ami-99cb7fe1
     eu-west-1:
-      exome: ami-8bb121f2
-      genome: ami-df8e1ea6
+      EXOME: ami-8bb121f2
+      GENOME: ami-df8e1ea6
 
 Parameters:
   AvailabilityZones:

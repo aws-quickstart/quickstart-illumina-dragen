@@ -41,11 +41,10 @@ Parameters:
     Type: List<AWS::EC2::Subnet::Id>
     Description: Subnets you want your batch compute environment to launch in. Must be private subnets and in same VPC.
   BidPercentage:
+    AllowedPattern: (?:\b|-)([1-9]{1,2}[0]?|100)\b
+    ConstraintDescription: Spot Bid Percentage should be between 1 and 100, inclusive
+    Description: The bid percentage set for your AWS Batch Managed Compute Environment with Spot Instances.
     Type: String
-    Description: Maximum spot percentage of on-demand. Should be an integer - default is 50
-    MaxLength: 3
-    Default: 50
-    AllowedPattern: "[0-9]+"
   ImageId:
     Type: AWS::EC2::Image::Id
     Description: AMI you want your AWS Batch Compute Environment to use
