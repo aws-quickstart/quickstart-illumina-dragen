@@ -2,6 +2,7 @@ global:
   marketplace-ami: false
   owner: quickstart-eng@amazon.com
   qsname: quickstart-edico-genome
+  s3bucket: edico-taskcat-bucket
   regions:
     - eu-west-1
     - us-east-1
@@ -12,6 +13,8 @@ tests:
   quickstart-edico-genomet1:
     parameter_input: batch-params.json
     template_file: quickstart-edico-genome-example1.template
-  quickstart-edico-genomet2:
-    parameter_input: quickstart-edico-genome-example-params2.json
-    template_file: quickstart-edico-genome-example2.template
+    regions:
+      - us-east-1
+  #quickstart-edico-genomet2:
+  #  parameter_input: quickstart-edico-genome-example-params2.json
+  #  template_file: quickstart-edico-genome-example2.template

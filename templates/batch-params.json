@@ -34,7 +34,7 @@
 
     {
         "ParameterKey": "QSS3BucketName",
-        "ParameterValue": "TBD"
+        "ParameterValue": "edico-taskcat-bucket"
     },
     {
         "ParameterKey": "AnalysisType",
