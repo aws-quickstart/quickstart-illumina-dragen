@@ -225,7 +225,7 @@ Resources:
         DesiredvCpus: !Ref DesiredvCpus
         S3GenomicsBucket: !Ref S3GenomicsBucket
         RetryNumber: !Ref RetryNumber
-        ImageId: !FindInMap [ AmiRegionMap, !Ref "AWS::Region", !Ref AnalysisType ]
+        ImageId: !FindInMap [ AWSAMIRegionMap, !Ref "AWS::Region", !Ref AnalysisType ]
 
 Outputs:
   JobQuee:

@@ -1,11 +1,11 @@
 [
     {
-        "ParameterKey": "AvailabilityZone",
-        "ParameterValue": ["us-east-1a", "us-east-1b"]
+        "ParameterKey": "AvailabilityZones",
+        "ParameterValue": "$[taskcat_genaz_2]"
     },
     {
         "ParameterKey": "KeyPairName",
-        "ParameterValue": "TBD"
+        "ParameterValue": "ajfriedm-hclscollab-taskcat-iad"
     },
     {
         "ParameterKey": "PrivateSubnet1CIDR",
@@ -28,13 +28,16 @@
         "ParameterValue": "10.250.0.0/16"
     },
     {
-        "ParameterKey": "QSS3KeyPrefix",
-        "ParameterValue": "TBD"
-    },
-
-    {
         "ParameterKey": "QSS3BucketName",
         "ParameterValue": "edico-taskcat-bucket"
+    },
+    {
+        "ParameterKey": "QSS3KeyPrefix",
+        "ParameterValue": "quickstart-edico-genome"
+    },
+    {
+        "ParameterKey": "S3GenomicsBucket",
+        "ParameterValue": "$[taskcat_autobucket]"
     },
     {
         "ParameterKey": "AnalysisType",
