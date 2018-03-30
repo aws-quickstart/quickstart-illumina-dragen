@@ -8,13 +8,10 @@ Parameters:
   QSS3KeyPrefix:
     Description: The Template Bucket Prefix.
     Type: String
-Resources:
   DestinationBucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties:
-      VersioningConfiguration:
-        Status: Enabled
+    Type: String
+    Default: ""
+Resources:
   CopyRole:
     Type: AWS::IAM::Role
     Properties:
@@ -42,7 +39,7 @@ Resources:
   CopyFiles:
     Type: AWS::CloudFormation::Stack
     DependsOn:
-    - DestinationBucket
+    - CopyRole
     Properties:
       TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy-files.template
       Parameters:
@@ -53,4 +50,4 @@ Resources:
 Outputs:
   AssetBucket:
     Value: !Ref DestinationBucket
-Description: Bucket with Zip Files
+    Description: Bucket with Zip Files

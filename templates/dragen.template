@@ -196,6 +196,7 @@ Resources:
       Parameters:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        DesitnationBucket: !Ref DockerBucketRepository.Outputs.ArtifactBucket
 
   WaitHandleContainerBuild:
     Type: AWS::CloudFormation::WaitConditionHandle
