@@ -15,27 +15,27 @@ Resources:
   CopyRole:
     Type: AWS::IAM::Role
     Properties:
-    Path: /
-    AssumeRolePolicyDocument:
-      Version: 2012-10-17
-      Statement:
-      - Effect: Allow
-        Principal:
-          Service: lambda.amazonaws.com
-        Action: sts:AssumeRole
-    Policies:
-    - PolicyName: ConfigPolicy
-      PolicyDocument:
+      Path: /
+      AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
-        - Sid: Logging
-          Effect: Allow
-          Action: logs:*
-          Resource: '*'
-        - Sid: S3
-          Effect: Allow
-          Action: s3:*
-          Resource: '*'
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Policies:
+      - PolicyName: ConfigPolicy
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Sid: Logging
+            Effect: Allow
+            Action: logs:*
+            Resource: '*'
+          - Sid: S3
+            Effect: Allow
+            Action: s3:*
+            Resource: '*'
   CopyFiles:
     Type: AWS::CloudFormation::Stack
     DependsOn:
@@ -50,4 +50,8 @@ Resources:
 Outputs:
   AssetBucket:
     Value: !Ref DestinationBucket
+<<<<<<< HEAD
     Description: Bucket with Zip Files
+=======
+Description: Bucket with Zip Files
+>>>>>>> 9e1ebd1b5aa7721accc42476897c5db5cb3c696e
