@@ -55,7 +55,7 @@ Resources:
           def timeout(event, context):
               logging.error('Execution is about to time out, sending failure response to CloudFormation')
               cfnresponse.send(event, context, cfnresponse.FAILED, {}, None)
-          def handler(event, context):",
+          def handler(event, context):
               # make sure we send a failure to CloudFormation if the function is going to timeout
               timer = threading.Timer((context.get_remaining_time_in_millis() / 1000.00) - 0.5, timeout, args=[event, context])
               timer.start()
