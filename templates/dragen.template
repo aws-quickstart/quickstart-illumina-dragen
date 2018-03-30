@@ -56,8 +56,6 @@ Metadata:
         default: Max vCPUs
       DesiredvCpus:
         default: Desired vCPUs
-      ImageId:
-        default: DRAGEN AMI
 
 Mappings:
   AWSAMIRegionMap:
@@ -239,7 +237,7 @@ Resources:
         - !Ref PrivateSubnet1ID
         - !Ref PrivateSubnet2ID
         BidPercentage: !Ref BidPercentage
-        ImageId: !FindInMap [ AmiRegionMap, !Ref "AWS::Region", !Ref AnalysisType ]
+        ImageId: !FindInMap [ AWSAMIRegionMap, !Ref "AWS::Region", !Ref AnalysisType ]
         Ec2KeyPair: !Ref KeyPairName
         MinvCpus: !Ref MinvCpus
         MaxvCpus: !Ref MaxvCpus

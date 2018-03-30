@@ -212,8 +212,9 @@ Resources:
     Properties:
       TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/dragen.template
       Parameters:
-        PrivateSubnet1ID: !GetAtt VPCStack.Outputs.PrivateSubnet1ID
-        PrivateSubnet2ID: !GetAtt VPCStack.Outputs.PrivateSubnet2ID
+        PrivateSubnet1ID: !GetAtt VPCStack.Outputs.PrivateSubnet1AID
+        PrivateSubnet2ID: !GetAtt VPCStack.Outputs.PrivateSubnet2AID
+        AnalysisType: !Ref AnalysisType
         VPCID: !GetAtt VPCStack.Outputs.VPCID
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
@@ -225,7 +226,6 @@ Resources:
         DesiredvCpus: !Ref DesiredvCpus
         S3GenomicsBucket: !Ref S3GenomicsBucket
         RetryNumber: !Ref RetryNumber
-        ImageId: !FindInMap [ AWSAMIRegionMap, !Ref "AWS::Region", !Ref AnalysisType ]
 
 Outputs:
   JobQuee:

@@ -33,7 +33,7 @@
     },
     {
         "ParameterKey": "QSS3KeyPrefix",
-        "ParameterValue": "quickstart-edico-genome"
+        "ParameterValue": "quickstart-edico-genome/"
     },
     {
         "ParameterKey": "S3GenomicsBucket",
