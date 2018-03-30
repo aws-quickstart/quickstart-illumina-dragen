@@ -50,8 +50,4 @@ Resources:
 Outputs:
   AssetBucket:
     Value: !Ref DestinationBucket
-<<<<<<< HEAD
     Description: Bucket with Zip Files
-=======
-Description: Bucket with Zip Files
->>>>>>> 9e1ebd1b5aa7721accc42476897c5db5cb3c696e
