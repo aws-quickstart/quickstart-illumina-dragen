@@ -8,9 +8,6 @@ Parameters:
   QSS3KeyPrefix:
     Description: The Template Bucket Prefix.
     Type: String
-  RoleArn:
-    Description: The ARN of the role required for copying files.
-    Type: String
 Resources:
   DestinationBucket:
     Type: AWS::S3::Bucket
@@ -18,6 +15,30 @@ Resources:
     Properties:
       VersioningConfiguration:
         Status: Enabled
+  CopyRole:
+    Type: AWS::IAM::Role
+    Properties:
+    Path: /
+    AssumeRolePolicyDocument:
+      Version: 2012-10-17
+      Statement:
+      - Effect: Allow
+        Principal:
+          Service: lambda.amazonaws.com
+        Action: sts:AssumeRole
+    Policies:
+    - PolicyName: ConfigPolicy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Sid: Logging
+          Effect: Allow
+          Action: logs:*
+          Resource: '*'
+        - Sid: S3
+          Effect: Allow
+          Action: s3:*
+          Resource: '*'
   CopyFiles:
     Type: AWS::CloudFormation::Stack
     DependsOn:
@@ -28,7 +49,7 @@ Resources:
         TemplateBucket: !Ref QSS3BucketName
         TemplatePrefix: !Ref QSS3KeyPrefix
         DestinationBucket: !Ref DestinationBucket
-        RoleArn: !Ref RoleArn
+        RoleArn: !GetAtt CopyRole.Arn
 Outputs:
   AssetBucket:
     Value: !Ref DestinationBucket

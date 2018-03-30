@@ -12,8 +12,6 @@ Parameters:
     AllowedPattern: "^[0-9a-zA-Z-/]*$"
   RoleArn:
     Type: String
-  ObjectsToCopy:
-    Type: List<String>
 
 Resources:
   CopyZips:
@@ -24,7 +22,8 @@ Resources:
       DestBucket: !Ref DestinationBucket
       SourceBucket: !Ref TemplateBucket
       Prefix: !Ref TemplatePrefix
-      Objects: !Ref ObjectsToCopy
+      Objects: 
+      - "app/packages/dragen/dragen.zip"
   CopyZipsFunction:
     Type: AWS::Lambda::Function
     Properties:
