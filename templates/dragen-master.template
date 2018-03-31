@@ -228,6 +228,9 @@ Resources:
         RetryNumber: !Ref RetryNumber
 
 Outputs:
-  JobQuee:
+  JobQueue:
     Description: The Job Queue to submit jobs to
     Value: !GetAtt DragenStack.Outputs.JobQueue
+  DragenJobDefinition:
+    Description: The AWS Batch Job Definition for DRAGEN
+    Value: !GetAtt DragenStack.Outputs.DragenJobDefinition

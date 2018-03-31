@@ -245,5 +245,7 @@ Resources:
         DesiredvCpus: !Ref DesiredvCpus
 
 Outputs:
+  DragenJobDefinition:
+    Value: !GetAtt Batch.Outputs.DragenJobDefinition
   JobQueue:
     Value: !GetAtt Batch.Outputs.JobQueue

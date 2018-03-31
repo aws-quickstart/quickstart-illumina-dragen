@@ -3,14 +3,19 @@ Description: This CloudFormation template creates the CICD pipeline to build the
 
 Parameters:
   ArtifactBucket:
+    Description: Amazon S3 bucket where the DRAGEN artifact resides
     Type: String
   ArtifactKey:
+    Description: Amazon S3 key where the DRAGEN zip artifact resides
     Type: String
   ServiceName:
+    Description: Name of the service/batch job.
     Type: String
   Repository:
+    Description: URI for the docker repository in Amazon ECR
     Type: String
   WaitHandle:
+    Description: CloudFormation WaitHandle. This gets triggered once the build is complete
     Type: String
 
 Resources:
