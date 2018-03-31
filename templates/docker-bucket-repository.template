@@ -6,7 +6,7 @@ Description: This CloudFormation Template creates the ECR Repository and Artifac
 Resources:
   Dragen:
     Type: AWS::ECR::Repository
-  DestinationBucket:
+  ArtifactBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:

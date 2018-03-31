@@ -47,7 +47,3 @@ Resources:
         TemplatePrefix: !Ref QSS3KeyPrefix
         DestinationBucket: !Ref DestinationBucket
         RoleArn: !GetAtt CopyRole.Arn
-Outputs:
-  AssetBucket:
-    Value: !Ref DestinationBucket
-    Description: Bucket with Zip Files

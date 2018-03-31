@@ -196,7 +196,7 @@ Resources:
       Parameters:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
-        DesitnationBucket: !Ref DockerBucketRepository.Outputs.ArtifactBucket
+        DestinationBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
 
   WaitHandleContainerBuild:
     Type: AWS::CloudFormation::WaitConditionHandle
@@ -209,7 +209,8 @@ Resources:
       TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/container-build.template
       Parameters:
         ArtifactBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
-        ServiceName: Dragen
+        ArtifactKey: !Ref QSS3KeyPrefix
+        ServiceName: dragen
         Repository: !GetAtt DockerBucketRepository.Outputs.Repository
         WaitHandle: !Ref WaitHandleContainerBuild
 
@@ -234,10 +235,9 @@ Resources:
         S3GenomicsBucket: !Ref S3GenomicsBucket
         DragenDockerImage: !Join ["", [!GetAtt DockerBucketRepository.Outputs.Repository, ":latest"]]
         VpcId: !Ref VPCID
-        SubnetIds:
-        - !Ref PrivateSubnet1ID
-        - !Ref PrivateSubnet2ID
+        SubnetIds: !Sub "${PrivateSubnet1ID}, ${PrivateSubnet2ID}"
         BidPercentage: !Ref BidPercentage
+        InstanceType: !Ref InstanceType
         ImageId: !FindInMap [ AWSAMIRegionMap, !Ref "AWS::Region", !Ref AnalysisType ]
         Ec2KeyPair: !Ref KeyPairName
         MinvCpus: !Ref MinvCpus
