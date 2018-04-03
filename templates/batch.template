@@ -108,20 +108,20 @@ Resources:
               - "sts:AssumeRole"
       ManagedPolicyArns:
       - arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole
-      SpotFleetRole:
-        Type: AWS::IAM::Role
-        Properties:
-          AssumeRolePolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Principal:
-                  Service:
-                    - "spotfleet.amazonaws.com"
-                Action:
-                  - "sts:AssumeRole"
-          ManagedPolicyArns:
-          - "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetRole"  
+  SpotFleetRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "spotfleet.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetRole"  
   S3ReadWritePolicyInstance:
     Type: AWS::IAM::Policy
     Properties:
@@ -294,7 +294,7 @@ Resources:
 
 Outputs:
   DragenComputeEnvironmentSpot:
-    Value: !Ref DragenComputDragenComputeEnvironmentSpot
+    Value: !Ref DragenComputeEnvironmentSpot
   DragenComputeEnvironmentOnDemand:
     Value: !Ref DragenComputeEnvironmentOnDemand
   JobQueue:
