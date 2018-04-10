@@ -1,0 +1,251 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: This template deploys an environment to run Edico Genome's DRAGEN software using AWS Batch
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: Network Configuration
+      Parameters:
+      - VPCID
+      - PrivateSubnet1ID
+      - PrivateSubnet2ID
+    - Label:
+        default: AWS Quick Start Configuration
+      Parameters:
+      - QSS3BucketName
+      - QSS3KeyPrefix
+    - Label:
+        default: DRAGEN Quick Start Configuration
+      Parameters:
+      - AnalysisType
+      - KeyPairName
+      - InstanceType
+      - BidPercentage
+      - MinvCpus
+      - MaxvCpus
+      - DesiredvCpus
+      - S3GenomicsBucket
+      - RetryNumber
+      - DragenvCpus
+      - DragenMemory
+    ParameterLabels:
+      KeyPairName:
+        default: Key Pair Name
+      PrivateSubnet1ID:
+        default: Private Subnet 1 ID
+      PrivateSubnet2ID:
+        default: Private Subnet 2 ID
+      VPCID:
+        default: VPC ID
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      AnalysisType:
+        default: Analysis type
+      InstanceType:
+        default: Instance Type
+      BidPercentage:
+        default: Spot Bid Percentage
+      RetryNumber:
+        default: AWS Batch Retry Number
+      MaxvCpus:
+        default: Min vCPUs
+      MaxvCpus:
+        default: Max vCPUs
+      DesiredvCpus:
+        default: Desired vCPUs
+
+Mappings:
+  AWSAMIRegionMap:
+    AMI:
+      EXOME: dragen-exome-2.2-180130
+      GENOME: dragen-genome-2.2-180130
+    us-east-1:
+      EXOME: ami-29172b53
+      GENOME: ami-58142822
+    us-west-2:
+      EXOME: ami-1270ce6a
+      GENOME: ami-c071cfb8
+    eu-west-1:
+      EXOME: ami-efa3c296
+      GENOME: ami-d4a5c4ad
+
+Parameters:
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Public/private key pairs allow you to securely connect to your instance
+      after it launches
+  InstanceType:
+    Type: String
+    AllowedValues:
+    - f1.2xlarge
+    - f1.16xlarge
+  VPCID:
+    Type: AWS::EC2::VPC::Id
+    Description: The ID of the VPC.
+  PrivateSubnet1ID:
+    Type: AWS::EC2::Subnet::Id
+    Description: ID for private subnet 1 located in Availability Zone 1.
+  PrivateSubnet2ID:
+    Type: AWS::EC2::Subnet::Id
+    Description: ID for private subnet 2 located in Availability Zone 2.
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: quickstart-reference
+    Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
+      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
+      It cannot start or end with a hyphen (-).
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and a forward slash (/) at the end of the prefix.
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/).
+    Type: String
+  AnalysisType:
+    AllowedValues:
+      - EXOME
+      - GENOME
+    Description: The type of analysis you will run (Exome or Genome)
+    Type: String
+  KeyPairName:
+    Description: The name of an existing public/private key pair, which allows you
+      to securely connect to your instance after it launches
+    Type: AWS::EC2::KeyPair::KeyName
+  InstanceType:
+    AllowedValues:
+    - f1.2xlarge
+    - f1.16xlarge
+    Description: Amazon EC2 instance type for DRAGEN in the AWS Batch Compute Environment.
+    Type: String
+  BidPercentage:
+    AllowedPattern: (?:\b|-)([1-9]{1,2}[0]?|100)\b
+    ConstraintDescription: Spot Bid Percentage should be between 1 and 100, inclusive
+    Description: The bid percentage set for your AWS Batch Managed Compute Environment with Spot Instances.
+    Default: 50
+    Type: String
+  RetryNumber:
+    AllowedPattern: (?:\b|-)([1-9]|10)\b
+    ConstraintDescription: AWS Batch job retry number should be between 1 and 10
+    Description: Retry number for an AWS Batch job
+    Default: 1
+    Type: String
+  MinvCpus:
+    AllowedPattern: ^(0|[1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 0 and 1000, inclusive
+    Description: Minimum vCPUs for your AWS Batch Compute Environment. Recommend 0.
+    Default: 0
+    Type: String
+  MaxvCpus:
+    AllowedPattern: ^([1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 1 and 1000, inclusive
+    Description: Maximum vCPUs for your AWS Batch Compute Environment
+    Type: String
+  DesiredvCpus:
+    AllowedPattern: ^(0|[1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 1 and 1000, inclusive
+    Description: Desired vCPUs for your AWS Batch Compute Environment. Recommend the same number as MinvCpus for cost-optimization.
+    Default: 0
+    Type: String
+  S3GenomicsBucket:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: S3 genomics bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Description: S3 bucket name for the bucket to which you'll read and write genomics data. 
+    Type: String
+
+Rules:
+  KeyPairsNotEmpty:
+    Assertions:
+    - Assert:
+        !Not
+        - Fn::EachMemberEquals:
+          - Fn::RefAll: AWS::EC2::KeyPair::KeyName
+          - ''
+      AssertDescription: All key pair parameters must not be empty
+  SubnetsInVPC:
+    Assertions:
+    - Assert:
+        Fn::EachMemberIn:
+        - Fn::ValueOfAll:
+          - AWS::EC2::Subnet::Id
+          - VpcId
+        - Fn::RefAll: AWS::EC2::VPC::Id
+      AssertDescription: All subnets must be in the VPC
+
+Resources:
+  DockerBucketRepository:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/docker-bucket-repository.template
+
+  CopyFiles:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+    - DockerBucketRepository
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy.template
+      Parameters:
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        DestinationBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
+
+  WaitHandleContainerBuild:
+    Type: AWS::CloudFormation::WaitConditionHandle
+
+  ContainerBuild:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+    - CopyFiles
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/container-build.template
+      Parameters:
+        ArtifactBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
+        ArtifactKey: !Ref QSS3KeyPrefix
+        ServiceName: dragen
+        Repository: !GetAtt DockerBucketRepository.Outputs.Repository
+        WaitHandle: !Ref WaitHandleContainerBuild
+
+  WaitConditionContainerBuild:
+    Type: AWS::CloudFormation::WaitCondition
+    DependsOn:
+    - ContainerBuild
+    Properties:
+      Handle:
+        Ref: WaitHandleContainerBuild
+      Timeout: '3600'
+      Count: '1'
+
+  Batch:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+    - ContainerBuild
+    - WaitConditionContainerBuild
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/batch.template
+      Parameters:
+        S3GenomicsBucket: !Ref S3GenomicsBucket
+        DragenDockerImage: !Join ["", [!GetAtt DockerBucketRepository.Outputs.Repository, ":latest"]]
+        VpcId: !Ref VPCID
+        SubnetIds: !Sub "${PrivateSubnet1ID}, ${PrivateSubnet2ID}"
+        BidPercentage: !Ref BidPercentage
+        InstanceType: !Ref InstanceType
+        ImageId: !FindInMap [ AWSAMIRegionMap, !Ref "AWS::Region", !Ref AnalysisType ]
+        Ec2KeyPair: !Ref KeyPairName
+        MinvCpus: !Ref MinvCpus
+        MaxvCpus: !Ref MaxvCpus
+        DesiredvCpus: !Ref DesiredvCpus
+
+Outputs:
+  DragenJobDefinition:
+    Value: !GetAtt Batch.Outputs.DragenJobDefinition
+  JobQueue:
+    Value: !GetAtt Batch.Outputs.JobQueue

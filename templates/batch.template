@@ -1,0 +1,303 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: Sets up your AWS Batch Environment for running DRAGEN
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: DRAGEN parameteres
+        Parameters:
+        - S3GenomicsBucket
+        - DragenDockerImage
+      - Label:
+          default: AWS Batch Compute Environment Configuration
+        Parameters:
+        - VpcId
+        - SubnetIds
+        - BidPercentage
+        - ImageId
+        - Ec2KeyPair
+        - MinvCpus
+        - MaxvCpus
+        - DesiredvCpus
+        - InstanceType
+
+Parameters:
+  S3GenomicsBucket:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: S3 genomics bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Description: S3 bucket name for the bucket to which you'll read and write genomics data. 
+    Type: String
+  DragenDockerImage:
+    Type: String
+    Description: Path to DRAGEN docker image repository URI.
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VpcId containing each of the SubnetIds
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Subnets you want your batch compute environment to launch in. Must be private subnets and in the VPC specified by VpcId.
+  BidPercentage:
+    AllowedPattern: (?:\b|-)([1-9]{1,2}[0]?|100)\b
+    ConstraintDescription: Spot Bid Percentage should be between 1 and 100, inclusive
+    Description: The bid percentage set for your AWS Batch Managed Compute Environment with Spot Instances.
+    Type: String
+  ImageId:
+    Type: AWS::EC2::Image::Id
+    Description: AMI you want your AWS Batch Managed Compute Environment to use
+  Ec2KeyPair:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Amazon EC2 Key Pair for EC2 instances launched in your compute environment
+  MinvCpus:
+    Type: String
+    Description: Minimum number of CPUs in the compute environment. Default 0.
+    Default: 0
+    AllowedPattern: "[0-9]+"
+  DesiredvCpus:
+    Type: String
+    Description: Desired number of CPUs in the compute environment to launch with. Default 0.
+    Default: 0
+    AllowedPattern: "[0-9]+"
+  MaxvCpus:
+    Type: String
+    Description: Maximum number of CPUs in the compute environment. Should be >= than MinCpus
+    AllowedPattern: "[0-9]+"
+  RetryNumber:
+    Type: String
+    Default: "1"
+    Description: Number of retries for each AWS Batch job. Integer required.
+    MaxLength: 1
+    AllowedPattern: (?:\b|-)([1-9]|10)\b
+    ConstraintDescription: Value between 1 and 10
+  InstanceType:
+    AllowedValues:
+    - f1.2xlarge
+    - f1.16xlarge
+    Description: Amazon EC2 instance type for DRAGEN in the AWS Batch Compute Environment.
+    Type: String
+
+Conditions:
+  Is2xl: !Equals [!Ref InstanceType, 'f1.2xlarge']
+
+Resources:
+  # Batch Setup
+  BatchSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow https
+      VpcId: !Ref VpcId
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: '443'
+        ToPort: '443'
+        CidrIp: 0.0.0.0/0
+  BatchServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "batch.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole
+  SpotFleetRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "spotfleet.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetRole"  
+  S3ReadWritePolicyInstance:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: S3ReadWritePolicyInstance
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: S3ReadWritePolicyInstance
+            Effect: Allow
+            Action:
+            - "s3:GetBucketLocation"
+            - "s3:ListBucket"
+            - "s3:ListBucketVersions"
+            - "s3:GetObject"
+            - "s3:GetObjectVersion"
+            - "s3:PutObject"
+            - "s3:ListMultipartUploadParts"
+            - "s3:AbortMultipartUpload"
+            Resource:
+            - !Join ["", ["arn:aws:s3:::", !Ref S3GenomicsBucket]]
+            - !Join ["", ["arn:aws:s3:::", !Ref S3GenomicsBucket, "/*"]]
+      Roles:
+      - !Ref DragenInstanceRole
+  S3ReadWritePolicyJob:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: S3ReadWritePolicyJob
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: S3ReadWritePolicyJob
+            Effect: Allow
+            Action:
+            - "s3:GetBucketLocation"
+            - "s3:ListBucket"
+            - "s3:ListBucketVersions"
+            - "s3:GetObject"
+            - "s3:GetObjectVersion"
+            - "s3:PutObject"
+            - "s3:ListMultipartUploadParts"
+            - "s3:AbortMultipartUpload"
+            Resource:
+            - !Join ["", ["arn:aws:s3:::", !Ref S3GenomicsBucket]]
+            - !Join ["", ["arn:aws:s3:::", !Ref S3GenomicsBucket, "/*"]]
+      Roles:
+      - !Ref DragenJobRole
+  DragenComputeEnvironmentSpot:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      ComputeEnvironmentName: dragen-spot
+      ServiceRole: !Ref BatchServiceRole
+      Type: MANAGED
+      State: ENABLED
+      ComputeResources:
+        BidPercentage: !Ref BidPercentage
+        Ec2KeyPair: !Ref Ec2KeyPair
+        ImageId: !Ref ImageId
+        InstanceRole: !Ref DragenInstanceRole
+        InstanceTypes: [!Ref InstanceType]
+        MinvCpus: !Ref MinvCpus
+        DesiredvCpus: !Ref DesiredvCpus
+        MaxvCpus: !Ref MaxvCpus
+        SecurityGroupIds:
+        - !Ref BatchSecurityGroup
+        SpotIamFleetRole: !Ref SpotFleetRole
+        Subnets: !Ref SubnetIds
+        Type: SPOT
+  DragenComputeEnvironmentOnDemand:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      ComputeEnvironmentName: dragen-ondemand
+      ServiceRole: !Ref BatchServiceRole
+      Type: MANAGED
+      State: ENABLED
+      ComputeResources:
+        Ec2KeyPair: !Ref Ec2KeyPair
+        ImageId: !Ref ImageId
+        InstanceRole: !Ref DragenInstanceRole
+        InstanceTypes: [!Ref InstanceType]
+        MinvCpus: !Ref MinvCpus
+        DesiredvCpus: !Ref DesiredvCpus
+        MaxvCpus: !Ref MaxvCpus
+        SecurityGroupIds:
+        - !Ref BatchSecurityGroup
+        Subnets: !Ref SubnetIds
+        Type: EC2
+
+  # DRAGEN set up
+  DragenJobRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "ecs-tasks.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+  DragenInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+  DragenInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+      - !Ref DragenInstanceRole
+      InstanceProfileName: !Ref DragenInstanceRole
+  DragenJobQueue:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      JobQueueName: dragen-queue
+      Priority: 100
+      State: ENABLED
+      ComputeEnvironmentOrder:
+        - Order: 1
+          ComputeEnvironment: !Ref DragenComputeEnvironmentSpot
+        - Order: 2
+          ComputeEnvironment: !Ref DragenComputeEnvironmentOnDemand
+  DragenJobDefinition:
+    Type: AWS::Batch::JobDefinition
+    Properties:
+      JobDefinitionName: dragen
+      Type: container
+      RetryStrategy:
+        Attempts: !Ref RetryNumber
+      ContainerProperties:
+        Image: !Ref DragenDockerImage
+        Vcpus: !If [Is2xl, '8', '96']
+        Memory: !If [Is2xl, '120000', '800000']
+        JobRoleArn: !GetAtt DragenJobRole.Arn
+        MountPoints:
+          - ContainerPath: "/scratch"
+            ReadOnly: False
+            SourceVolume: docker_scratch
+          - ContainerPath: "/ephemeral"
+            ReadOnly: False
+            SourceVolume: docker_ephemeral
+          - ContainerPath: "/opt/edico"
+            ReadOnly: False
+            SourceVolume: docker_opt_edico
+          - ContainerPath: "/var/lib/edico"
+            ReadOnly: False
+            SourceVolume: docker_var_lib_edico
+        Volumes:
+          - Name: docker_scratch
+            Host:
+              SourcePath: "/scratch"
+          - Name: docker_ephemeral
+            Host:
+              SourcePath: "/ephemeral"
+          - Name: docker_opt_edico
+            Host:
+              SourcePath: "/opt/edico"
+          - Name: docker_var_lib_edico
+            Host:
+              SourcePath: "/var/lib/edico"
+
+Outputs:
+  DragenComputeEnvironmentSpot:
+    Value: !Ref DragenComputeEnvironmentSpot
+  DragenComputeEnvironmentOnDemand:
+    Value: !Ref DragenComputeEnvironmentOnDemand
+  JobQueue:
+    Value: !Ref DragenJobQueue
+  DragenJobDefinition:
+    Value: !Ref DragenJobDefinition

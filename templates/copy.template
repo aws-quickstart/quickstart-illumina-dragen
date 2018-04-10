@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This CloudFormation Template invokes another template responsible for
+  copying files to a local region S3 Bucket for AWS Lambda.
+Parameters:
+  QSS3BucketName:
+    Description: The Template Bucket Name.
+    Type: String
+  QSS3KeyPrefix:
+    Description: The Template Bucket Prefix.
+    Type: String
+  DestinationBucket:
+    Type: String
+    Default: ""
+Resources:
+  CopyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Policies:
+      - PolicyName: ConfigPolicy
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Sid: Logging
+            Effect: Allow
+            Action: logs:*
+            Resource: '*'
+          - Sid: S3
+            Effect: Allow
+            Action: s3:*
+            Resource: '*'
+  CopyFiles:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+    - CopyRole
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy-files.template
+      Parameters:
+        TemplateBucket: !Ref QSS3BucketName
+        TemplatePrefix: !Ref QSS3KeyPrefix
+        DestinationBucket: !Ref DestinationBucket
+        RoleArn: !GetAtt CopyRole.Arn

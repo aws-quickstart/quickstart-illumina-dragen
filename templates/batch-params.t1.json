@@ -1,0 +1,70 @@
+[
+    {
+        "ParameterKey": "AvailabilityZones",
+        "ParameterValue": "$[taskcat_genaz_2]"
+    },
+    {
+        "ParameterKey": "KeyPairName",
+        "ParameterValue": "ajfriedm-hclscollab-taskcat"
+    },
+    {
+        "ParameterKey": "PrivateSubnet1CIDR",
+        "ParameterValue": "10.250.32.0/20"
+    },
+    {
+        "ParameterKey": "PrivateSubnet2CIDR",
+        "ParameterValue": "10.250.48.0/20"
+    },
+    {
+        "ParameterKey": "PublicSubnet1CIDR",
+        "ParameterValue": "10.250.0.0/20"
+    },
+    {
+        "ParameterKey": "PublicSubnet2CIDR",
+        "ParameterValue": "10.250.16.0/20"
+    },
+    {
+        "ParameterKey": "VPCCIDR",
+        "ParameterValue": "10.250.0.0/16"
+    },
+    {
+        "ParameterKey": "QSS3BucketName",
+        "ParameterValue": "edico-taskcat-bucket"
+    },
+    {
+        "ParameterKey": "QSS3KeyPrefix",
+        "ParameterValue": "quickstart-edico-genome/"
+    },
+    {
+        "ParameterKey": "S3GenomicsBucket",
+        "ParameterValue": "$[taskcat_autobucket]"
+    },
+    {
+        "ParameterKey": "AnalysisType",
+        "ParameterValue": "EXOME"
+    },
+    {
+        "ParameterKey": "BidPercentage",
+        "ParameterValue": "50"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "f1.2xlarge"
+    },
+    {
+        "ParameterKey": "RetryNumber",
+        "ParameterValue": "1"
+    },
+    {
+        "ParameterKey": "MinvCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey": "MaxvCpus",
+        "ParameterValue": "256"
+    },
+    {
+        "ParameterKey": "DesiredvCpus",
+        "ParameterValue": "0"
+    }
+]

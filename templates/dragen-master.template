@@ -1,0 +1,236 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: This template deploys an environment to run Edico Genome's DRAGEN software using AWS Batch
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+    - Label:
+        default: Network Configuration
+      Parameters:
+      - AvailabilityZones
+      - VPCCIDR
+      - PrivateSubnet1CIDR
+      - PrivateSubnet2CIDR
+      - PublicSubnet1CIDR
+      - PublicSubnet2CIDR
+    - Label:
+        default: AWS Quick Start Configuration
+      Parameters:
+      - QSS3BucketName
+      - QSS3KeyPrefix
+    - Label:
+        default: DRAGEN Quick Start Configuration
+      Parameters:
+      - AnalysisType
+      - KeyPairName
+      - InstanceType
+      - BidPercentage
+      - MinvCpus
+      - MaxvCpus
+      - DesiredvCpus
+      - S3GenomicsBucket
+      - RetryNumber
+    ParameterLabels:
+      AvailabilityZones:
+        default: Availability Zones
+      KeyPairName:
+        default: Key Pair Name
+      PrivateSubnet1CIDR:
+        default: Private Subnet 1 CIDR
+      PrivateSubnet2CIDR:
+        default: Private Subnet 2 CIDR
+      PublicSubnet1CIDR:
+        default: Public Subnet 1 CIDR
+      PublicSubnet2CIDR:
+        default: Public Subnet 2 CIDR
+      VPCCIDR:
+        default: VPC CIDR
+      QSS3KeyPrefix:
+        default: Quick Start S3 Key Prefix
+      QSS3BucketName:
+        default: Quick Start S3 Bucket Name
+      AnalysisType:
+        default: Analysis type
+      InstanceType:
+        default: Instance Type
+      BidPercentage:
+        default: Spot Bid Percentage
+      RetryNumber:
+        default: AWS Batch Retry Number
+      MinvCpus:
+        default: Min vCPUs
+      MaxvCpus:
+        default: Max vCPUs
+      DesiredvCpus:
+        default: Desired vCPUs
+
+Mappings:
+  AWSAMIRegionMap:
+    AMI:
+      EXOME: dragen-exome-2.2-180130
+      GENOME: dragen-genome-2.2-180130
+    us-east-1:
+      EXOME: ami-29172b53
+      GENOME: ami-58142822
+    us-west-2:
+      EXOME: ami-1270ce6a
+      GENOME: ami-c071cfb8
+    eu-west-1:
+      EXOME: ami-efa3c296
+      GENOME: ami-d4a5c4ad
+
+Parameters:
+  AvailabilityZones:
+    Description: List of Availability Zones to use for the subnets in the VPC. Only
+      two Availability Zones are used for this deployment, and the logical order of
+      your selections is preserved.
+    Type: List<AWS::EC2::AvailabilityZone::Name>
+  AnalysisType:
+    AllowedValues:
+    - EXOME
+    - GENOME
+    Description: The type of analysis you will run (Exome or Genome)
+    Type: String
+  InstanceType:
+    AllowedValues:
+    - f1.2xlarge
+    - f1.16xlarge
+    Description: Amazon EC2 instance type for DRAGEN in the AWS Batch Compute Environment.
+    Type: String
+  KeyPairName:
+    Description: The name of an existing public/private key pair, which allows you
+      to securely connect to your instance after it launches
+    Type: AWS::EC2::KeyPair::KeyName
+  PrivateSubnet1CIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.0.0/19
+    Description: CIDR block for private subnet 1 located in Availability Zone 1
+    Type: String
+  PrivateSubnet2CIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.32.0/19
+    Description: CIDR block for private subnet 2 located in Availability Zone 2
+    Type: String
+  PublicSubnet1CIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.128.0/20
+    Description: CIDR block for the public (DMZ) subnet 1 located in Availability
+      Zone 1
+    Type: String
+  PublicSubnet2CIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.144.0/20
+    Description: CIDR block for the public (DMZ) subnet 2 located in Availability
+      Zone 2
+    Type: String
+  VPCCIDR:
+    AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
+    ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
+    Default: 10.0.0.0/16
+    Description: CIDR block for the VPC
+    Type: String
+  QSS3BucketName:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: Quick Start bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Default: quickstart-reference
+    Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
+      can include numbers, lowercase letters, uppercase letters, and hyphens (-).
+      It cannot start or end with a hyphen (-).
+    Type: String
+  QSS3KeyPrefix:
+    AllowedPattern: ^[0-9a-zA-Z-/]*$
+    ConstraintDescription: Quick Start key prefix can include numbers, lowercase letters,
+      uppercase letters, hyphens (-), and a forward slash (/) at the end of the prefix.
+    Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
+      can include numbers, lowercase letters, uppercase letters, hyphens (-), and
+      forward slash (/).
+    Type: String
+  BidPercentage:
+    AllowedPattern: (?:\b|-)([1-9]{1,2}[0]?|100)\b
+    ConstraintDescription: Spot Bid Percentage should be between 1 and 100, inclusive
+    Description: The bid percentage set for your AWS Batch Managed Compute Environment with Spot Instances.
+    Default: 50
+    Type: String
+  RetryNumber:
+    AllowedPattern: (?:\b|-)([1-9]|10)\b
+    ConstraintDescription: AWS Batch job retry number should be between 1 and 10
+    Description: Retry number for an AWS Batch job
+    Default: 1
+    Type: String
+  MinvCpus:
+    AllowedPattern: ^(0|[1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 0 and 1000, inclusive
+    Description: Minimum vCPUs for your AWS Batch Compute Environment. Recommend 0.
+    Default: 0
+    Type: String
+  MaxvCpus:
+    AllowedPattern: ^([1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 1 and 1000, inclusive
+    Description: Maximum vCPUs for your AWS Batch Compute Environment
+    Type: String
+  DesiredvCpus:
+    AllowedPattern: ^(0|[1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 1 and 1000, inclusive
+    Description: Desired vCPUs for your AWS Batch Compute Environment. Recommend the same number as MinvCpus for cost-optimization.
+    Default: 0
+    Type: String
+  S3GenomicsBucket:
+    AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
+    ConstraintDescription: S3 genomics bucket name can include numbers, lowercase
+      letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
+      (-).
+    Description: S3 bucket name for the bucket to which you'll read and write genomics data. 
+    Type: String
+
+Resources:
+  VPCStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL:
+        Fn::Sub: https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}submodules/quickstart-aws-vpc/templates/aws-vpc.template
+      Parameters:
+        AvailabilityZones:
+          Fn::Join:
+          - ','
+          - !Ref AvailabilityZones
+        KeyPairName: !Ref KeyPairName
+        NumberOfAZs: '2'
+        PrivateSubnet1ACIDR: !Ref PrivateSubnet1CIDR
+        PrivateSubnet2ACIDR: !Ref PrivateSubnet2CIDR
+        PublicSubnet1CIDR: !Ref PublicSubnet1CIDR
+        PublicSubnet2CIDR: !Ref PublicSubnet2CIDR
+        VPCCIDR: !Ref VPCCIDR
+  DragenStack:
+    DependsOn: VPCStack
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/dragen.template
+      Parameters:
+        PrivateSubnet1ID: !GetAtt VPCStack.Outputs.PrivateSubnet1AID
+        PrivateSubnet2ID: !GetAtt VPCStack.Outputs.PrivateSubnet2AID
+        AnalysisType: !Ref AnalysisType
+        VPCID: !GetAtt VPCStack.Outputs.VPCID
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        KeyPairName: !Ref KeyPairName
+        InstanceType: !Ref InstanceType
+        BidPercentage: !Ref BidPercentage
+        MinvCpus: !Ref MinvCpus
+        MaxvCpus: !Ref MaxvCpus
+        DesiredvCpus: !Ref DesiredvCpus
+        S3GenomicsBucket: !Ref S3GenomicsBucket
+        RetryNumber: !Ref RetryNumber
+
+Outputs:
+  JobQueue:
+    Description: The Job Queue to submit jobs to
+    Value: !GetAtt DragenStack.Outputs.JobQueue
+  DragenJobDefinition:
+    Description: The AWS Batch Job Definition for DRAGEN
+    Value: !GetAtt DragenStack.Outputs.DragenJobDefinition
