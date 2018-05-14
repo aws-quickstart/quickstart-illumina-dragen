@@ -89,7 +89,7 @@ Parameters:
     AllowedValues:
     - EXOME
     - GENOME
-    Description: The type of analysis you will run (Exome or Genome)
+    Description: The type of analysis you will run (EXOME or GENOME)
     Type: String
   InstanceType:
     AllowedValues:
@@ -150,6 +150,7 @@ Parameters:
     Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
+    Default: quickstart-edico-genome/
     Type: String
   BidPercentage:
     AllowedPattern: (?:\b|-)([1-9]{1,2}[0]?|100)\b
