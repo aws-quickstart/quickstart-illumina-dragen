@@ -5,7 +5,7 @@
     },
     {
         "ParameterKey": "KeyPairName",
-        "ParameterValue": "ajfriedm-hclscollab-taskcat-iad"
+        "ParameterValue": "ajfriedm-hclscollab-taskcat"
     },
     {
         "ParameterKey": "PrivateSubnet1CIDR",

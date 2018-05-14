@@ -15,18 +15,12 @@ tests:
     template_file: dragen-master.template
     regions:
       - us-east-1
+      - us-west-2
+      - eu-west-1
   quickstart-edico-genomet2:
     parameter_input: batch-params.t2.json
-    template_file: dragen.template
+    template_file: dragen-master.template
     regions:
       - us-east-1
-  quickstart-edico-genomet2:
-    parameter_input: batch-params.t3.json
-    template_file: dragen-master.template
-    regions:
       - us-west-2
-  quickstart-edico-genomet2:
-    parameter_input: batch-params.t4.json
-    template_file: dragen-master.template
-    regions:
       - eu-west-1
