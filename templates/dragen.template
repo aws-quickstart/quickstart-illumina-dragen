@@ -79,12 +79,13 @@ Parameters:
       after it launches
   InstanceType:
     Type: String
+    Description: Amazon EC2 instance type. DRAGEN requires an FPGA to run, so the instance type must be in the F1 instance family.
     AllowedValues:
     - f1.2xlarge
     - f1.16xlarge
   VPCID:
     Type: AWS::EC2::VPC::Id
-    Description: The ID of the VPC.
+    Description: The VPC ID.
   PrivateSubnet1ID:
     Type: AWS::EC2::Subnet::Id
     Description: ID for private subnet 1 located in Availability Zone 1.
@@ -119,12 +120,6 @@ Parameters:
     Description: The name of an existing public/private key pair, which allows you
       to securely connect to your instance after it launches
     Type: AWS::EC2::KeyPair::KeyName
-  InstanceType:
-    AllowedValues:
-    - f1.2xlarge
-    - f1.16xlarge
-    Description: Amazon EC2 instance type for DRAGEN in the AWS Batch Compute Environment.
-    Type: String
   BidPercentage:
     AllowedPattern: (?:\b|-)([1-9]{1,2}[0]?|100)\b
     ConstraintDescription: Spot Bid Percentage should be between 1 and 100, inclusive
@@ -144,8 +139,8 @@ Parameters:
     Default: 0
     Type: String
   MaxvCpus:
-    AllowedPattern: ^([1-9][0-9]{0,2}|1000)$
-    ConstraintDescription: Valid between 1 and 1000, inclusive
+    AllowedPattern: ^(0|[1-9][0-9]{0,2}|1000)$
+    ConstraintDescription: Valid between 0 and 1000, inclusive
     Description: Maximum vCPUs for your AWS Batch Compute Environment
     Type: String
   DesiredvCpus:

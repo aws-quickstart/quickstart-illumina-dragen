@@ -32,8 +32,8 @@ RUN yum -y install \
   pip install --upgrade pip && \
   pip install future && \
   pip install six && \
-  easy_install requests && \
-  easy_install boto3
+  pip install requests && \
+  pip install boto3
 
 # Install d_haul and dragen_job_execute wrapper functions and associated packages
 RUN mkdir -p /root/quickstart/scheduler && \

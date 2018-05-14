@@ -64,21 +64,6 @@ Metadata:
       DesiredvCpus:
         default: Desired vCPUs
 
-Mappings:
-  AWSAMIRegionMap:
-    AMI:
-      EXOME: dragen-exome-2.2-180130
-      GENOME: dragen-genome-2.2-180130
-    us-east-1:
-      EXOME: ami-29172b53
-      GENOME: ami-58142822
-    us-west-2:
-      EXOME: ami-1270ce6a
-      GENOME: ami-c071cfb8
-    eu-west-1:
-      EXOME: ami-efa3c296
-      GENOME: ami-d4a5c4ad
-
 Parameters:
   AvailabilityZones:
     Description: List of Availability Zones to use for the subnets in the VPC. Only
