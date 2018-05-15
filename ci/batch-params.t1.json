@@ -40,10 +40,6 @@
         "ParameterValue": "$[taskcat_autobucket]"
     },
     {
-        "ParameterKey": "AnalysisType",
-        "ParameterValue": "EXOME"
-    },
-    {
         "ParameterKey": "BidPercentage",
         "ParameterValue": "50"
     },

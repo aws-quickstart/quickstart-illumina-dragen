@@ -18,7 +18,6 @@ Metadata:
     - Label:
         default: DRAGEN Quick Start Configuration
       Parameters:
-      - AnalysisType
       - KeyPairName
       - InstanceType
       - BidPercentage
@@ -42,8 +41,6 @@ Metadata:
         default: Quick Start S3 Key Prefix
       QSS3BucketName:
         default: Quick Start S3 Bucket Name
-      AnalysisType:
-        default: Analysis type
       InstanceType:
         default: Instance Type
       BidPercentage:
@@ -60,17 +57,13 @@ Metadata:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      EXOME: dragen-exome-2.2-180130
-      GENOME: dragen-genome-2.2-180130
+      DRAGEN: dragen-completesuite-2.6.3-180508
     us-east-1:
-      EXOME: ami-29172b53
-      GENOME: ami-58142822
+      DRAGEN: ami-34c3444b
     us-west-2:
-      EXOME: ami-1270ce6a
-      GENOME: ami-c071cfb8
+      DRAGEN: ami-7397e00b
     eu-west-1:
-      EXOME: ami-efa3c296
-      GENOME: ami-d4a5c4ad
+      DRAGEN: ami-fc426885
 
 Parameters:
   KeyPairName:
@@ -109,12 +102,6 @@ Parameters:
     Description: S3 key prefix for the Quick Start assets. Quick Start key prefix
       can include numbers, lowercase letters, uppercase letters, hyphens (-), and
       forward slash (/).
-    Type: String
-  AnalysisType:
-    AllowedValues:
-      - EXOME
-      - GENOME
-    Description: The type of analysis you will run (Exome or Genome)
     Type: String
   KeyPairName:
     Description: The name of an existing public/private key pair, which allows you
@@ -233,7 +220,7 @@ Resources:
         SubnetIds: !Sub "${PrivateSubnet1ID}, ${PrivateSubnet2ID}"
         BidPercentage: !Ref BidPercentage
         InstanceType: !Ref InstanceType
-        ImageId: !FindInMap [ AWSAMIRegionMap, !Ref "AWS::Region", !Ref AnalysisType ]
+        ImageId: !FindInMap [ AWSAMIRegionMap, !Ref "AWS::Region", DRAGEN ]
         Ec2KeyPair: !Ref KeyPairName
         MinvCpus: !Ref MinvCpus
         MaxvCpus: !Ref MaxvCpus

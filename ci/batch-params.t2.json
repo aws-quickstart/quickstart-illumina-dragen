@@ -40,10 +40,6 @@
         "ParameterValue": "$[taskcat_autobucket]"
     },
     {
-        "ParameterKey": "AnalysisType",
-        "ParameterValue": "GENOME"
-    },
-    {
         "ParameterKey": "BidPercentage",
         "ParameterValue": "50"
     },

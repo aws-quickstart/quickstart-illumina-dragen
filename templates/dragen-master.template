@@ -21,7 +21,6 @@ Metadata:
     - Label:
         default: DRAGEN Quick Start Configuration
       Parameters:
-      - AnalysisType
       - KeyPairName
       - InstanceType
       - BidPercentage
@@ -49,8 +48,6 @@ Metadata:
         default: Quick Start S3 Key Prefix
       QSS3BucketName:
         default: Quick Start S3 Bucket Name
-      AnalysisType:
-        default: Analysis type
       InstanceType:
         default: Instance Type
       BidPercentage:
@@ -70,12 +67,6 @@ Parameters:
       two Availability Zones are used for this deployment, and the logical order of
       your selections is preserved.
     Type: List<AWS::EC2::AvailabilityZone::Name>
-  AnalysisType:
-    AllowedValues:
-    - EXOME
-    - GENOME
-    Description: The type of analysis you will run (EXOME or GENOME)
-    Type: String
   InstanceType:
     AllowedValues:
     - f1.2xlarge
@@ -123,7 +114,7 @@ Parameters:
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase
       letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
       (-).
-    Default: quickstart-reference
+    Default: aws-quickstart
     Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
       can include numbers, lowercase letters, uppercase letters, and hyphens (-).
       It cannot start or end with a hyphen (-).
@@ -200,7 +191,6 @@ Resources:
       Parameters:
         PrivateSubnet1ID: !GetAtt VPCStack.Outputs.PrivateSubnet1AID
         PrivateSubnet2ID: !GetAtt VPCStack.Outputs.PrivateSubnet2AID
-        AnalysisType: !Ref AnalysisType
         VPCID: !GetAtt VPCStack.Outputs.VPCID
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
