@@ -142,7 +142,7 @@ Resources:
             - "s3:AbortMultipartUpload"
             Resource:
             - !Sub "arn:aws:s3:::${S3GenomicsBucket}"
-            - !Sub "arn:aws:s3:::${S3GenomicsBucket}:/*"
+            - !Sub "arn:aws:s3:::${S3GenomicsBucket}/*"
       Roles:
       - !Ref DragenInstanceRole
   S3ReadWritePolicyJob:
@@ -165,7 +165,7 @@ Resources:
             - "s3:AbortMultipartUpload"
             Resource:
             - !Sub "arn:aws:s3:::${S3GenomicsBucket}"
-            - !Sub "arn:aws:s3:::${S3GenomicsBucket}:/*"
+            - !Sub "arn:aws:s3:::${S3GenomicsBucket}/*"
       Roles:
       - !Ref DragenJobRole
   DragenComputeEnvironmentSpot:

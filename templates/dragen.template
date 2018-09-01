@@ -215,7 +215,7 @@ Resources:
       TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/batch.template
       Parameters:
         S3GenomicsBucket: !Ref S3GenomicsBucket
-        DragenDockerImage: !Join ["", [!GetAtt DockerBucketRepository.Outputs.Repository, ":latest"]]
+        DragenDockerImage: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${DockerBucketRepository.Outputs.Repository}:dragen
         VpcId: !Ref VPCID
         SubnetIds: !Sub "${PrivateSubnet1ID}, ${PrivateSubnet2ID}"
         BidPercentage: !Ref BidPercentage
