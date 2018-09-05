@@ -41,7 +41,7 @@ Resources:
     DependsOn:
     - CopyRole
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy-files.template
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy-files.yaml
       Parameters:
         TemplateBucket: !Ref QSS3BucketName
         TemplatePrefix: !Ref QSS3KeyPrefix

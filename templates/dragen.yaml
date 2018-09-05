@@ -167,14 +167,14 @@ Resources:
   DockerBucketRepository:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/docker-bucket-repository.template
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/docker-bucket-repository.yaml
 
   CopyFiles:
     Type: AWS::CloudFormation::Stack
     DependsOn:
     - DockerBucketRepository
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy.template
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy.yaml
       Parameters:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
@@ -188,7 +188,7 @@ Resources:
     DependsOn:
     - CopyFiles
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/container-build.template
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/container-build.yaml
       Parameters:
         ArtifactBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
         ArtifactKey: !Ref QSS3KeyPrefix
@@ -212,7 +212,7 @@ Resources:
     - ContainerBuild
     - WaitConditionContainerBuild
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/batch.template
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/batch.yaml
       Parameters:
         S3GenomicsBucket: !Ref S3GenomicsBucket
         DragenDockerImage: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${DockerBucketRepository.Outputs.Repository}:dragen
