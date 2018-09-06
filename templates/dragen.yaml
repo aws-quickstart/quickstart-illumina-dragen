@@ -26,8 +26,6 @@ Metadata:
       - DesiredvCpus
       - S3GenomicsBucket
       - RetryNumber
-      - DragenvCpus
-      - DragenMemory
     ParameterLabels:
       KeyPairName:
         default: Key Pair Name
