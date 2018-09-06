@@ -27,7 +27,7 @@ Metadata:
       - MinvCpus
       - MaxvCpus
       - DesiredvCpus
-      - S3GenomicsBucket
+      - GenomicsS3Bucket
       - RetryNumber
     ParameterLabels:
       AvailabilityZones:
@@ -157,7 +157,7 @@ Parameters:
     Description: Desired vCPUs for your AWS Batch Compute Environment. Recommend the same number as MinvCpus for cost-optimization.
     Default: 0
     Type: String
-  S3GenomicsBucket:
+  GenomicsS3Bucket:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: S3 genomics bucket name can include numbers, lowercase
       letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
@@ -200,13 +200,15 @@ Resources:
         MinvCpus: !Ref MinvCpus
         MaxvCpus: !Ref MaxvCpus
         DesiredvCpus: !Ref DesiredvCpus
-        S3GenomicsBucket: !Ref S3GenomicsBucket
+        GenomicsS3Bucket: !Ref GenomicsS3Bucket
         RetryNumber: !Ref RetryNumber
 
 Outputs:
-  JobQueue:
-    Description: The Job Queue to submit jobs to
-    Value: !GetAtt DragenStack.Outputs.JobQueue
   DragenJobDefinition:
-    Description: The AWS Batch Job Definition for DRAGEN
     Value: !GetAtt DragenStack.Outputs.DragenJobDefinition
+  JobQueue:
+    Value: !GetAtt DragenStack.Outputs.JobQueue
+  DragenComputeEnvironmentSpot:
+    Value: !GetAtt DragenStack.Outputs.DragenComputeEnvironmentSpot
+  DragenComputeEnvironmentOnDemand:
+    Value: !GetAtt DragenStack.Outputs.DragenComputeEnvironmentOnDemand

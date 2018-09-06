@@ -36,7 +36,7 @@
         "ParameterValue": "quickstart-edico-genome/"
     },
     {
-        "ParameterKey": "S3GenomicsBucket",
+        "ParameterKey": "GenomicsS3Bucket",
         "ParameterValue": "$[taskcat_autobucket]"
     },
     {

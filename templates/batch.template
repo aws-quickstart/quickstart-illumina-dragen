@@ -8,7 +8,7 @@ Metadata:
       - Label:
           default: DRAGEN parameteres
         Parameters:
-        - S3GenomicsBucket
+        - GenomicsS3Bucket
         - DragenDockerImage
       - Label:
           default: AWS Batch Compute Environment Configuration
@@ -24,7 +24,7 @@ Metadata:
         - InstanceType
 
 Parameters:
-  S3GenomicsBucket:
+  GenomicsS3Bucket:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: S3 genomics bucket name can include numbers, lowercase
       letters, uppercase letters, and hyphens (-). It cannot start or end with a hyphen
@@ -141,8 +141,8 @@ Resources:
             - "s3:ListMultipartUploadParts"
             - "s3:AbortMultipartUpload"
             Resource:
-            - !Sub "arn:aws:s3:::${S3GenomicsBucket}"
-            - !Sub "arn:aws:s3:::${S3GenomicsBucket}/*"
+            - !Sub "arn:aws:s3:::${GenomicsS3Bucket}"
+            - !Sub "arn:aws:s3:::${GenomicsS3Bucket}/*"
       Roles:
       - !Ref DragenInstanceRole
   S3ReadWritePolicyJob:
@@ -164,8 +164,8 @@ Resources:
             - "s3:ListMultipartUploadParts"
             - "s3:AbortMultipartUpload"
             Resource:
-            - !Sub "arn:aws:s3:::${S3GenomicsBucket}"
-            - !Sub "arn:aws:s3:::${S3GenomicsBucket}/*"
+            - !Sub "arn:aws:s3:::${GenomicsS3Bucket}"
+            - !Sub "arn:aws:s3:::${GenomicsS3Bucket}/*"
       Roles:
       - !Ref DragenJobRole
   DragenComputeEnvironmentSpot:
