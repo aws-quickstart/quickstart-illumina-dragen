@@ -2,7 +2,6 @@ global:
   marketplace-ami: true
   owner: quickstart-eng@amazon.com
   qsname: quickstart-edico-genome
-  s3bucket: edico-taskcat-bucket
   regions:
     - eu-west-1
     - us-east-1
@@ -12,7 +11,7 @@ global:
 tests:
   quickstart-edico-genomet1:
     parameter_input: batch-params.t1.json
-    template_file: dragen-master.template
+    template_file: dragen-master.yaml
     regions:
       - us-east-1
       - us-west-2

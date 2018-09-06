@@ -26,8 +26,6 @@ Metadata:
       - DesiredvCpus
       - GenomicsS3Bucket
       - RetryNumber
-      - DragenvCpus
-      - DragenMemory
     ParameterLabels:
       KeyPairName:
         default: Key Pair Name
@@ -47,12 +45,14 @@ Metadata:
         default: Spot Bid Percentage
       RetryNumber:
         default: AWS Batch Retry Number
-      MaxvCpus:
+      MinvCpus:
         default: Min vCPUs
       MaxvCpus:
         default: Max vCPUs
       DesiredvCpus:
         default: Desired vCPUs
+      S3GenomicsBucket:
+        default: Genomics Data Bucket
 
 Mappings:
   AWSAMIRegionMap:
@@ -167,14 +167,14 @@ Resources:
   DockerBucketRepository:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/docker-bucket-repository.template
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/docker-bucket-repository.yaml
 
   CopyFiles:
     Type: AWS::CloudFormation::Stack
     DependsOn:
     - DockerBucketRepository
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy.template
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy.yaml
       Parameters:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
@@ -188,7 +188,7 @@ Resources:
     DependsOn:
     - CopyFiles
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/container-build.template
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/container-build.yaml
       Parameters:
         ArtifactBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
         ArtifactKey: !Ref QSS3KeyPrefix
@@ -212,7 +212,7 @@ Resources:
     - ContainerBuild
     - WaitConditionContainerBuild
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/batch.template
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/batch.yaml
       Parameters:
         GenomicsS3Bucket: !Ref GenomicsS3Bucket
         DragenDockerImage: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${DockerBucketRepository.Outputs.Repository}:dragen
@@ -228,8 +228,10 @@ Resources:
 
 Outputs:
   DragenJobDefinition:
+    Description: The AWS Batch Job Definition for DRAGEN
     Value: !GetAtt Batch.Outputs.DragenJobDefinition
   JobQueue:
+    Description: The Job Queue to submit jobs to
     Value: !GetAtt Batch.Outputs.JobQueue
   DragenComputeEnvironmentSpot:
     Value: !GetAtt Batch.Outputs.DragenComputeEnvironmentSpot

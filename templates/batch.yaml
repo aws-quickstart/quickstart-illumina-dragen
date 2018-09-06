@@ -22,6 +22,35 @@ Metadata:
         - MaxvCpus
         - DesiredvCpus
         - InstanceType
+        - RetryNumber
+    ParameterLabels:
+      S3GenomicsBucket:
+        default: Genomics Data Bucket
+      RetryNumber:
+        default: AWS Batch Retry Number
+      DragenDockerImage:
+        default: Dragen Docker Image
+      VpcId:
+        default: VPC ID
+      SubnetIds:
+        default: Subnet Ids
+      ImageId:
+        default: Image Id
+      Ec2KeyPair:
+        default: Key Pair
+      InstanceType:
+        default: Instance Type
+      BidPercentage:
+        default: Spot Bid Percentage
+      RetryNumber:
+        default: AWS Batch Retry Number
+      MinvCpus:
+        default: Min vCPUs
+      MaxvCpus:
+        default: Max vCPUs
+      DesiredvCpus:
+        default: Desired vCPUs
+
 
 Parameters:
   GenomicsS3Bucket:
