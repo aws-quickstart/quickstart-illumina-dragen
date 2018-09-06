@@ -47,12 +47,14 @@ Metadata:
         default: Spot Bid Percentage
       RetryNumber:
         default: AWS Batch Retry Number
-      MaxvCpus:
+      MinvCpus:
         default: Min vCPUs
       MaxvCpus:
         default: Max vCPUs
       DesiredvCpus:
         default: Desired vCPUs
+      S3GenomicsBucket:
+        default: Genomics Data Bucket
 
 Mappings:
   AWSAMIRegionMap:

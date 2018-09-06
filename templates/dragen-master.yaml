@@ -60,6 +60,8 @@ Metadata:
         default: Max vCPUs
       DesiredvCpus:
         default: Desired vCPUs
+      S3GenomicsBucket:
+        default: Genomics Data Bucket
 
 Parameters:
   AvailabilityZones:
