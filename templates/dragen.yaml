@@ -226,6 +226,52 @@ Resources:
         MaxvCpus: !Ref MaxvCpus
         DesiredvCpus: !Ref DesiredvCpus
 
+  CleanupRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: /
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Policies:
+      - PolicyName: ConfigPolicy
+        PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Sid: Logging
+            Effect: Allow
+            Action: logs:*
+            Resource: '*'
+          - Sid: ECR
+            Effect: Allow
+            Action: ecr:*
+            Resource: !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${DockerBucketRepository.Outputs.Repository}
+          - Sid: S3Bucket
+            Effect: Allow
+            Action: s3:*
+            Resource: !Sub arn:aws:s3:::${DockerBucketRepository.Outputs.ArtifactBucket}
+          - Sid: S3Object
+            Effect: Allow
+            Action: s3:*
+            Resource: !Sub arn:aws:s3:::${DockerBucketRepository.Outputs.ArtifactBucket}/*
+
+  ContainerCleanup:
+    Type: AWS::CloudFormation::Stack
+    DependsOn:
+    - CleanupRole
+    Properties:
+      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/clean-bucket-repository.yaml
+      Parameters:
+        Bucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
+        Repository: !GetAtt DockerBucketRepository.Outputs.Repository
+        QSS3BucketName: !Ref QSS3BucketName
+        QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        RoleArn: !GetAtt CleanupRole.Arn
+
 Outputs:
   DragenJobDefinition:
     Description: The AWS Batch Job Definition for DRAGEN
