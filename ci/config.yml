@@ -1,7 +1,7 @@
 global:
   marketplace-ami: true
   owner: quickstart-eng@amazon.com
-  qsname: quickstart-edico-genome
+  qsname: quickstart-illumina-dragen
   regions:
     - eu-west-1
     - us-east-1
@@ -9,14 +9,14 @@ global:
   reporting: true
  
 tests:
-  quickstart-edico-genomet1:
+  quickstart-illumina-dragent1:
     parameter_input: batch-params.t1.json
     template_file: dragen-master.yaml
     regions:
       - us-east-1
       - us-west-2
       - eu-west-1
- # quickstart-edico-genomet2:
+ # quickstart-illumina-dragent2:
  #   parameter_input: batch-params.t2.json
  #   template_file: dragen-master.template
  #   regions:

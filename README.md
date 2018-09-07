@@ -1,4 +1,4 @@
-# quickstart-edico-genome
+# quickstart-illumina-dragen
 
 This git repo is used to build the executable "Dragen Quickstart" wrapper docker image that is used to run Dragen
 jobs for Genomic Analysis. This Dockerfile is used to build the 'dragen' docker image which should then be
