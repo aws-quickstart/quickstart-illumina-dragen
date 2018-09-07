@@ -167,6 +167,19 @@ Parameters:
     Description: S3 bucket name for the bucket to which you'll read and write genomics data. 
     Type: String
 
+Rules:
+  DRAGENSupportedRegionRule:
+    Assertions:
+    - Assert:
+        Fn::Contains:
+        - - us-east-1
+          - us-west-2
+          - eu-west-1
+        - !Ref AWS::Region
+      AssertDescription: This Quick Start utilizes DRAGEN Marketplace AMI which is only available
+        in the US East (N. Virginia), US West (Oregon), EU (Ireland) regions. Please launch the stack in one of these
+        regions to continue.
+
 Resources:
   VPCStack:
     Type: AWS::CloudFormation::Stack
