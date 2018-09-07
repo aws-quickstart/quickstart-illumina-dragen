@@ -94,8 +94,7 @@ Resources:
     Properties:
       Name: !Sub ${AWS::StackName}-BuildProject
       Artifacts:
-        Location: !Ref ArtifactBucket
-        Type: S3
+        Type: CODEPIPELINE
       Source:
         Type: CODEPIPELINE
         BuildSpec: |
