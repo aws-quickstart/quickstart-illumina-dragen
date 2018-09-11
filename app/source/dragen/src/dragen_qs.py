@@ -341,6 +341,10 @@ class DragenJob(object):
     # Returns:
     #    Nothing if success
     def upload_job_outputs(self):
+        if not self.output_s3_url:
+            print('Error: Output S3 location not specified!')
+            return
+
         # Generate the command to download the HT
         output_path = self.output_s3_url.replace('//', '/')
         s3_bucket = output_path.split('/')[1]
