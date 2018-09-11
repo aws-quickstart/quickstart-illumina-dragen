@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: This template deploys an environment to run Edico Genome's DRAGEN software using AWS Batch
+Description: This template deploys an environment to run Edico Genome's DRAGEN software using AWS Batch. (qs-1oqea6246)
 
 Metadata:
   AWS::CloudFormation::Interface:
