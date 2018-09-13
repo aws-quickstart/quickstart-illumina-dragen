@@ -1,6 +1,5 @@
 #!/usr/bin/env python
-#
-# Copyright 2013-2016 Edico Genome Corporation. All rights reserved.
+# Copyright 2018 Illumina, Inc. All rights reserved.
 #
 # This file contains confidential and proprietary information of the Edico Genome
 # Corporation and is protected under the U.S. and international copyright and other
@@ -21,6 +20,7 @@ from __future__ import print_function
 from builtins import filter
 from builtins import str
 from builtins import object
+import copy
 import datetime
 import glob
 import os
@@ -28,10 +28,26 @@ import resource
 import shutil
 import subprocess
 import sys
+import time
 import uuid
 import six
 
 from argparse import ArgumentParser
+
+
+#########################################################################################
+# find_arg_in_list - Interate through a list of arguments and find the first occurrence
+# of any of the arguments listed as argv
+#
+def find_arg_in_list(arglist, *argv):
+    index = -1
+    for arg in argv:
+        try:
+            index = arglist.index(arg)
+            break
+        except ValueError:
+            continue
+    return index
 
 
 #########################################################################################
@@ -55,7 +71,7 @@ def exec_cmd(cmd, shell=True):
 class DragenJob(object):
     DRAGEN_PATH = '/opt/edico/bin/dragen'
     D_HAUL_UTIL = 'python /root/quickstart/d_haul'
-    DRAGEN_LOG_FILE_NAME = 'dragen_log.txt'
+    DRAGEN_LOG_FILE_NAME = 'dragen_log_%d.txt'
     DEFAULT_DATA_FOLDER = '/ephemeral/'
     CLOUD_SPILL_FOLDER = '/ephemeral/'
 
@@ -64,25 +80,77 @@ class DragenJob(object):
 
     ########################################################################################
     #
-    def __init__(self, fastq1_s3_url, fastq2_s3_url, ref_s3_url, output_s3_url, enable_map, enable_vc):
+    def __init__(self, dragen_args):
 
-        # Variables used generate Dragen command line
-        self.fastq1_s3_url = fastq1_s3_url
-        self.fastq2_s3_url = fastq2_s3_url
-        self.ref_s3_url = ref_s3_url
-        self.output_s3_url = output_s3_url
-        self.enable_map = enable_map    # True/False
-        self.enable_vc = enable_vc      # True/False
-        self.output_file_prefix = None
-        self.output_dir = None  # Output directory for current dragen process
-        self.ref_dir = None
+        self.orig_args = dragen_args
+        self.new_args = copy.copy(dragen_args)
+
+        # Inputs needed for downloading
+        self.ref_dir = None             # Create local directory to download reference
+        self.input_dir = None           # Create local directory for Dragen input info
+
+        self.ref_s3_url = None          # Determine from the -r or --ref-dir option
+        self.ref_s3_index = -1
+
+        self.fastq_list_url = None      # Determine from the --fastq-list option
+        self.fastq_list_index = -1
+
+        self.vc_tgt_bed_url = None      # Determine from the --vc-target-bed option
+        self.vc_tgt_bed_index = -1
+
+        self.vc_depth_url = None        # Determine from the ----vc-depth-intervals-bed
+        self.vc_depth_index = -1
+
+        # Output info
+        self.output_s3_url = None       # Determine from the --output-directory field
+        self.output_s3_index = -1
+        self.output_dir = None          # Create local output directory for current dragen process
 
         # Run-time variables
+        self.input_dir = None          # Create local output directory for current dragen process
         self.process_start_time = None  # Process start time
-        self.process_end_time = None  # Process end time
-        self.global_exit_code = 0  # Global exit code for this script - if one process fails,
-        # then this script will exit with a non-zero status
+        self.process_end_time = None    # Process end time
+        self.global_exit_code = 0       # Global exit code. If any process fails then we exit with a non-zero status
+
         self.set_resource_limits()
+        self.parse_download_args()
+
+    ########################################################################################
+    # parse_download_args - Parse the command line looking for these specific options which
+    # are used to download S3 files
+    #
+    def parse_download_args(self):
+        # -r or --reference: S3 URL for reference HT
+        opt_no = find_arg_in_list(self.orig_args, '-r', '--ref-dir')
+        if opt_no >= 0:
+            self.ref_s3_url = self.orig_args[opt_no + 1]
+            self.ref_s3_index = opt_no + 1
+
+        # --output-directory: S3 URL for output location
+        opt_no = find_arg_in_list(self.orig_args, '--output-directory')
+        if opt_no >= 0:
+            self.output_s3_url = self.orig_args[opt_no + 1]
+            self.output_s3_index = opt_no + 1
+
+        # --fastq-list: URL (http or s3) for fastq list CSV file
+        opt_no = find_arg_in_list(self.orig_args, '--fastq-list')
+        if opt_no >= 0:
+            self.fastq_list_url = self.orig_args[opt_no + 1]
+            self.fastq_list_index = opt_no + 1
+
+        # --vc-target-bed: URL for the VC target bed
+        opt_no = find_arg_in_list(self.orig_args, '--vc-target-bed')
+        if opt_no >= 0:
+            self.fastq_list_url = self.orig_args[opt_no + 1]
+            self.fastq_list_index = opt_no + 1
+
+        # --vc-depth-intervals-bed: URL for the VC depth intervals
+        opt_no = find_arg_in_list(self.orig_args, '--vc-depth-intervals-bed')
+        if opt_no >= 0:
+            self.fastq_list_url = self.orig_args[opt_no + 1]
+            self.fastq_list_index = opt_no + 1
+
+        return
 
     ########################################################################################
     # set_resource_limits - Set resource limits prior.
@@ -118,6 +186,7 @@ class DragenJob(object):
                 msg = "Could not set resource ID %s to hard/soft limit %s (error=%s)" \
                       % (res, limit, e)
                 print(msg)
+        return
 
     ########################################################################################
     # copy_var_log_dragen_files - Copy over the most recent /var/log/dragen files to output dir
@@ -186,14 +255,61 @@ class DragenJob(object):
 
         print("Dragen board is in a bad state - running dragen_reset")
         exec_cmd("/opt/edico/bin/dragen_reset")
+        return
 
     ########################################################################################
-    # Download directory of reference hash tables using the S3 "directory" prefix
-    #    self.ref_s3_url should be in format s3://bucket/ref_objects_prefix
-    # Returns:
-    #    Full directory path where the reference hash table is downloaded
+    # exec_download - Download a file from the given URL to the target directory
+    #
+    def exec_url_download(self, url, target_dir):
+        dl_cmd = '{bin} --mode download --url {url} --path {target}'.format(
+            bin=self.D_HAUL_UTIL,
+            url=url,
+            target=target_dir)
+
+        exit_code = exec_cmd(dl_cmd)
+
+        if exit_code:
+            print('Error: Failure downloading from S3. Exiting with code %d' % exit_code)
+            sys.exit(exit_code)
+        return
+
+    ########################################################################################
+    # download_inputs: Download specific Dragen inputs needed from provided URLs, and
+    # replace them with a local path, i.e. fastq_list, bed files, etc.
+    #
+    def download_inputs(self):
+
+        if not self.input_dir:
+            self.input_dir = self.DEFAULT_DATA_FOLDER + 'inputs/'
+
+        if self.fastq_list_url:
+            self.exec_url_download(self.fastq_list_url, self.input_dir)
+            filename = self.fastq_list_url.split('/')
+            self.new_args[self.fastq_list_index] = self.input_dir + filename
+
+        if self.vc_tgt_bed_url:
+            self.exec_url_download(self.vc_tgt_bed_url, self.input_dir)
+            filename = self.vc_tgt_bed_url.split('/')
+            self.new_args[self.vc_tgt_bed_index] = self.input_dir + filename
+
+        if self.vc_depth_url:
+            self.exec_url_download(self.vc_depth_url, self.input_dir)
+            filename = self.vc_depth_url.split('/')
+            self.new_args[self.vc_depth_index] = self.input_dir + filename
+
+        return
+
+    ########################################################################################
+    # download_ref_tables: Download directory of reference hash tables using the S3
+    #  "directory" prefix self.ref_s3_url should be in format s3://bucket/ref_objects_prefix
+    #
     def download_ref_tables(self):
-        # Generate the command to download the HT
+
+        if not self.ref_s3_url:
+            print('Warning: No reference HT directory URL specified!')
+            return
+
+        # Generate the params to download the HT based on URL s3://bucket/key
         ref_path = self.ref_s3_url.replace('//', '/')
         s3_bucket = ref_path.split('/')[1]
         s3_key = '/'.join(ref_path.split('/')[2:])
@@ -212,10 +328,12 @@ class DragenJob(object):
         exit_code = exec_cmd(dl_cmd)
 
         if exit_code:
-            print('Error: Failure downloading reference. Exiting with code %d' % exit_code)
+            print('Error: Failure downloading from S3. Exiting with code %d' % exit_code)
             sys.exit(exit_code)
 
         self.ref_dir = self.DEFAULT_DATA_FOLDER + s3_key
+        self.new_args[self.ref_s3_index] = self.ref_dir
+        return
 
     ########################################################################################
     # Upload the results of the job to the desired bucket location
@@ -223,6 +341,10 @@ class DragenJob(object):
     # Returns:
     #    Nothing if success
     def upload_job_outputs(self):
+        if not self.output_s3_url:
+            print('Error: Output S3 location not specified!')
+            return
+
         # Generate the command to download the HT
         output_path = self.output_s3_url.replace('//', '/')
         s3_bucket = output_path.split('/')[1]
@@ -256,12 +378,16 @@ class DragenJob(object):
             print("Output directory does not exist - creating %s" % self.output_dir)
             try:
                 os.makedirs(self.output_dir)
-            except:
+            except os.error:
                 # dragen execution will fail
                 print("Error: Could not create output_directory %s" % self.output_dir)
                 sys.exit(1)
         else:
             print("Output directory %s already exists - Skip creating." % self.output_dir)
+
+        # Add or replace the output directory in the dragen parameters
+        if self.output_s3_index >= 0:
+            self.new_args[self.output_s3_index] = self.output_dir
 
         return
 
@@ -281,33 +407,25 @@ class DragenJob(object):
         # Setup unique output directory
         self.create_output_dir()
 
-        # Generate an output file prefix
-        self.output_file_prefix = self.fastq1_s3_url.split('/')[-1].split('.')[0]
+        # Add some internally defined parameters
+        self.new_args.extend(
+            ['--output_status_file', self.output_dir + '/job-speedometer.log']
+        )
+        self.new_args.extend(
+            ['--intermediate-results-dir', self.CLOUD_SPILL_FOLDER]
+        )
+        self.new_args.extend(
+            ['--lic-no-print']
+        )
 
-        # Construct the 'common' Dragen command
-        dragen_cmd = self.DRAGEN_PATH + " --ignore-version-check true --enable-duplicate-marking true " \
-                     + "--output-directory %s " % self.output_dir \
-                     + "--output-file-prefix %s " % self.output_file_prefix \
-                     + "--output_status_file %s " % (self.output_dir + "/job-speedometer.log") \
-                     + "--ref-dir %s " % self.ref_dir \
-                     + "--intermediate-results-dir=%s" % self.CLOUD_SPILL_FOLDER
+        # expand the Dragen args to construct the full command
+        dragen_opts = ' '.join(self.new_args)
 
-        # Add the input files
-        dragen_cmd = "%s -1 %s" % (dragen_cmd, self.fastq1_s3_url)
-
-        if self.fastq2_s3_url:
-            dragen_cmd = "%s -2 %s" % (dragen_cmd, self.fastq2_s3_url)
-
-        # Handle MAP-Align processing
-        if self.enable_map:
-            dragen_cmd = "%s --enable-map-align true --output-format BAM" % dragen_cmd
-
-        # Handle Variant Calling
-        if self.enable_vc:
-            dragen_cmd = "%s --enable-variant-caller true --vc-sample-name DRAGEN_RGSM" % dragen_cmd
+        # Construct the 'main' Dragen command
+        dragen_cmd = "%s %s " % (self.DRAGEN_PATH, dragen_opts)
 
         # Save the Dragen output to a file instead of stdout
-        output_log_path = self.output_dir + '/' + self.DRAGEN_LOG_FILE_NAME
+        output_log_path = self.output_dir + '/' + self.DRAGEN_LOG_FILE_NAME % round(time.time())
         redirect_cmd = self.REDIRECT_OUTPUT_CMD_SUFFIX % output_log_path
         dragen_cmd = "%s %s" % (dragen_cmd, redirect_cmd)
 
@@ -368,37 +486,24 @@ class DragenJob(object):
 # main
 #
 def main():
+    # import ipdb; ipdb.set_trace()
     # Configure command line arguments
-    argparser = ArgumentParser()
+    dragen_args = sys.argv[1:]
 
-    file_path_group = argparser.add_argument_group(title='File paths')
-    file_path_group.add_argument('--fastq1_s3_url', type=str, help='Input FASTQ1 S3 URL', required=True)
-    file_path_group.add_argument('--fastq2_s3_url', type=str, help='Input FASTQ2 S3 URL')
-    file_path_group.add_argument('--ref_s3_url', type=str, help='Reference Hash Table S3 URL', required=True)
-    file_path_group.add_argument('--output_s3_url', type=str, help='Output Prefix S3 URL', required=True)
+    # Debug print (remove later)
+    print("[DEBUG] Dragen input commands: %s" % ' '.join(dragen_args))
 
-    run_group = argparser.add_argument_group(title='DRAGEN run command args')
-    run_group.add_argument('--enable_map', action='store_true', help='Enable MAP/Align and ouput BAM')
-    run_group.add_argument('--enable_vc', action='store_true', help='Enable Variant Calling and ouput VCF')
-
-    args = argparser.parse_args()
-
-    if not args.enable_map and not args.enable_vc:
-        print('Error: Must have one or more of enable_map and enable_vc flags set')
-        sys.exit(1)
-
-    dragen_job = DragenJob(args.fastq1_s3_url,
-                           args.fastq2_s3_url,
-                           args.ref_s3_url,
-                           args.output_s3_url,
-                           args.enable_map,
-                           args.enable_vc)
+    dragen_job = DragenJob(dragen_args)
 
     print('Downloading reference files')
     dragen_job.download_ref_tables()
 
+    print('Downloading misc inputs (csv, bed)')
+    dragen_job.download_inputs()
+
     print('Run Analysis job')
     dragen_job.run()
+
 
 if __name__ == "__main__":
     main()
