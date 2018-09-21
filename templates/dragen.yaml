@@ -11,11 +11,6 @@ Metadata:
       - PrivateSubnet1ID
       - PrivateSubnet2ID
     - Label:
-        default: AWS Quick Start Configuration
-      Parameters:
-      - QSS3BucketName
-      - QSS3KeyPrefix
-    - Label:
         default: DRAGEN Quick Start Configuration
       Parameters:
       - KeyPairName
@@ -26,6 +21,11 @@ Metadata:
       - DesiredvCpus
       - GenomicsS3Bucket
       - RetryNumber
+    - Label:
+        default: AWS Quick Start Configuration
+      Parameters:
+      - QSS3BucketName
+      - QSS3KeyPrefix
     ParameterLabels:
       KeyPairName:
         default: Key Pair Name
@@ -51,7 +51,7 @@ Metadata:
         default: Max vCPUs
       DesiredvCpus:
         default: Desired vCPUs
-      S3GenomicsBucket:
+      GenomicsS3Bucket:
         default: Genomics Data Bucket
 
 Mappings:
@@ -68,23 +68,23 @@ Mappings:
 Parameters:
   KeyPairName:
     Type: AWS::EC2::KeyPair::KeyName
-    Description: Public/private key pairs allow you to securely connect to your instance
-      after it launches
+    Description: Public/private key pairs allow you to securely connect to your instance after it launches.
   InstanceType:
     Type: String
     Description: Amazon EC2 instance type. DRAGEN requires an FPGA to run, so the instance type must be in the F1 instance family.
+    Default: f1.2xlarge
     AllowedValues:
     - f1.2xlarge
     - f1.16xlarge
   VPCID:
     Type: AWS::EC2::VPC::Id
-    Description: The VPC ID.
+    Description: The ID of your existing VPC (e.g., vpc-0343606e).
   PrivateSubnet1ID:
     Type: AWS::EC2::Subnet::Id
-    Description: ID for private subnet 1 located in Availability Zone 1.
+    Description: The ID of the private subnet in Availability Zone 1 in your existing VPC (e.g., subnet-a0246dcd).
   PrivateSubnet2ID:
     Type: AWS::EC2::Subnet::Id
-    Description: ID for private subnet 2 located in Availability Zone 2.
+    Description: The ID of the private subnet in Availability Zone 2 in your existing VPC (e.g., subnet-b58c3d67).
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
     ConstraintDescription: Quick Start bucket name can include numbers, lowercase

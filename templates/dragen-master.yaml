@@ -14,11 +14,6 @@ Metadata:
       - PublicSubnet1CIDR
       - PublicSubnet2CIDR
     - Label:
-        default: AWS Quick Start Configuration
-      Parameters:
-      - QSS3BucketName
-      - QSS3KeyPrefix
-    - Label:
         default: DRAGEN Quick Start Configuration
       Parameters:
       - KeyPairName
@@ -29,6 +24,11 @@ Metadata:
       - DesiredvCpus
       - GenomicsS3Bucket
       - RetryNumber
+    - Label:
+        default: AWS Quick Start Configuration
+      Parameters:
+      - QSS3BucketName
+      - QSS3KeyPrefix
     ParameterLabels:
       AvailabilityZones:
         default: Availability Zones
@@ -60,56 +60,54 @@ Metadata:
         default: Max vCPUs
       DesiredvCpus:
         default: Desired vCPUs
-      S3GenomicsBucket:
+      GenomicsS3Bucket:
         default: Genomics Data Bucket
 
 Parameters:
   AvailabilityZones:
-    Description: List of Availability Zones to use for the subnets in the VPC. Only
-      two Availability Zones are used for this deployment, and the logical order of
-      your selections is preserved.
+    Description: The list of Availability Zones to use for the subnets in the VPC.
+      The Quick Start uses two Availability Zones from your list and preserves the logical order you specify.
     Type: List<AWS::EC2::AvailabilityZone::Name>
   InstanceType:
     AllowedValues:
     - f1.2xlarge
     - f1.16xlarge
+    Default: f1.2xlarge
     Description: Amazon EC2 instance type for DRAGEN in the AWS Batch Compute Environment.
     Type: String
   KeyPairName:
     Description: The name of an existing public/private key pair, which allows you
-      to securely connect to your instance after it launches
+      to securely connect to your instance after it launches.
     Type: AWS::EC2::KeyPair::KeyName
   PrivateSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.0.0/19
-    Description: CIDR block for private subnet 1 located in Availability Zone 1
+    Description: The CIDR block for the private subnet located in Availability Zone 1.
     Type: String
   PrivateSubnet2CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.32.0/19
-    Description: CIDR block for private subnet 2 located in Availability Zone 2
+    Description: The CIDR block for the private subnet located in Availability Zone 2.
     Type: String
   PublicSubnet1CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.128.0/20
-    Description: CIDR block for the public (DMZ) subnet 1 located in Availability
-      Zone 1
+    Description: The CIDR block for the public (DMZ) subnet 1 located in Availability Zone 1.
     Type: String
   PublicSubnet2CIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.144.0/20
-    Description: CIDR block for the public (DMZ) subnet 2 located in Availability
-      Zone 2
+    Description: The CIDR block for the public (DMZ) subnet 2 located in Availability Zone 2.
     Type: String
   VPCCIDR:
     AllowedPattern: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/(1[6-9]|2[0-8]))$
     ConstraintDescription: CIDR block parameter must be in the form x.x.x.x/16-28
     Default: 10.0.0.0/16
-    Description: CIDR block for the VPC
+    Description: The CIDR block for the VPC.
     Type: String
   QSS3BucketName:
     AllowedPattern: ^[0-9a-zA-Z]+([0-9a-zA-Z-]*[0-9a-zA-Z])*$
@@ -139,7 +137,7 @@ Parameters:
   RetryNumber:
     AllowedPattern: (?:\b|-)([1-9]|10)\b
     ConstraintDescription: AWS Batch job retry number should be between 1 and 10
-    Description: Retry number for an AWS Batch job
+    Description: Retry number for an AWS Batch job.
     Default: 1
     Type: String
   MinvCpus:
@@ -151,7 +149,7 @@ Parameters:
   MaxvCpus:
     AllowedPattern: ^([1-9][0-9]{0,2}|1000)$
     ConstraintDescription: Valid between 1 and 1000, inclusive
-    Description: Maximum vCPUs for your AWS Batch Compute Environment
+    Description: Maximum vCPUs for your AWS Batch Compute Environment.
     Type: String
   DesiredvCpus:
     AllowedPattern: ^(0|[1-9][0-9]{0,2}|1000)$
