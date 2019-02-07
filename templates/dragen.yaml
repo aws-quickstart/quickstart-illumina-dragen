@@ -59,11 +59,11 @@ Mappings:
     AMI:
       DRAGEN: dragen-completesuite-2.6.3-180508
     us-east-1:
-      DRAGEN: ami-34c3444b
+      DRAGEN: ami-0f12aca484bca27a5
     us-west-2:
-      DRAGEN: ami-7397e00b
+      DRAGEN: ami-0af5c11ee441ce40f
     eu-west-1:
-      DRAGEN: ami-fc426885
+      DRAGEN: ami-0ba4b94467989e99a
 
 Parameters:
   KeyPairName:
