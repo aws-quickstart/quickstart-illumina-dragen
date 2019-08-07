@@ -75,6 +75,7 @@ Parameters:
     Default: f1.2xlarge
     AllowedValues:
     - f1.2xlarge
+    - f1.4xlarge
     - f1.16xlarge
   VPCID:
     Type: AWS::EC2::VPC::Id
