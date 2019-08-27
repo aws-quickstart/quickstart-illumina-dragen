@@ -141,14 +141,14 @@ class DragenJob(object):
         # --vc-target-bed: URL for the VC target bed
         opt_no = find_arg_in_list(self.orig_args, '--vc-target-bed')
         if opt_no >= 0:
-            self.fastq_list_url = self.orig_args[opt_no + 1]
-            self.fastq_list_index = opt_no + 1
+            self.vc_tgt_bed_url = self.orig_args[opt_no + 1]
+            self.vc_tgt_bed_index = opt_no + 1
 
         # --vc-depth-intervals-bed: URL for the VC depth intervals
         opt_no = find_arg_in_list(self.orig_args, '--vc-depth-intervals-bed')
         if opt_no >= 0:
-            self.fastq_list_url = self.orig_args[opt_no + 1]
-            self.fastq_list_index = opt_no + 1
+            self.vc_depth_url = self.orig_args[opt_no + 1]
+            self.vc_depth_index = opt_no + 1
 
         return
 
@@ -284,17 +284,17 @@ class DragenJob(object):
 
         if self.fastq_list_url:
             self.exec_url_download(self.fastq_list_url, self.input_dir)
-            filename = self.fastq_list_url.split('/')
+            filename = self.fastq_list_url.split('?')[0].split('/')[-1]
             self.new_args[self.fastq_list_index] = self.input_dir + filename
 
         if self.vc_tgt_bed_url:
             self.exec_url_download(self.vc_tgt_bed_url, self.input_dir)
-            filename = self.vc_tgt_bed_url.split('/')
+            filename = self.vc_tgt_bed_url.split('?')[0].split('/')[-1]
             self.new_args[self.vc_tgt_bed_index] = self.input_dir + filename
 
         if self.vc_depth_url:
             self.exec_url_download(self.vc_depth_url, self.input_dir)
-            filename = self.vc_depth_url.split('/')
+            filename = self.vc_depth_url.split('?')[0].split('/')[-1]
             self.new_args[self.vc_depth_index] = self.input_dir + filename
 
         return
