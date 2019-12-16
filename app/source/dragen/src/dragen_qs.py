@@ -32,7 +32,33 @@ import time
 import uuid
 import six
 
-from argparse import ArgumentParser
+
+#########################################################################################
+# printf - Print to stdout with flush
+#
+def printf(msg):
+    print(msg, file=sys.stdout)
+    sys.stdout.flush()
+
+
+#########################################################################################
+# get_s3_bucket_key - Extract S3 bucket and key from input URL if it is S3 bucket
+#   Input s3_url expected format s3://bucket/key
+#   Return a tuple: (s3_found, bucket, key), i.e. (False, None, None) if not found
+#
+def get_s3_bucket_key(s3_url):
+    try:
+        s3_url = s3_url.strip()
+        if s3_url.find('s3://') != 0:
+            raise Exception('Not S3 URL - could not get bucket and key')
+        # Extract the bucket and key
+        s3_path = s3_url.replace('//', '/')
+        s3_bucket = s3_path.split('/')[1]
+        s3_key = '/'.join(s3_path.split('/')[2:])
+        return True, s3_bucket, s3_key
+    # Confirm S3 URL
+    except Exception as e:
+        return False, None,  None
 
 
 #########################################################################################
@@ -54,7 +80,7 @@ def find_arg_in_list(arglist, *argv):
 # exec_cmd - Execute command and return [stdout/stderr, exitstatus]
 #
 def exec_cmd(cmd, shell=True):
-    print("Executing %s" % cmd.strip())
+    printf("Executing %s" % cmd.strip())
 
     if not shell:
         p = subprocess.Popen(cmd.split())
@@ -179,13 +205,13 @@ class DragenJob(object):
             rlimit[resource.RLIMIT_STACK] = 10240 * 1024
 
         for res, limit in six.iteritems(rlimit):
-            print("Setting resource %s to %s" % (res, limit))
+            printf("Setting resource %s to %s" % (res, limit))
             try:
                 resource.setrlimit(res, (limit, limit))
             except Exception as e:
                 msg = "Could not set resource ID %s to hard/soft limit %s (error=%s)" \
                       % (res, limit, e)
-                print(msg)
+                printf(msg)
         return
 
     ########################################################################################
@@ -238,11 +264,11 @@ class DragenJob(object):
             f = open(self.FPGA_DOWNLOAD_STATUS_FILE, 'w')
             f.write('1')
             f.close()
-            print('Completed Partial Reconfig for FPGA')
+            printf('Completed Partial Reconfig for FPGA')
             return True
 
         # Error!
-        print('Could not do initial Partial Reconfig program for FPGA')
+        printf('Could not do initial Partial Reconfig program for FPGA')
         return False
 
     ########################################################################################
@@ -253,7 +279,7 @@ class DragenJob(object):
         if not exit_code:
             return
 
-        print("Dragen board is in a bad state - running dragen_reset")
+        printf("Dragen board is in a bad state - running dragen_reset")
         exec_cmd("/opt/edico/bin/dragen_reset")
         return
 
@@ -269,9 +295,23 @@ class DragenJob(object):
         exit_code = exec_cmd(dl_cmd)
 
         if exit_code:
-            print('Error: Failure downloading from S3. Exiting with code %d' % exit_code)
+            printf('Error: Failure downloading from S3. Exiting with code %d' % exit_code)
             sys.exit(exit_code)
         return
+
+    ########################################################################################
+    # download_s3_object: Download an object from S3 bucket/key to spefific target file path
+    #
+    def download_s3_object(self, bucket, key, target_path):
+        dl_cmd = '{bin} --mode download --bucket {bucket} --key {key} --path {target}'.format(
+            bin=self.D_HAUL_UTIL,
+            bucket=bucket,
+            key=key,
+            target=target_path)
+        exit_code = exec_cmd(dl_cmd)
+        if exit_code:
+            printf('Error: Failure downloading from S3. Exiting with code %d' % exit_code)
+            sys.exit(exit_code)
 
     ########################################################################################
     # download_inputs: Download specific Dragen inputs needed from provided URLs, and
@@ -282,20 +322,47 @@ class DragenJob(object):
         if not self.input_dir:
             self.input_dir = self.DEFAULT_DATA_FOLDER + 'inputs/'
 
+        # -- fastq list file download
         if self.fastq_list_url:
-            self.exec_url_download(self.fastq_list_url, self.input_dir)
             filename = self.fastq_list_url.split('?')[0].split('/')[-1]
-            self.new_args[self.fastq_list_index] = self.input_dir + filename
+            target_path = self.input_dir + str(filename)
 
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.fastq_list_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                # Try to download using http
+                self.exec_url_download(self.fastq_list_url, self.input_dir)
+
+            self.new_args[self.fastq_list_index] = target_path
+
+        # -- VC target bed download
         if self.vc_tgt_bed_url:
-            self.exec_url_download(self.vc_tgt_bed_url, self.input_dir)
             filename = self.vc_tgt_bed_url.split('?')[0].split('/')[-1]
-            self.new_args[self.vc_tgt_bed_index] = self.input_dir + filename
+            target_path = self.input_dir + str(filename)
 
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.vc_tgt_bed_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                # Try to download using http
+                self.exec_url_download(self.vc_tgt_bed_url, self.input_dir)
+
+            self.new_args[self.vc_tgt_bed_index] = target_path
+
+        # -- VC Depth file download
         if self.vc_depth_url:
-            self.exec_url_download(self.vc_depth_url, self.input_dir)
             filename = self.vc_depth_url.split('?')[0].split('/')[-1]
-            self.new_args[self.vc_depth_index] = self.input_dir + filename
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.vc_depth_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                # Try to download using http
+                self.exec_url_download(self.vc_depth_url, self.input_dir)
+
+            self.new_args[self.vc_depth_index] = target_path
 
         return
 
@@ -306,16 +373,14 @@ class DragenJob(object):
     def download_ref_tables(self):
 
         if not self.ref_s3_url:
-            print('Warning: No reference HT directory URL specified!')
+            printf('Warning: No reference HT directory URL specified!')
             return
 
         # Generate the params to download the HT based on URL s3://bucket/key
-        ref_path = self.ref_s3_url.replace('//', '/')
-        s3_bucket = ref_path.split('/')[1]
-        s3_key = '/'.join(ref_path.split('/')[2:])
+        s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.ref_s3_url)
 
-        if not s3_key or not s3_bucket:
-            print('Error: could not get S3 bucket and key info from specified URL %s' % self.ref_s3_url)
+        if not s3_valid or not s3_key or not s3_bucket:
+            printf('Error: could not get S3 bucket and key info from specified URL %s' % self.ref_s3_url)
             sys.exit(1)
 
         target_path = self.DEFAULT_DATA_FOLDER  # Specifies the root
@@ -328,7 +393,7 @@ class DragenJob(object):
         exit_code = exec_cmd(dl_cmd)
 
         if exit_code:
-            print('Error: Failure downloading from S3. Exiting with code %d' % exit_code)
+            printf('Error: Failure downloading from S3. Exiting with code %d' % exit_code)
             sys.exit(exit_code)
 
         self.ref_dir = self.DEFAULT_DATA_FOLDER + s3_key
@@ -342,16 +407,14 @@ class DragenJob(object):
     #    Nothing if success
     def upload_job_outputs(self):
         if not self.output_s3_url:
-            print('Error: Output S3 location not specified!')
+            printf('Error: Output S3 location not specified!')
             return
 
-        # Generate the command to download the HT
-        output_path = self.output_s3_url.replace('//', '/')
-        s3_bucket = output_path.split('/')[1]
-        s3_key = '/'.join(output_path.split('/')[2:])
+        # Generate the command to upload the results
+        s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.output_s3_url)
 
-        if not s3_key or not s3_bucket:
-            print('Error: could not get S3 bucket and key info from specified URL %s' % self.output_s3_url)
+        if not s3_valid or not s3_key or not s3_bucket:
+            printf('Error: could not get S3 bucket and key info from specified URL %s' % self.output_s3_url)
             sys.exit(1)
 
         ul_cmd = '{bin} --mode upload --bucket {bucket} --key {key} --path {file} -s'.format(
@@ -363,7 +426,7 @@ class DragenJob(object):
         exit_code = exec_cmd(ul_cmd)
 
         if exit_code:
-            print('Error: Failure uploading outputs. Exiting with code %d' % exit_code)
+            printf('Error: Failure uploading outputs. Exiting with code %d' % exit_code)
             sys.exit(exit_code)
 
         return
@@ -375,15 +438,15 @@ class DragenJob(object):
     def create_output_dir(self):
         if not self.output_dir or not os.path.exists(self.output_dir):
             self.output_dir = self.DEFAULT_DATA_FOLDER + str(uuid.uuid4())
-            print("Output directory does not exist - creating %s" % self.output_dir)
+            printf("Output directory does not exist - creating %s" % self.output_dir)
             try:
                 os.makedirs(self.output_dir)
             except os.error:
                 # dragen execution will fail
-                print("Error: Could not create output_directory %s" % self.output_dir)
+                printf("Error: Could not create output_directory %s" % self.output_dir)
                 sys.exit(1)
         else:
-            print("Output directory %s already exists - Skip creating." % self.output_dir)
+            printf("Output directory %s already exists - Skip creating." % self.output_dir)
 
         # Add or replace the output directory in the dragen parameters
         if self.output_s3_index >= 0:
@@ -439,7 +502,7 @@ class DragenJob(object):
         # Delete the output results directory, i.e. /staging/<uuid4>
         # NOTE: Do not delete the reference directory enable re-use with another job
         rm_out_path = self.output_dir
-        print("Removing Output dir %s" % rm_out_path)
+        printf("Removing Output dir %s" % rm_out_path)
         shutil.rmtree(rm_out_path, ignore_errors=True)
 
         # Handle error code
@@ -451,7 +514,7 @@ class DragenJob(object):
                     signum = self.global_exit_code - 128
                 else:
                     signum = -self.global_exit_code
-                print("Job terminated due to signal %s" % signum)
+                printf("Job terminated due to signal %s" % signum)
 
         self.process_end_time = datetime.datetime.utcnow()
         return
@@ -462,23 +525,23 @@ class DragenJob(object):
     def run(self):
         try:
             self.run_job()
-            print("Job is exiting with code %s" % self.global_exit_code)
+            printf("Job is exiting with code %s" % self.global_exit_code)
             sys.exit(self.global_exit_code)
 
         except SystemExit as inst:
             if inst[0] != 0:  # System exit with exit code 0 is OK
-                print("Caught SystemExit: Exiting with status %s" % inst[0])
+                printf("Caught SystemExit: Exiting with status %s" % inst[0])
                 sys.exit(inst[0])
             else:
-                print("Caught SystemExit: Exiting normally")
+                printf("Caught SystemExit: Exiting normally")
 
         except:
             # Log abnormal exists
-            print("Unhandled exception in dragen_qs: %s" % sys.exc_info()[0])
+            printf("Unhandled exception in dragen_qs: %s" % sys.exc_info()[0])
             sys.exit(1)
 
         delta = self.process_end_time - self.process_start_time
-        print("Job ran for %02d:%02d:%02d" % (delta.seconds//3600, delta.seconds//60 % 60, delta.seconds % 60))
+        printf("Job ran for %02d:%02d:%02d" % (delta.seconds//3600, delta.seconds//60 % 60, delta.seconds % 60))
         sys.exit(0)
 
 
@@ -491,17 +554,17 @@ def main():
     dragen_args = sys.argv[1:]
 
     # Debug print (remove later)
-    print("[DEBUG] Dragen input commands: %s" % ' '.join(dragen_args))
+    printf("[DEBUG] Dragen input commands: %s" % ' '.join(dragen_args))
 
     dragen_job = DragenJob(dragen_args)
 
-    print('Downloading reference files')
+    printf('Downloading reference files')
     dragen_job.download_ref_tables()
 
-    print('Downloading misc inputs (csv, bed)')
+    printf('Downloading misc inputs (csv, bed)')
     dragen_job.download_inputs()
 
-    print('Run Analysis job')
+    printf('Run Analysis job')
     dragen_job.run()
 
 
