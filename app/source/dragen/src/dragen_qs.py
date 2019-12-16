@@ -121,6 +121,9 @@ class DragenJob(object):
         self.fastq_list_url = None      # Determine from the --fastq-list option
         self.fastq_list_index = -1
 
+        self.tumor_fastq_list_url = None     # Determine from the --tumor-fastq-list option
+        self.tumor_fastq_list_index = -1
+
         self.vc_tgt_bed_url = None      # Determine from the --vc-target-bed option
         self.vc_tgt_bed_index = -1
 
@@ -163,6 +166,13 @@ class DragenJob(object):
         if opt_no >= 0:
             self.fastq_list_url = self.orig_args[opt_no + 1]
             self.fastq_list_index = opt_no + 1
+
+        # --tumor-fastq-list: URL (http or s3) for tumor fastq list CSV file
+        opt_no = find_arg_in_list(self.orig_args, '--tumor-fastq-list')
+        if opt_no >= 0:
+            self.tumor_fastq_list_url = self.orig_args[opt_no + 1]
+            self.tumor_fastq_list_index = opt_no + 1
+
 
         # --vc-target-bed: URL for the VC target bed
         opt_no = find_arg_in_list(self.orig_args, '--vc-target-bed')
@@ -335,6 +345,20 @@ class DragenJob(object):
                 self.exec_url_download(self.fastq_list_url, self.input_dir)
 
             self.new_args[self.fastq_list_index] = target_path
+
+        # -- tumor_fastq list file download
+        if self.tumor_fastq_list_url:
+            filename = self.tumor_fastq_list_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.tumor_fastq_list_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                # Try to download using http
+                self.exec_url_download(self.tumor_fastq_list_url, self.input_dir)
+
+            self.new_args[self.tumor_fastq_list_index] = target_path
 
         # -- VC target bed download
         if self.vc_tgt_bed_url:
