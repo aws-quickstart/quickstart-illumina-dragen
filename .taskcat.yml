@@ -1,0 +1,35 @@
+project:
+  name: quickstart-illumina-dragen
+  owner: quickstart-eng@amazon.com
+  shorten_stack_name: true
+  package_lambda: false
+  regions:
+  - eu-west-1
+  - us-east-1
+  - us-west-2
+tests:
+  quickstart-illumina-dragent1:
+    parameters:
+      AvailabilityZones: $[taskcat_genaz_2]
+      BidPercentage: '50'
+      DesiredvCpus: '0'
+      GenomicsS3Bucket: $[taskcat_autobucket]
+      InstanceType: f1.2xlarge
+      KeyPairName: $[taskcat_getkeypair]
+      MaxvCpus: '256'
+      MinvCpus: '0'
+      PrivateSubnet1CIDR: 10.150.32.0/20
+      PrivateSubnet2CIDR: 10.150.48.0/20
+      PublicSubnet1CIDR: 10.150.0.0/20
+      PublicSubnet2CIDR: 10.150.16.0/20
+      QSS3BucketName: $[taskcat_autobucket]
+      QSS3BucketRegion: $[taskcat_current_region]
+      QSS3KeyPrefix: quickstart-illumina-dragen/
+      RetryNumber: '1'
+      VPCCIDR: 10.150.0.0/16
+    regions:
+    - us-east-1
+    - us-west-2
+    - eu-west-1
+    s3_bucket: ''
+    template: templates/dragen-master.yaml
