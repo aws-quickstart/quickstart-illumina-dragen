@@ -69,9 +69,6 @@ Mappings:
       DRAGEN: ami-0ba4b94467989e99a
 
 Parameters:
-  KeyPairName:
-    Type: AWS::EC2::KeyPair::KeyName
-    Description: Public/private key pairs allow you to securely connect to your instance after it launches.
   InstanceType:
     Type: String
     Description: Amazon EC2 instance type. DRAGEN requires an FPGA to run, so the instance type must be in the F1 instance family.
