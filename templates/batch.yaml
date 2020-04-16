@@ -42,8 +42,6 @@ Metadata:
         default: Instance Type
       BidPercentage:
         default: Spot Bid Percentage
-      RetryNumber:
-        default: AWS Batch Retry Number
       MinvCpus:
         default: Min vCPUs
       MaxvCpus:
