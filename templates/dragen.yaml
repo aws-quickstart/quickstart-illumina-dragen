@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: This template deploys an environment to run Edico Genome's DRAGEN software using AWS Batch. (qs-1oqea624b)
 
 Metadata:
+  AWSAMIRegionMap:
+    Filters:
+      DRAGEN:
+        owner-alias: aws-marketplace
+        product-code: 9uotaksivr7km6tn0wa0sy2fw
+        product-code.type: marketplace
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -60,13 +66,13 @@ Metadata:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      DRAGEN: dragen-completesuite-2.6.3-180508
+      DRAGEN: dragen-completesuite-*
     us-east-1:
-      DRAGEN: ami-0f12aca484bca27a5
+      DRAGEN: ami-0cafb92d020f85994
     us-west-2:
-      DRAGEN: ami-0af5c11ee441ce40f
+      DRAGEN: ami-06ef6a3ed477d2504
     eu-west-1:
-      DRAGEN: ami-0ba4b94467989e99a
+      DRAGEN: ami-0db22398af10a82b3
 
 Parameters:
   InstanceType:
