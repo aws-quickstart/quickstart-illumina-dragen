@@ -4,6 +4,8 @@ global:
   qsname: quickstart-illumina-dragen
   regions:
     - eu-west-1
+    - eu-west-2
+    - eu-central-1
     - us-east-1
     - us-west-2
   reporting: true
@@ -16,6 +18,8 @@ tests:
       - us-east-1
       - us-west-2
       - eu-west-1
+      - eu-west-2
+      - eu-central-1
  # quickstart-illumina-dragent2:
  #   parameter_input: batch-params.t2.json
  #   template_file: dragen-master.template
@@ -23,3 +27,5 @@ tests:
  #     - us-east-1
  #     - us-west-2
  #     - eu-west-1
+ #     - eu-west-2
+ #     - eu-central-1
