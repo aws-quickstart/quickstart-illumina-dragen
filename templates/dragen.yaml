@@ -68,11 +68,11 @@ Mappings:
     AMI:
       DRAGEN: dragen-completesuite-*
     us-east-1:
-      DRAGEN: ami-0cafb92d020f85994
+      DRAGEN: ami-0e33c66ac96a8bee4
     us-west-2:
-      DRAGEN: ami-06ef6a3ed477d2504
+      DRAGEN: ami-009e3239aa413c21d
     eu-west-1:
-      DRAGEN: ami-0db22398af10a82b3
+      DRAGEN: ami-0ff60dffe92e389e2
 
 Parameters:
   InstanceType:

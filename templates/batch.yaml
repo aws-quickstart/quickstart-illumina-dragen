@@ -197,6 +197,65 @@ Resources:
             - !Sub "arn:aws:s3:::${GenomicsS3Bucket}/*"
       Roles:
       - !Ref DragenJobRole
+  DragenLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        InstanceType: !Ref 'InstanceType'
+        ImageId: !Ref 'ImageId'
+        SecurityGroupIds:
+          - !Ref BatchSecurityGroup
+        IamInstanceProfile:
+          Name: !Ref 'DragenInstanceProfile'
+        KeyName: !Ref 'Ec2KeyPair'
+        TagSpecifications:
+          -
+            ResourceType: 'instance'
+            Tags:
+              - Key: "Name"
+                Value: "Dragen"
+        UserData: !Base64
+          Fn::Sub: |
+              Content-Type: multipart/mixed; boundary="==BOUNDARY=="
+              MIME-Version: 1.0
+
+              --==BOUNDARY==
+              MIME-Version: 1.0
+              Content-Type: text/x-shellscript; charset="us-ascii"
+
+              #!/bin/bash
+
+              function qs_retry_command() {
+                  local -r __tries="$1"; shift
+                  local -r __run="$@"
+                  local -i __backoff_delay=2
+
+                  until $__run
+                      do
+                              if (( __current_try == __tries ))
+                              then
+                                      echo "Tried $__current_try times and failed!"
+                                      return 1
+                              else
+                                      echo "Retrying ...."
+                                      sleep $((((__backoff_delay++)) + ((__current_try++))))
+                              fi
+                      done
+
+              }
+
+              echo ECS_DISABLE_IMAGE_CLEANUP=false>>/etc/ecs/ecs.config
+              echo ECS_ENGINE_TASK_CLEANUP_WAIT_DURATION=2m>>/etc/ecs/ecs.config
+              echo ECS_IMAGE_CLEANUP_INTERVAL=10m>>/etc/ecs/ecs.config
+              echo ECS_IMAGE_MINIMUM_CLEANUP_AGE=10m>>/etc/ecs/ecs.config
+              echo ECS_NUM_IMAGES_DELETE_PER_CYCLE=5>>/etc/ecs/ecs.config
+              echo ECS_RESERVED_MEMORY=32>>/etc/ecs/ecs.config
+              echo ECS_AVAILABLE_LOGGING_DRIVERS='["json-file","awslogs"]'>>/etc/ecs/ecs.config
+              qs_retry_command 10 docker stop ecs-agent
+              qs_retry_command 10 docker rm ecs-agent
+              qs_retry_command 10 docker run --name ecs-agent --detach=true --restart=on-failure:10 --volume=/var/run:/var/run --volume=/var/log/ecs/:/log --volume=/var/lib/ecs/data:/data --volume=/etc/ecs:/etc/ecs --net=host --env-file=/etc/ecs/ecs.config amazon/amazon-ecs-agent:latest
+
+              --==BOUNDARY==--
   DragenComputeEnvironmentSpot:
     Type: AWS::Batch::ComputeEnvironment
     Properties:
@@ -218,6 +277,8 @@ Resources:
         SpotIamFleetRole: !Ref SpotFleetRole
         Subnets: !Ref SubnetIds
         Type: SPOT
+        LaunchTemplate:
+          LaunchTemplateId: !Ref DragenLaunchTemplate
   DragenComputeEnvironmentOnDemand:
     Type: AWS::Batch::ComputeEnvironment
     Properties:
@@ -237,6 +298,8 @@ Resources:
         - !Ref BatchSecurityGroup
         Subnets: !Ref SubnetIds
         Type: EC2
+        LaunchTemplate:
+          LaunchTemplateId: !Ref DragenLaunchTemplate
 
   # DRAGEN set up
   DragenJobRole:
