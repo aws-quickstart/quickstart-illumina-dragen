@@ -78,7 +78,7 @@ Parameters:
   InstanceType:
     Type: String
     Description: Amazon EC2 instance type. DRAGEN requires an FPGA to run, so the instance type must be in the F1 instance family.
-    Default: f1.2xlarge
+    Default: f1.4xlarge
     AllowedValues:
     - f1.2xlarge
     - f1.4xlarge
