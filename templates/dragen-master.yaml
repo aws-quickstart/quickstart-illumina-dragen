@@ -76,7 +76,7 @@ Parameters:
     - f1.2xlarge
     - f1.4xlarge
     - f1.16xlarge
-    Default: f1.2xlarge
+    Default: f1.4xlarge
     Description: Amazon EC2 instance type for DRAGEN in the AWS Batch Compute Environment.
     Type: String
   KeyPairName:

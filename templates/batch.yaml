@@ -342,9 +342,9 @@ Resources:
       State: ENABLED
       ComputeEnvironmentOrder:
         - Order: 1
-          ComputeEnvironment: !Ref DragenComputeEnvironmentSpot
-        - Order: 2
           ComputeEnvironment: !Ref DragenComputeEnvironmentOnDemand
+        - Order: 2
+          ComputeEnvironment: !Ref DragenComputeEnvironmentSpot
   DragenJobDefinition:
     Type: AWS::Batch::JobDefinition
     Properties:
