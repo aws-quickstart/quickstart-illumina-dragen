@@ -25,15 +25,16 @@ RUN yum -y install \
 # Install necessary standard packages
 # Note: 'easy_install' used to workaround docker/kernel issue (https://github.com/moby/moby/issues/12327)
 RUN yum -y install \
-  python-devel \
-  python-pip \
+  python3 \
+  python3-devel \
+  python3-pip \
   tree && \
   yum clean all && \
-  pip install --upgrade pip && \
-  pip install future && \
-  pip install six && \
-  pip install requests && \
-  pip install boto3
+  python3 -m pip install --upgrade pip && \
+  pip3 install future && \
+  pip3 install six && \
+  pip3 install requests && \
+  pip3 install boto3
 
 # Install d_haul and dragen_job_execute wrapper functions and associated packages
 RUN mkdir -p /root/quickstart/scheduler && \
