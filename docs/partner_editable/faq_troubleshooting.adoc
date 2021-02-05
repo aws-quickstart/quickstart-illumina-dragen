@@ -21,7 +21,7 @@ For additional information, see https://docs.aws.amazon.com/AWSCloudFormation/la
 
 *Q.* What should I do if the DRAGEN job fails?
 
-*A.* If your DRAGEN job fails, more information will be available in Amazon CloudWatch Logs. You can access the log either from the CloudWatch console (see Figure 6) or through the *Log stream name* link in the AWS Batch job (see Figure 7).
+*A.* If your DRAGEN job fails, more information will be available in Amazon CloudWatch Logs. You can access the log either from the CloudWatch console (see Figure 7) or through the *Log stream name* link in the AWS Batch job (see Figure 8).
 
 //In these examples, the user didn’t specify an S3 bucket for the *Genomics Data Bucket* parameter when they deployed the Quick Start, which caused the error:
 

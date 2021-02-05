@@ -232,7 +232,7 @@ To run the DRAGEN job from the console:.
 
 1.  From the navigation bar, choose the AWS Region you used for the Quick Start deployment.
 2.  In the navigation pane, choose *Jobs*, *Submit new job*.
-3.  Fill out these fields, as shown in Figure 5:
+3.  Fill out these fields, as shown in Figure 6:
 
 * *Job name*: Enter a unique name for the job.
 * *Job definition*: Choose the DRAGEN job definition that was created by the Quick Start and displayed in the *Outputs* tab of the AWS CloudFormation console in step 3(9).

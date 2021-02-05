@@ -37,7 +37,7 @@ image::../images/image2.png[marketplace,width=733,height=427]
 [link=images/image3.png]
 image::../images/image3.png[marketplaceterms,width=733,height=427]
 
-Figure 3: Accepting software terms in AWS Marketplace
+//Figure 3: Accepting software terms in AWS Marketplace
 
 1.  When the subscription process is complete, exit out of AWS Marketplace without further action. *Do not* provision the software from AWS Marketplace—the Quick Start will deploy the AMI for you.
 
