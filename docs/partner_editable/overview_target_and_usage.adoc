@@ -1,7 +1,25 @@
-// Replace the content in <>
-// Identify your target audience and explain how/why they would use this Quick Start.
-//Avoid borrowing text from third-party websites (copying text from AWS service documentation is fine). Also, avoid marketing-speak, focusing instead on the technical aspect.
+//[[overview]]
+//== Overview
 
-This guide provides instructions for deploying the {partner-product-short-name} Quick Start reference architecture on the AWS Cloud.
+This Quick Start guide provides step-by-step instructions for deploying Dynamic Read Analysis for GENomics (DRAGEN) on the AWS Cloud.
 
-This Quick Start is for users who <target audience and usage scenario>
+The Quick Start is for users who would like to conduct bioinformatic analysis on next-generation sequencing data using DRAGEN on AWS.
+
+
+//[[dragen-on-aws]]
+=== DRAGEN on AWS
+
+This Quick Start was created to get you up and running with DRAGEN Complete Suite (CS) on AWS. DRAGEN CS offerings enable ultra-rapid analysis of next-generation sequencing (NGS) data, and significantly reduce the time required to analyze genomic data while also improving accuracy.
+
+DRAGEN CS includes http://edicogenome.com/pipelines/[many bioinformatics pipelines] that harness the power of the DRAGEN platform and provide highly optimized algorithms for mapping, aligning, sorting, duplicate marking, and haplotype variant calling. These pipelines include DRAGEN Germline V2, DRAGEN Somatic V2 (Tumor and Tumor/Normal), DRAGEN Virtual Long Read Detection (VLRD), DRAGEN RNA Gene Fusion, DRAGEN Joint Genotyping, and GATK Best Practices. The DRAGEN Germline V2 and DRAGEN Somatic V2 pipelines have improved accuracy in calling single nucleotide polymorphisms (SNPs) and small insertions and deletions (INDELs) compared with industry standards. For performance results, see the https://precision.fda.gov/challenges/1/view/results[PrecisionFDA Hidden Treasures – Warm Up] challenge and the https://blog.dnanexus.com/2018-03-08-how-to-train-your-dragen-evaluating-and-improving-edico-genomes-rapid-wgs-tools/[DRAGEN evaluation] on the _Inside DNAnexus_ blog.
+
+[[costs-and-licenses]]
+=== Costs and Licenses
+
+You are responsible for the cost of the AWS services used while running this Quick Start reference deployment. There is no additional cost for using the Quick Start.
+
+The AWS CloudFormation template for this Quick Start includes configuration parameters that you can customize. Some of these settings, such as instance type, will affect the cost of deployment. For cost estimates, see the pricing pages for each AWS service you will be using. Prices are subject to change.
+
+*Tip* After you deploy the Quick Start, we recommend that you set up the https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-gettingstarted-turnonreports.html[AWS Cost and Usage Report] to track costs associated with the Quick Start. This report delivers billing metrics to an S3 bucket in your account. It provides cost estimates based on usage throughout each month, and finalizes the data at the end of the month. For more information about the report, see the https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-costusage.html[AWS documentation].
+
+This Quick Start requires a subscription to the Amazon Machine Image (AMI) for https://aws.amazon.com/marketplace/pp/B07CZ3F5HY[DRAGEN Complete Suite], which is available with per-hour pricing from AWS Marketplace.
