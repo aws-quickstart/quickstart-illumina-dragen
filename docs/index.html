@@ -814,7 +814,7 @@ p.footer-text a{color:#d7d8d8}
 <li><a href="#option-2-use-the-aws-batch-console">Option 2: Use the AWS Batch Console</a></li>
 </ul>
 </li>
-<li><a href="#best-practices-using-dragen-on-aws">Best practices for using DRAGEN on AWS</a></li>
+<li><a href="#best-practices-using-dragen-on-aws">Best practices for using DRAGEN  on AWS</a></li>
 <li><a href="#_security">Security</a></li>
 <li><a href="#document-revisions">Document Revisions</a></li>
 <li><a href="#faq">FAQ</a></li>
@@ -891,30 +891,6 @@ report bugs, or submit feature ideas for this Quick Start.
 </div>
 <div class="paragraph">
 <p>The Quick Start is for users who would like to conduct bioinformatic analysis on next-generation sequencing data using DRAGEN on AWS.</p>
-</div>
-<div class="sect2">
-<h3 id="_dragen_on_aws">DRAGEN on AWS</h3>
-<div class="paragraph">
-<p>This Quick Start was created to get you up and running with DRAGEN Complete Suite (CS) on AWS. DRAGEN CS offerings enable ultra-rapid analysis of next-generation sequencing (NGS) data, and significantly reduce the time required to analyze genomic data while also improving accuracy.</p>
-</div>
-<div class="paragraph">
-<p>DRAGEN CS includes <a href="http://edicogenome.com/pipelines/">many bioinformatics pipelines</a> that harness the power of the DRAGEN platform and provide highly optimized algorithms for mapping, aligning, sorting, duplicate marking, and haplotype variant calling. These pipelines include DRAGEN Germline V2, DRAGEN Somatic V2 (Tumor and Tumor/Normal), DRAGEN Virtual Long Read Detection (VLRD), DRAGEN RNA Gene Fusion, DRAGEN Joint Genotyping, and GATK Best Practices. The DRAGEN Germline V2 and DRAGEN Somatic V2 pipelines have improved accuracy in calling single nucleotide polymorphisms (SNPs) and small insertions and deletions (INDELs) compared with industry standards. For performance results, see the <a href="https://precision.fda.gov/challenges/1/view/results">PrecisionFDA Hidden Treasures – Warm Up</a> challenge and the <a href="https://blog.dnanexus.com/2018-03-08-how-to-train-your-dragen-evaluating-and-improving-edico-genomes-rapid-wgs-tools/">DRAGEN evaluation</a> on the <em>Inside DNAnexus</em> blog.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="costs-and-licenses">Costs and Licenses</h3>
-<div class="paragraph">
-<p>You are responsible for the cost of the AWS services used while running this Quick Start reference deployment. There is no additional cost for using the Quick Start.</p>
-</div>
-<div class="paragraph">
-<p>The AWS CloudFormation template for this Quick Start includes configuration parameters that you can customize. Some of these settings, such as instance type, will affect the cost of deployment. For cost estimates, see the pricing pages for each AWS service you will be using. Prices are subject to change.</p>
-</div>
-<div class="paragraph">
-<p><strong>Tip</strong> After you deploy the Quick Start, we recommend that you set up the <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-gettingstarted-turnonreports.html">AWS Cost and Usage Report</a> to track costs associated with the Quick Start. This report delivers billing metrics to an S3 bucket in your account. It provides cost estimates based on usage throughout each month, and finalizes the data at the end of the month. For more information about the report, see the <a href="https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/billing-reports-costusage.html">AWS documentation</a>.</p>
-</div>
-<div class="paragraph">
-<p>This Quick Start requires a subscription to the Amazon Machine Image (AMI) for <a href="https://aws.amazon.com/marketplace/pp/B07CZ3F5HY">DRAGEN Complete Suite</a>, which is available with per-hour pricing from AWS Marketplace.</p>
-</div>
 </div></div></td>
 </tr>
 </tbody>
@@ -993,7 +969,7 @@ After you deploy the Quick Start, <a href="https://docs.aws.amazon.com/awsaccoun
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>This Quick Start requires a subscription to the Amazon Machine Image (AMI) for <a href="https://aws.amazon.com/marketplace/pp/B07CZ3F5HY">DRAGEN Complete Suite</a>, which is available with per-hour pricing from AWS Marketplace.</p>
+<p>This Quick Start requires a subscription to the Amazon Machine Image (AMI) for <a href="https://aws.amazon.com/marketplace/pp/B07CZ3F5HY" target="_blank" rel="noopener">DRAGEN Complete Suite</a>, which is available with per-hour pricing from AWS Marketplace.</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -1084,30 +1060,30 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Before you deploy this Quick Start, we recommend that you become familiar with the following AWS services. (If you are new to AWS, see <a href="https://aws.amazon.com/getting-started/">Getting Started with AWS</a>.)</p>
+<p>Before you deploy this Quick Start, we recommend that you become familiar with the following AWS services. (If you are new to AWS, see <a href="https://aws.amazon.com/getting-started/" target="_blank" rel="noopener">Getting Started with AWS</a>.)</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEBS.html">Amazon Elastic Block Store (Amazon EBS</a>)</p>
+<p><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEBS.html" target="_blank" rel="noopener">Amazon Elastic Block Store (Amazon EBS</a>)</p>
 </li>
 <li>
-<p><a href="https://aws.amazon.com/documentation/ec2/">Amazon EC2</a></p>
+<p><a href="https://aws.amazon.com/documentation/ec2/" target="_blank" rel="noopener">Amazon EC2</a></p>
 </li>
 <li>
-<p><a href="https://aws.amazon.com/documentation/ecr/">Amazon ECR</a></p>
+<p><a href="https://aws.amazon.com/documentation/ecr/" target="_blank" rel="noopener">Amazon ECR</a></p>
 </li>
 <li>
-<p><a href="https://aws.amazon.com/documentation/iam/">IAM</a></p>
+<p><a href="https://aws.amazon.com/documentation/iam/" target="_blank" rel="noopener">IAM</a></p>
 </li>
 <li>
-<p><a href="https://aws.amazon.com/documentation/s3/">Amazon S3</a></p>
+<p><a href="https://aws.amazon.com/documentation/s3/" target="_blank" rel="noopener">Amazon S3</a></p>
 </li>
 <li>
-<p><a href="https://aws.amazon.com/documentation/vpc/">Amazon Virtual Private Cloud (Amazon VPC</a>)</p>
+<p><a href="https://aws.amazon.com/documentation/vpc/" target="_blank" rel="noopener">Amazon Virtual Private Cloud (Amazon VPC)</a></p>
 </li>
 <li>
-<p><a href="https://aws.amazon.com/documentation/batch/">AWS Batch</a></p>
+<p><a href="https://aws.amazon.com/documentation/batch/" target="_blank" rel="noopener">AWS Batch</a></p>
 </li>
 </ul>
 </div></div></td>
@@ -1169,7 +1145,7 @@ deploy, and operate your infrastructure and applications on the AWS Cloud.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This Quick Start uses <a href="https://aws.amazon.com/ec2/instance-types/f1/">Amazon EC2 F1 instances</a>, which aren’t available in all AWS Regions. For a list of supported regions, see <a href="https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services" target="_blank" rel="noopener">AWS Regional Table</a> webpage.
+This Quick Start uses <a href="https://aws.amazon.com/ec2/instance-types/f1/" target="_blank" rel="noopener">Amazon EC2 F1 instances</a>, which aren’t available in all AWS Regions. For a list of supported regions, see <a href="https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services" target="_blank" rel="noopener">AWS Regional Table</a> webpage.
 </td>
 </tr>
 </table>
@@ -1205,7 +1181,7 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
 <ul>
 <li>
-<p><strong>Limit increases for F1 instances</strong>. DRAGEN runs on <a href="https://aws.amazon.com/ec2/instance-types/f1/">Amazon EC2 F1 instances</a> because it requires a field-programmable gate array (FPGA). This Quick Start supports f1.2xlarge, f1.4xlarge, and f1.16xlarge instance types. You should request limit increases for F1 instances, to support the maximum number of simultaneous DRAGEN jobs that you expect to run.</p>
+<p><strong>Limit increases for F1 instances</strong>. DRAGEN runs on <a href="https://aws.amazon.com/ec2/instance-types/f1/" target="_blank" rel="noopener">Amazon EC2 F1 instances</a> because it requires a field-programmable gate array (FPGA). This Quick Start supports f1.2xlarge, f1.4xlarge, and f1.16xlarge instance types. You should request limit increases for F1 instances, to support the maximum number of simultaneous DRAGEN jobs that you expect to run.</p>
 </li>
 <li>
 <p><strong>S3 bucket for genomic data</strong>. You must have an Amazon Simple Storage Service (Amazon S3) bucket in the AWS Region where you plan to deploy the Quick Start. This S3 bucket should contain:</p>
@@ -1214,7 +1190,7 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <p>The genomic input datasets that you want to run in the Quick Start environment</p>
 </li>
 <li>
-<p>The DRAGEN-specific reference hash table directories that are provided by Illumina or that you create from FASTA files. For instructions on how to create reference hash table directories, refer to <a href="https://support.illumina.com/content/dam/illumina-support/help/Illumina_DRAGEN_Bio_IT_Platform_v3_7_1000000141465/Content/SW/Informatics/Dragen/GenerateReference_fDG_dtRef.htm/">DRAGEN Bio-IT Platform User Guide</a></p>
+<p>The DRAGEN-specific reference hash table directories that are provided by Illumina or that you create from FASTA files. For instructions on how to create reference hash table directories, refer to <a href="https://support.illumina.com/content/dam/illumina-support/help/Illumina_DRAGEN_Bio_IT_Platform_v3_7_1000000141465/Content/SW/Informatics/Dragen/GenerateReference_fDG_dtRef.htm/" target="_blank" rel="noopener">DRAGEN Bio-IT Platform User Guide</a></p>
 </li>
 <li>
 <p>An output folder for DRAGEN job outputs such as the binary alignment map (BAM) and variant call format (VCF) files</p>
@@ -1245,10 +1221,10 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Deploy DRAGEN into a new VPC</strong>. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys DRAGEN into this new VPC.</p>
+<p><strong>Deploy DRAGEN  into a new VPC</strong>. This option builds a new AWS environment consisting of the VPC, subnets, NAT gateways, security groups, bastion hosts, and other infrastructure components. It then deploys DRAGEN into this new VPC.</p>
 </li>
 <li>
-<p><strong>Deploy DRAGEN into an existing VPC</strong>. This option provisions DRAGEN in your existing AWS infrastructure.</p>
+<p><strong>Deploy DRAGEN  into an existing VPC</strong>. This option provisions DRAGEN in your existing AWS infrastructure.</p>
 </li>
 </ul>
 </div>
@@ -1282,15 +1258,15 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 </ol>
 </div>
 <div class="paragraph">
-<p><strong>Important</strong> This Quick Start includes F1 instances, which aren’t available in all AWS Regions. For a list of supported regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#elasticfilesystem-region">the</a> <a href="https://aws.amazon.com/ec2/pricing/on-demand/">Amazon EC2 Pricing</a> webpage.</p>
+<p><strong>Important</strong> This Quick Start includes F1 instances, which aren’t available in all AWS Regions. For a list of supported regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#elasticfilesystem-region">the</a> <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" rel="noopener">Amazon EC2 Pricing</a> webpage.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Create a <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html">key pair</a> in your preferred region.</p>
+<p>Create a <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-key-pairs.html" target="_blank" rel="noopener">key pair</a> in your preferred region.</p>
 </li>
 <li>
-<p>If necessary, <a href="https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase&amp;limitType=service-code-">request a service limit increase</a> for the Amazon EC2 <strong>F1</strong> instance type. You might need to do this if you already have an existing deployment that uses this instance type, and you think you might exceed the <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html">default limit</a> with this deployment.</p>
+<p>If necessary, <a href="https://console.aws.amazon.com/support/home#/case/create?issueType=service-limit-increase&amp;limitType=service-code-" target="_blank" rel="noopener">request a service limit increase</a> for the Amazon EC2 <strong>F1</strong> instance type. You might need to do this if you already have an existing deployment that uses this instance type, and you think you might exceed the <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html" target="_blank" rel="noopener">default limit</a> with this deployment.</p>
 </li>
 </ol>
 </div>
@@ -1306,7 +1282,7 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <p>Log in to the AWS Marketplace at <a href="https://aws.amazon.com/marketplace" class="bare">https://aws.amazon.com/marketplace</a>.</p>
 </li>
 <li>
-<p>Open the page for <a href="https://aws.amazon.com/marketplace/pp/B07CZ3F5HY">DRAGEN Complete Suite</a>. Note that this will default to the latest version of DRAGEN, if your AWS account is in the trial period. At the end of the trial period, you can subscribe to an older version of DRAGEN.</p>
+<p>Open the page for <a href="https://aws.amazon.com/marketplace/pp/B07CZ3F5HY" target="_blank" rel="noopener">DRAGEN Complete Suite</a>. Note that this will default to the latest version of DRAGEN, if your AWS account is in the trial period. At the end of the trial period, you can subscribe to an older version of DRAGEN.</p>
 </li>
 </ol>
 </div>
@@ -1348,7 +1324,7 @@ Certain Regions are available on an opt-in basis. For more information, see <a h
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Choose one of the following options to launch the AWS CloudFormation template into your AWS account. For help choosing an option, see <a href="#deployment-options">deployment options</a> earlier in this guide.</p>
+<p>Choose one of the following options to launch the AWS CloudFormation template into your AWS account. For help choosing an option, see <a href="#deployment-options" target="_blank" rel="noopener">deployment options</a> earlier in this guide.</p>
 </li>
 </ol>
 </div>
@@ -1376,7 +1352,7 @@ new VPC on AWS</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p><strong>Important</strong> If you’re deploying DRAGEN into an existing VPC, make sure that your VPC has two private subnets in different Availability Zones for the AWS Batch compute environments. These subnets require <a href="http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/vpc-nat.html">NAT gateways or NAT instances</a> in their route tables, to allow the instances to download packages and software without exposing them to the internet. You will also need the domain name option configured in the DHCP options as explained in the <a href="http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_DHCP_Options.html">Amazon VPC documentation</a>. You will be prompted for your VPC settings when you launch the Quick Start.</p>
+<p><strong>Important</strong> If you’re deploying DRAGEN into an existing VPC, make sure that your VPC has two private subnets in different Availability Zones for the AWS Batch compute environments. These subnets require <a href="http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/vpc-nat.html" target="_blank" rel="noopener">NAT gateways or NAT instances</a> in their route tables, to allow the instances to download packages and software without exposing them to the internet. You will also need the domain name option configured in the DHCP options as explained in the <a href="http://docs.aws.amazon.com/AmazonVPC/latest/UserGuide/VPC_DHCP_Options.html" target="_blank" rel="noopener">Amazon VPC documentation</a>. You will be prompted for your VPC settings when you launch the Quick Start.</p>
 </div>
 <div class="paragraph">
 <p>Each deployment takes about 15 minutes to complete.</p>
@@ -1389,7 +1365,7 @@ new VPC on AWS</p>
 </ol>
 </div>
 <div class="paragraph">
-<p><strong>Important</strong> This Quick Start includes F1 instances, which aren’t available in all AWS Regions. For a list of supported regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#elasticfilesystem-region">the</a> <a href="https://aws.amazon.com/ec2/pricing/on-demand/">Amazon EC2 Pricing</a> webpage.</p>
+<p><strong>Important</strong> This Quick Start includes F1 instances, which aren’t available in all AWS Regions. For a list of supported regions, see <a href="https://docs.aws.amazon.com/general/latest/gr/rande.html#elasticfilesystem-region">the</a> <a href="https://aws.amazon.com/ec2/pricing/on-demand/" target="_blank" rel="noopener">Amazon EC2 Pricing</a> webpage.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1404,10 +1380,10 @@ new VPC on AWS</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#sc1">Parameters for deploying DRAGEN into a new VPC</a></p>
+<p><a href="#sc1" target="_blank" rel="noopener">Parameters for deploying DRAGEN into a new VPC</a></p>
 </li>
 <li>
-<p><a href="#sc2">Parameters for deploying DRAGEN into an existing VPC</a></p>
+<p><a href="#sc2" target="_blank" rel="noopener">Parameters for deploying DRAGEN into an existing VPC</a></p>
 </li>
 </ul>
 </div>
@@ -1418,7 +1394,7 @@ new VPC on AWS</p>
 <p><strong>Option 1: Parameters for deploying DRAGEN into a new VPC</strong></p>
 </div>
 <div class="paragraph">
-<p><a href="https://fwd.aws/jGP6j">View template</a></p>
+<p><a href="https://fwd.aws/jGP6j" target="_blank" rel="noopener">View template</a></p>
 </div>
 <div class="paragraph">
 <p><em>Network Configuration:</em></p>
@@ -1503,10 +1479,10 @@ new VPC on AWS</p>
 (InstanceType)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">f1.4xlarge</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The EC2 instance type for DRAGEN instances in the AWS Batch compute environment. This must be an instance type in the <a href="https://aws.amazon.com/ec2/instance-types/f1/">F1 instance family</a>, because DRAGEN requires a field-programmable gate array (FPGA).</p>
+<p>The EC2 instance type for DRAGEN instances in the AWS Batch compute environment. This must be an instance type in the <a href="https://aws.amazon.com/ec2/instance-types/f1/" target="_blank" rel="noopener">F1 instance family</a>, because DRAGEN requires a field-programmable gate array (FPGA).</p>
 </div>
 <div class="paragraph">
-<p>You should make sure that the F1 instance limits in your AWS account support the maximum number of simultaneous DRAGEN jobs that you expect to run, as discussed in the <a href="#technical-requirements">Technical Requirements</a> section.</p>
+<p>You should make sure that the F1 instance limits in your AWS account support the maximum number of simultaneous DRAGEN jobs that you expect to run, as discussed in the <a href="#technical-requirements" target="_blank" rel="noopener">Technical Requirements</a> section.</p>
 </div></div></td>
 </tr>
 <tr>
@@ -1546,14 +1522,14 @@ new VPC on AWS</p>
 <p>The S3 bucket to be used for reading and writing genomics data. The bucket name can include numbers, lowercase letters, uppercase letters, and hyphens, but should not start or end with a hyphen.</p>
 </div>
 <div class="paragraph">
-<p>This must be an existing S3 bucket that contains your genomic input datasets, DRAGEN-specific reference hash tables, and an outputs folder, as explained in the <a href="#technical-requirements">Technical Requirements</a> section.</p>
+<p>This must be an existing S3 bucket that contains your genomic input datasets, DRAGEN-specific reference hash tables, and an outputs folder, as explained in the <a href="#technical-requirements" target="_blank" rel="noopener">Technical Requirements</a> section.</p>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AWS Batch Retry Number<br>
 (RetryNumber)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of times the AWS Batch job will be retried if it fails. You can specify a value between 1 and 10. For more information, see the <a href="https://docs.aws.amazon.com/batch/latest/userguide/job_retries.html">AWS Batch documentation</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of times the AWS Batch job will be retried if it fails. You can specify a value between 1 and 10. For more information, see the <a href="https://docs.aws.amazon.com/batch/latest/userguide/job_retries.html" target="_blank" rel="noopener">AWS Batch documentation</a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1584,7 +1560,7 @@ new VPC on AWS</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 Key Prefix<br>
 (QSS3KeyPrefix)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">quickstart-illumina-dragen/</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html">S3 key name prefix</a> used to simulate a folder for your copy of Quick Start assets, if you decide to customize or extend the Quick Start for your own use. This prefix can include numbers, lowercase letters, uppercase letters, hyphens, and forward slashes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" target="_blank" rel="noopener">S3 key name prefix</a> used to simulate a folder for your copy of Quick Start assets, if you decide to customize or extend the Quick Start for your own use. This prefix can include numbers, lowercase letters, uppercase letters, hyphens, and forward slashes.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1592,7 +1568,7 @@ new VPC on AWS</p>
 <p><strong>Option 2: Parameters for deploying DRAGEN into an existing VPC</strong></p>
 </div>
 <div class="paragraph">
-<p><a href="https://fwd.aws/6qg6z">View template</a></p>
+<p><a href="https://fwd.aws/6qg6z" target="_blank" rel="noopener">View template</a></p>
 </div>
 <div class="paragraph">
 <p><em>Network Configuration:</em></p>
@@ -1659,10 +1635,10 @@ new VPC on AWS</p>
 (InstanceType)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">f1.4xlarge</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>The EC2 instance type for DRAGEN instances in the AWS Batch compute environment. This must be an instance type in the <a href="https://aws.amazon.com/ec2/instance-types/f1/">F1 instance family</a>, because DRAGEN requires a field-programmable gate array (FPGA).</p>
+<p>The EC2 instance type for DRAGEN instances in the AWS Batch compute environment. This must be an instance type in the <a href="https://aws.amazon.com/ec2/instance-types/f1/" target="_blank" rel="noopener">F1 instance family</a>, because DRAGEN requires a field-programmable gate array (FPGA).</p>
 </div>
 <div class="paragraph">
-<p>You should make sure that the F1 instance limits in your AWS account support the maximum number of simultaneous DRAGEN jobs that you expect to run, as discussed in the <a href="#technical-requirements">Technical Requirements</a> section.</p>
+<p>You should make sure that the F1 instance limits in your AWS account support the maximum number of simultaneous DRAGEN jobs that you expect to run, as discussed in the <a href="#technical-requirements" target="_blank" rel="noopener">Technical Requirements</a> section.</p>
 </div></div></td>
 </tr>
 <tr>
@@ -1702,14 +1678,14 @@ new VPC on AWS</p>
 <p>The S3 bucket to be used for reading and writing genomics data. The bucket name can include numbers, lowercase letters, uppercase letters, and hyphens, but should not start or end with a hyphen.</p>
 </div>
 <div class="paragraph">
-<p>This must be an existing S3 bucket that contains your genomic input datasets, DRAGEN-specific reference hash tables, and an outputs folder, as explained in the <a href="#technical-requirements">Technical Requirements</a> section.</p>
+<p>This must be an existing S3 bucket that contains your genomic input datasets, DRAGEN-specific reference hash tables, and an outputs folder, as explained in the <a href="#technical-requirements" target="_blank" rel="noopener">Technical Requirements</a> section.</p>
 </div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">AWS Batch Retry Number<br>
 (RetryNumber)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The number of times the AWS Batch job will be retried if it fails. You can specify a value between 1 and 10. For more information, see the <a href="https://docs.aws.amazon.com/batch/latest/userguide/job_retries.html">AWS Batch documentation</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The number of times the AWS Batch job will be retried if it fails. You can specify a value between 1 and 10. For more information, see the <a href="https://docs.aws.amazon.com/batch/latest/userguide/job_retries.html" target="_blank" rel="noopener">AWS Batch documentation</a>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1740,14 +1716,14 @@ new VPC on AWS</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quick Start S3 Key Prefix<br>
 (QSS3KeyPrefix)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">quickstart-illumina-dragen/</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html">S3 key name prefix</a> used to simulate a folder for your copy of Quick Start assets, if you decide to customize or extend the Quick Start for your own use. This prefix can include numbers, lowercase letters, uppercase letters, hyphens, and forward slashes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/UsingMetadata.html" target="_blank" rel="noopener">S3 key name prefix</a> used to simulate a folder for your copy of Quick Start assets, if you decide to customize or extend the Quick Start for your own use. This prefix can include numbers, lowercase letters, uppercase letters, hyphens, and forward slashes.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>On the <strong>Options</strong> page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html">set advanced options</a>. When you’re done, choose <strong>Next</strong>.</p>
+<p>On the <strong>Options</strong> page, you can <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-resource-tags.html" target="_blank" rel="noopener">specify tags</a> (key-value pairs) for resources in your stack and <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cfn-console-add-tags.html" target="_blank" rel="noopener">set advanced options</a>. When you’re done, choose <strong>Next</strong>.</p>
 </li>
 <li>
 <p>On the <strong>Review</strong> page, review and confirm the template settings. Under <strong>Capabilities</strong>, select the check box to acknowledge that the template will create IAM resources.</p>
@@ -1806,7 +1782,7 @@ new VPC on AWS</p>
 <h2 id="_test_the_deployment">Test the deployment</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>When the deployment is complete, you can verify the environment by running a DRAGEN job. This job reads the input datasets and the reference hash table from the S3 genomics data bucket you specified when you deployed the Quick Start, and outputs the analysis results into the designated output location in the S3 bucket. Note that the input datasets and reference hash table must be located in the same S3 bucket, the one specified during deployment.</p>
+<p>When the deployment is complete, you can verify the environment by running a DRAGEN  job. This job reads the input datasets and the reference hash table from the S3 genomics data bucket you specified when you deployed the Quick Start, and outputs the analysis results into the designated output location in the S3 bucket. Note that the input datasets and reference hash table must be located in the same S3 bucket, the one specified during deployment.</p>
 </div>
 <div class="paragraph">
 <p>As a quick test, we recommend using an input dataset consisting of a smaller FASTQ pair, such as one of the following data samples:</p>
@@ -1814,15 +1790,15 @@ new VPC on AWS</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://ilmn-dragen-giab-samples.s3.amazonaws.com/WES/HG002/NA24385-AJ-Son-R1-NS_S33_L001_R1_001.fastq.gz">NA24385-AJ-Son-R1-NS_S33_L001_R1_001.fastq.gz</a></p>
+<p><a href="https://ilmn-dragen-giab-samples.s3.amazonaws.com/WES/HG002/NA24385-AJ-Son-R1-NS_S33_L001_R1_001.fastq.gz" target="_blank" rel="noopener">NA24385-AJ-Son-R1-NS_S33_L001_R1_001.fastq.gz</a></p>
 </li>
 <li>
-<p><a href="https://ilmn-dragen-giab-samples.s3.amazonaws.com/WES/HG002/NA24385-AJ-Son-R1-NS_S33_L001_R2_001.fastq.gz">NA24385-AJ-Son-R1-NS_S33_L001_R2_001.fastq.gz</a></p>
+<p><a href="https://ilmn-dragen-giab-samples.s3.amazonaws.com/WES/HG002/NA24385-AJ-Son-R1-NS_S33_L001_R2_001.fastq.gz" target="_blank" rel="noopener">NA24385-AJ-Son-R1-NS_S33_L001_R2_001.fastq.gz</a></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Use AWS Batch to launch the job either through the AWS Command Line Interface (AWS CLI) or the console. Provide the DRAGEN job parameters as commands (in the command array within the containerOverrides field in the AWS CLI or the <strong>Command</strong> field in the console). For a full list of options, see the <strong>Illumina DRAGEN Getting Started Guide</strong> or <strong>Illumina DRAGEN Bio-IT Platform User Guide</strong> available on the <a href="https://sapac.support.illumina.com/sequencing/sequencing_software/dragen-bio-it-platform.html"><strong>Illumina DRAGEN Bio-IT Platform Support Resources</strong></a> website.</p>
+<p>Use AWS Batch to launch the job either through the AWS Command Line Interface (AWS CLI) or the console. Provide the DRAGEN job parameters as commands (in the command array within the containerOverrides field in the AWS CLI or the <strong>Command</strong> field in the console). For a full list of options, see the <strong>Illumina DRAGEN Getting Started Guide</strong> or <strong>Illumina DRAGEN Bio-IT Platform User Guide</strong> available on the <a href="https://sapac.support.illumina.com/sequencing/sequencing_software/dragen-bio-it-platform.html" target="_blank" rel="noopener"><strong>Illumina DRAGEN Bio-IT Platform Support Resources</strong></a> website.</p>
 </div>
 <div class="paragraph">
 <p>Most of the options function exactly as they are described in the guide. However, for options that refer to local files or directories, provide the full path to the S3 bucket that contains the genomics data.</p>
@@ -2073,7 +2049,7 @@ echo "No more jobs pending!"</pre>
 <p><strong>Job type</strong>: Choose <strong>Single</strong>.</p>
 </li>
 <li>
-<p><strong>Command</strong>: Specify the DRAGEN-specific parameters shown in the JSON command array in <a href="#option-1-use-the-aws-cli">option 1</a>.</p>
+<p><strong>Command</strong>: Specify the DRAGEN-specific parameters shown in the JSON command array in <a href="#option-1-use-the-aws-cli" target="_blank" rel="noopener">option 1</a>.</p>
 </li>
 <li>
 <p><strong>vCPUs, Memory, Job attempts, Execution timeout</strong>: Keep the defaults that are specified in the job definition.</p>
@@ -2098,7 +2074,7 @@ echo "No more jobs pending!"</pre>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Monitor the job status in the AWS Batch window to see if it succeeded or failed. For more information about job states and exit codes, see the <a href="https://docs.aws.amazon.com/batch/latest/userguide/job_states.html">AWS Batch documentation</a>.</p>
+<p>Monitor the job status in the AWS Batch window to see if it succeeded or failed. For more information about job states and exit codes, see the <a href="https://docs.aws.amazon.com/batch/latest/userguide/job_states.html" target="_blank" rel="noopener">AWS Batch documentation</a>.</p>
 </li>
 </ol>
 </div>
@@ -2106,10 +2082,10 @@ echo "No more jobs pending!"</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="best-practices-using-dragen-on-aws">Best practices for using DRAGEN on AWS</h2>
+<h2 id="best-practices-using-dragen-on-aws">Best practices for using DRAGEN  on AWS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For simplicity, we recommend that you create your S3 bucket in the AWS Region that you are deploying the Quick Start into. In some use cases, you might need to attach EBS volumes to instances. The DRAGEN guides are available as links from the <a href="https://aws.amazon.com/marketplace/pp/B07CZ3F5HY">DRAGEN Complete Suite webpage</a> in AWS Marketplace (see the <em>Usage Information</em> section on that page).</p>
+<p>For simplicity, we recommend that you create your S3 bucket in the AWS Region that you are deploying the Quick Start into. In some use cases, you might need to attach EBS volumes to instances. The DRAGEN guides are available as links from the <a href="https://aws.amazon.com/marketplace/pp/B07CZ3F5HY" target="_blank" rel="noopener">DRAGEN Complete Suite webpage</a> in AWS Marketplace (see the <em>Usage Information</em> section on that page).</p>
 </div>
 </div>
 </div>
@@ -2174,19 +2150,19 @@ echo "No more jobs pending!"</pre>
 <p><strong>Important</strong> When you set <strong>Rollback on failure</strong> to <strong>No</strong>, you will continue to incur AWS charges for this stack. Please make sure to delete the stack when you finish troubleshooting.</p>
 </div>
 <div class="paragraph">
-<p>For additional information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html">Troubleshooting AWS CloudFormation</a> on the AWS website.</p>
+<p>For additional information, see <a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html" target="_blank" rel="noopener">Troubleshooting AWS CloudFormation</a> on the AWS website.</p>
 </div>
 <div class="paragraph">
 <p><strong>Q.</strong> I encountered a size limitation error when I deployed the AWS CloudFormation templates.</p>
 </div>
 <div class="paragraph">
-<p><strong>A.</strong> We recommend that you launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a non-S3 location, you might encounter template size limitations when you create the stack. For more information about AWS CloudFormation limits, see the <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html">AWS documentation</a>.</p>
+<p><strong>A.</strong> We recommend that you launch the Quick Start templates from the links in this guide or from another S3 bucket. If you deploy the templates from a local copy on your computer or from a non-S3 location, you might encounter template size limitations when you create the stack. For more information about AWS CloudFormation limits, see the <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html" target="_blank" rel="noopener">AWS documentation</a>.</p>
 </div>
 <div class="paragraph">
 <p><strong>Q.</strong> How can I find out whether my DRAGEN job has completed?</p>
 </div>
 <div class="paragraph">
-<p><strong>A.</strong> When you submit a DRAGEN job by using the AWS CLI or the AWS Batch console, as described previously in <a href="#step-4.-test-the-deployment">step 4</a>, you will get an AWS Batch job ID. You should monitor the job status to check for completion. When the job has completed successfully, its job state will be displayed as SUCCEEDED and the outputs will be uploaded into the output S3 bucket location that is specified in the job. For more information about job states, see the <a href="https://docs.aws.amazon.com/batch/latest/userguide/job_states.html">AWS Batch documentation</a>.</p>
+<p><strong>A.</strong> When you submit a DRAGEN job by using the AWS CLI or the AWS Batch console, as described previously in <a href="#step-4.-test-the-deployment" target="_blank" rel="noopener">step 4</a>, you will get an AWS Batch job ID. You should monitor the job status to check for completion. When the job has completed successfully, its job state will be displayed as SUCCEEDED and the outputs will be uploaded into the output S3 bucket location that is specified in the job. For more information about job states, see the <a href="https://docs.aws.amazon.com/batch/latest/userguide/job_states.html" target="_blank" rel="noopener">AWS Batch documentation</a>.</p>
 </div>
 <div class="paragraph">
 <p><strong>Q.</strong> What should I do if the DRAGEN job fails?</p>
@@ -2207,7 +2183,7 @@ echo "No more jobs pending!"</pre>
 <div class="title">Figure 8. Accessing logs from the AWS Batch console</div>
 </div>
 <div class="paragraph">
-<p>When you run a DRAGEN job, you use the --output-directory parameter to specify an S3 output bucket, as described in <a href="#step-4.-test-the-deployment">step 4</a>. If the DRAGEN job fails, more information about the failure is provided in the DRAGEN process output log, which is uploaded to the S3 bucket you specified. Look for the object in the S3 bucket that has the key name “dragen_log__timestamp_.txt” for the output log.</p>
+<p>When you run a DRAGEN job, you use the --output-directory parameter to specify an S3 output bucket, as described in <a href="#step-4.-test-the-deployment" target="_blank" rel="noopener">step 4</a>. If the DRAGEN job fails, more information about the failure is provided in the DRAGEN process output log, which is uploaded to the S3 bucket you specified. Look for the object in the S3 bucket that has the key name “dragen_log__timestamp_.txt” for the output log.</p>
 </div>
 <div class="paragraph">
 <p>Generally, DRAGEN process logs will give adequate information about failures, but if you need further help, please contact Illumina at <a href="mailto:techsupport@illumina.com">techsupport@illumina.com</a>.</p>
@@ -2218,7 +2194,7 @@ echo "No more jobs pending!"</pre>
 <h2 id="github-repository">GitHub Repository</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>You can visit our <a href="https://fwd.aws/be98B">GitHub repository</a> to download the templates and scripts for this Quick Start, to post your comments, and to share your customizations with others. The steps to clone the GitHub repository for customization is documented in the <a href="https://aws-quickstart.github.io/option1.html">Quick Start Contributor’s Guide</a>.</p>
+<p>You can visit our <a href="https://fwd.aws/be98B" target="_blank" rel="noopener">GitHub repository</a> to download the templates and scripts for this Quick Start, to post your comments, and to share your customizations with others. The steps to clone the GitHub repository for customization is documented in the <a href="https://aws-quickstart.github.io/option1.html" target="_blank" rel="noopener">Quick Start Contributor’s Guide</a>.</p>
 </div>
 </div>
 </div>
@@ -2258,10 +2234,10 @@ echo "No more jobs pending!"</pre>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://precision.fda.gov/challenges/1/view/results">PrecisionFDA Hidden Treasures – Warm Up</a></p>
+<p><a href="https://precision.fda.gov/challenges/1/view/results" target="_blank" rel="noopener">PrecisionFDA Hidden Treasures – Warm Up</a></p>
 </li>
 <li>
-<p><a href="https://blog.dnanexus.com/2018-03-08-how-to-train-your-dragen-evaluating-and-improving-edico-genomes-rapid-wgs-tools/">How to Train Your DRAGEN – Evaluating and Improving Edico Genome&#8217;s Rapid WGS Tools</a></p>
+<p><a href="https://blog.dnanexus.com/2018-03-08-how-to-train-your-dragen-evaluating-and-improving-edico-genomes-rapid-wgs-tools/" target="_blank" rel="noopener">How to Train Your DRAGEN – Evaluating and Improving Edico Genome&#8217;s Rapid WGS Tools</a></p>
 </li>
 </ul>
 </div>
