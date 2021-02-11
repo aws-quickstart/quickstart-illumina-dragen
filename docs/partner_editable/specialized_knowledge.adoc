@@ -1,7 +1,7 @@
 //[[specialized-knowledge]]
 //=== Specialized Knowledge
 
-Before you deploy this Quick Start, we recommend that you become familiar with the following AWS services. (If you are new to AWS, see https://aws.amazon.com/getting-started/[Getting Started with AWS^].)
+Before you deploy this Quick Start, we recommend that you become familiar with the following AWS services.
 
 * https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEBS.html[Amazon Elastic Block Store (Amazon EBS^])
 * https://aws.amazon.com/documentation/ec2/[Amazon EC2^]

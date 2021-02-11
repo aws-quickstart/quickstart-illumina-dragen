@@ -19,239 +19,149 @@ Most of the options function exactly as they are described in the guide. However
 In the following sections, we’ve provided instructions for running an end-to-end {partner-product-short-name} job using both methods (AWS CLI and console). In this example, the {partner-product-short-name} job handles mapping, aligning, sorting, deduplication, and variant calling. An input dataset with a paired FASTQ file is used to generate a variant call format (VCF) output file.
 
 [[option-1-use-the-aws-cli]]
-==== Option 1: Use the AWS CLI
+=== Option 1: Use the AWS CLI
 
 The simplest way to run a {partner-product-short-name} job by using the AWS CLI is to create an input JSON file that describes the job. Here’s an example of a JSON input file named e2e-job.json:
 
-....
+```
 {
-
-"jobName": "e2e-job",
-
-"jobQueue": "dragen-queue",
-
-"jobDefinition": "dragen",
-
-"containerOverrides": {
-
-"vcpus": 16,
-
-"memory": 120000,
-
-"command": [
-
-"-f", "-r", "s3://<bucket/path-to-ref-ht>",
-
-"-1", "s3://<bucket/path-to-file/file1_1.fastq.gz>",
-
-"-2", "s3://<bucket/path-to-file/file1_2.fastq.gz>",
-
-"--RGID", "1",
-
-"--RGSM", <RGSM>,
-
-"--enable-bam-indexing", "true",
-
-"--enable-map-align-output", "true",
-
-"--enable-sort", "true",
-
-"--output-file-prefix", <PREFIX>,
-
-"--enable-map-align", "true",
-
-"--output-format", "BAM",
-
-"--output-directory", "s3://<bucket/path-to-output/>",
-
-"--enable-variant-caller", "true"
-
-]
-
-},
-
-"retryStrategy": {
-
-"attempts": 1
-
+    "jobName": "e2e-job",
+    "jobQueue": "dragen-queue",
+    "jobDefinition": "dragen",
+    "containerOverrides": {
+        "vcpus": 16,
+        "memory": 120000,
+        "command": [
+            "-f", "-r", "s3://<bucket/path-to-ref-ht>",
+            "-1", "s3://<bucket/path-to-file/file1_1.fastq.gz>",
+            "-2", "s3://<bucket/path-to-file/file1_2.fastq.gz>",
+            "--RGID", "1",
+            "--RGSM", <RGSM>,
+            "--enable-bam-indexing", "true",
+            "--enable-map-align-output", "true",
+            "--enable-sort", "true",
+            "--output-file-prefix", <PREFIX>,
+            "--enable-map-align", "true",
+            "--output-format", "BAM",
+            "--output-directory", "s3://<bucket/path-to-output/>",
+            "--enable-variant-caller", "true"
+        ]
+    },
+    "retryStrategy": {
+        "attempts": 1
+    }
 }
+```
 
-}
-....
+You can then launch the job from the command line by using the https://docs.aws.amazon.com/cli/latest/reference/batch/submit-job.html[submit-job^] command and specifying the e2e-job.json file as input:
 
-You can then launch the job from the command line by using the https://docs.aws.amazon.com/cli/latest/reference/batch/submit-job.html[submit-job] command and specifying the e2e-job.json file as input:
-
-//> aws batch submit-job --cli-input-json file://e2e-job.json
-
-....
+```
 aws batch submit-job --cli-input-json file://e2e-job.json
-....
+```
 
-You can submit multiple Batch jobs from the CLI. Here is an example with two JSON input files named e2e-job1.json and e2e-job2.json. :
+You can submit multiple Batch jobs from the CLI. Here is an example with two JSON input files named `e2e-job1.json` and `e2e-job2.json`.
 
-....
+```
 {
+    "jobName": "e2e-job1",
+    "jobQueue": "dragen-queue",
+    "jobDefinition": "dragen",
+    "containerOverrides": {
+        "vcpus": 16,
+        "memory": 120000,
+        "command": [
+            "-f", "-r", "s3://<bucket/path-to-ref-ht>",
+            "-1", "s3://<bucket/path-to-file/file1_1.fastq.gz>",
+            "-2", "s3://<bucket/path-to-file/file1_2.fastq.gz>",
+            "--RGID", "1",
+            "--RGSM", <RGSM>,
+            "--enable-bam-indexing", "true",
+            "--enable-map-align-output", "true",
+            "--enable-sort", "true",
+            "--output-file-prefix", <PREFIX>,
+            "--enable-map-align", "true",
+            "--output-format", "BAM",
+            "--output-directory", "s3://<bucket/path-to-output/>",
+            "--enable-variant-caller", "true"
+        ]
+    },
+    "retryStrategy": {
+        "attempts": 1
+    }
+}
+```
 
+```
 {
-
-"jobName": "e2e-job1",
-
-"jobQueue": "dragen-queue",
-
-"jobDefinition": "dragen",
-
-"containerOverrides": {
-
-"vcpus": 16,
-
-"memory": 240000,
-
-"command": [
-
-"-f", "-r", "s3://<bucket/path-to-ref-ht>",
-
-"-1", "s3://<bucket/path-to-file/file1_1.fastq.gz>",
-
-"-2", "s3://<bucket/path-to-file/file1_2.fastq.gz>",
-
-"--RGID", "1",
-
-"--RGSM", <RGSM>,
-
-"--enable-bam-indexing", "true",
-
-"--enable-map-align-output", "true",
-
-"--enable-sort", "true",
-
-"--output-file-prefix", <PREFIX>,
-
-"--enable-map-align", "true",
-
-"--output-format", "BAM",
-
-"--output-directory", "s3://<bucket/path-to-output/>",
-
-"--enable-variant-caller", "true"
-
-]
-
-},
-
-"retryStrategy": {
-
-"attempts": 1
-
+    "jobName": "e2e-job2",
+    "jobQueue": "dragen-queue",
+    "jobDefinition": "dragen",
+    "containerOverrides": {
+        "vcpus": 16,
+        "memory": 120000,
+        "command": [
+            "-f", "-r", "s3://<bucket/path-to-ref-ht>",
+            "-1", "s3://<bucket/path-to-file/file1_1.fastq.gz>",
+            "-2", "s3://<bucket/path-to-file/file1_2.fastq.gz>",
+            "--RGID", "1",
+            "--RGSM", <RGSM>,
+            "--enable-bam-indexing", "true",
+            "--enable-map-align-output", "true",
+            "--enable-sort", "true",
+            "--output-file-prefix", <PREFIX>,
+            "--enable-map-align", "true",
+            "--output-format", "BAM",
+            "--output-directory", "s3://<bucket/path-to-output/>",
+            "--enable-variant-caller", "true"
+        ]
+    },
+    "retryStrategy": {
+        "attempts": 1
+    }
 }
-
-}
-....
-
-....
-{
-
-{
-
-"jobName": "e2e-job2",
-
-"jobQueue": "dragen-queue",
-
-"jobDefinition": "dragen",
-
-"containerOverrides": {
-
-"vcpus": 16,
-
-"memory": 240000,
-
-"command": [
-
-"-f", "-r", "s3://<bucket/path-to-ref-ht>",
-
-"-1", "s3://<bucket/path-to-file/file2_1.fastq.gz>",
-
-"-2", "s3://<bucket/path-to-file/file2_2.fastq.gz>",
-
-"--RGID", "1",
-
-"--RGSM", <RGSM>,
-
-"--enable-bam-indexing", "true",
-
-"--enable-map-align-output", "true",
-
-"--enable-sort", "true",
-
-"--output-file-prefix", <PREFIX>,
-
-"--enable-map-align", "true",
-
-"--output-format", "BAM",
-
-"--output-directory", "s3://<bucket/path-to-output/>",
-
-"--enable-variant-caller", "true"
-
-]
-
-},
-
-"retryStrategy": {
-
-"attempts": 1
-
-}
-
-}
-....
+```
 
 The following bash script can be used to submit the above two jobs.
 
-....
+```
 #!/bin/bash
-
 echo "Starting first job ..."
-
 aws batch submit-job --cli-input-json e2e-job1.json > ./job-output-log
-
 echo "Starting second job ..."
-
-aws batch submit-job --cli-input-json e2e-job1.json > ./job-output-log
-
+aws batch submit-job --cli-input-json e2e-job1.json >> ./job-output-log
 echo "No more jobs pending!"
-....
+```
 
 
 
 [[option-2-use-the-aws-batch-console]]
-==== Option 2: Use the AWS Batch Console
+=== Option 2: Use the AWS Batch Console
 
 To run the {partner-product-short-name} job from the console:.
 
-1.  Open the AWS Batch console at https://console.aws.amazon.com/batch/
-
-1.  From the navigation bar, choose the AWS Region you used for the Quick Start deployment.
-2.  In the navigation pane, choose *Jobs*, *Submit new job*.
-3.  Fill out these fields, as shown in Figure 6:
-
-* *Job name*: Enter a unique name for the job.
-* *Job definition*: Choose the {partner-product-short-name} job definition that was created by the Quick Start and displayed in the *Outputs* tab of the AWS CloudFormation console in step 3(9).
-* *Job queue*: Choose dragen-queue, which was created by the Quick Start.
-* *Job type*: Choose *Single*.
-* *Command*: Specify the {partner-product-short-name}-specific parameters shown in the JSON command array in link:#option-1-use-the-aws-cli[option 1^].
-* *vCPUs, Memory, Job attempts, Execution timeout*: Keep the defaults that are specified in the job definition.
+1.  Open the AWS Batch console at https://console.aws.amazon.com/batch/[https://console.aws.amazon.com/batch/^]
+2.  From the navigation bar, choose the AWS Region you used for the Quick Start deployment.
+3.  In the navigation pane, choose *Jobs*, *Submit new job*.
+4.  Fill out these fields, as shown in <<runjob>>:
 +
-For more information, see the https://docs.aws.amazon.com/batch/latest/userguide/submit_job.html[AWS Batch documentation].
-
-1.  Choose *Submit job*.
-
+ ** *Job name*: Enter a unique name for the job.
+ ** *Job definition*: Choose the {partner-product-short-name} job definition that was created by the Quick Start and displayed in the *Outputs* tab of the AWS CloudFormation console in step 3(9).
+ ** *Job queue*: Choose dragen-queue, which was created by the Quick Start.
+ ** *Job type*: Choose *Single*.
+ ** *Command*: Specify the {partner-product-short-name}-specific parameters shown in the JSON command array in link:#option-1-use-the-aws-cli[option 1].
+ ** *vCPUs, Memory, Job attempts, Execution timeout*: Keep the defaults that are specified in the job definition.
++
+For more information, see the https://docs.aws.amazon.com/batch/latest/userguide/submit_job.html[AWS Batch documentation^].
++
+5.  Choose *Submit*.
++
+:xrefstyle: short
 [#runjob]
 .Running a {partner-product-short-name} job from the AWS Batch console
 [link=images/image5.png]
 image::../images/image5.png[runjob,width=733,height=427]
-
-
-1.  Monitor the job status in the AWS Batch window to see if it succeeded or failed. For more information about job states and exit codes, see the https://docs.aws.amazon.com/batch/latest/userguide/job_states.html[AWS Batch documentation^].
++
+6.  Monitor the job status in the AWS Batch window to see if it succeeded or failed. For more information about job states and exit codes, see the https://docs.aws.amazon.com/batch/latest/userguide/job_states.html[AWS Batch documentation^].
 
 
 [[best-practices-using-dragen-on-aws]]
@@ -264,14 +174,3 @@ For simplicity, we recommend that you create your S3 bucket in the AWS Region th
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
 {partner-product-short-name} doesn’t enforce any specific security requirements. However, for security, this Quick Start deploys {partner-product-short-name} into private subnets that aren’t externally reachable from outside the VPC (they can access the internet only through NAT gateways). Please consult your IT and security teams for image hardening, encryption, and other security requirements.
-
-[[document-revisions]]
-== Document Revisions
-
-[cols=",,",options="header",]
-|=======================================
-|Date |Change |In sections
-|February 2021 |Updated documentation for {partner-product-short-name} v3.7.5 |
-|May 2020 |Updated documentation links |
-|October 2018 |Initial publication |—
-|=======================================

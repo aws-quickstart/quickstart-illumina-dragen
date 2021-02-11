@@ -4,7 +4,7 @@
 
 Deploying this Quick Start for a new virtual private cloud (VPC) with *default parameters* builds the following {partner-product-short-name} environment in the AWS Cloud.
 
-
+:xrefstyle: short
 [#architecture]
 .Quick Start architecture for {partner-product-short-name} on AWS
 image::../images/image1.png[architecture,width=733,height=427]

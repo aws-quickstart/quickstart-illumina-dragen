@@ -17,35 +17,31 @@ For additional information, see https://docs.aws.amazon.com/AWSCloudFormation/la
 
 *Q.* How can I find out whether my {partner-product-short-name} job has completed?
 
-*A.* When you submit a {partner-product-short-name} job by using the AWS CLI or the AWS Batch console, as described previously in link:#step-4.-test-the-deployment[step 4^], you will get an AWS Batch job ID. You should monitor the job status to check for completion. When the job has completed successfully, its job state will be displayed as SUCCEEDED and the outputs will be uploaded into the output S3 bucket location that is specified in the job. For more information about job states, see the https://docs.aws.amazon.com/batch/latest/userguide/job_states.html[AWS Batch documentation^].
+*A.* When you submit a {partner-product-short-name} job by using the AWS CLI or the AWS Batch console, as described previously in link:#_test_the_deployment[Test the deployment] section, you will get an AWS Batch job ID. You should monitor the job status to check for completion. When the job has completed successfully, its job state will be displayed as SUCCEEDED and the outputs will be uploaded into the output S3 bucket location that is specified in the job. For more information about job states, see the https://docs.aws.amazon.com/batch/latest/userguide/job_states.html[AWS Batch documentation^].
 
 *Q.* What should I do if the {partner-product-short-name} job fails?
 
-*A.* If your {partner-product-short-name} job fails, more information will be available in Amazon CloudWatch Logs. You can access the log either from the CloudWatch console (see Figure 7) or through the *Log stream name* link in the AWS Batch job (see Figure 8).
+*A.* If your {partner-product-short-name} job fails, more information will be available in Amazon CloudWatch Logs. You can access the log either from the CloudWatch console (see <<logCW>>) or through the *Log stream name* link in the AWS Batch job (see <<logBatch>>).
 
 //In these examples, the user didn’t specify an S3 bucket for the *Genomics Data Bucket* parameter when they deployed the Quick Start, which caused the error:
 
 //20:36:03. Error: Output S3 location not specified!
 
+:xrefstyle: short
 [#logCW]
 .Accessing logs from the CloudWatch console
 [link=images/image6.png]
 image::../images/image6.png[logCW,width=733,height=427]
 
+:xrefstyle: short
 [#logBatch]
 .Accessing logs from the AWS Batch console
 [link=images/image7.png]
 image::../images/image7.png[logBatch,width=733,height=427]
 
-When you run a {partner-product-short-name} job, you use the --output-directory parameter to specify an S3 output bucket, as described in link:#step-4.-test-the-deployment[step 4^]. If the {partner-product-short-name} job fails, more information about the failure is provided in the {partner-product-short-name} process output log, which is uploaded to the S3 bucket you specified. Look for the object in the S3 bucket that has the key name “dragen_log__timestamp_.txt” for the output log.
+When you run a {partner-product-short-name} job, you use the `--output-directory` parameter to specify an S3 output bucket, as described in link:#_test_the_deployment[Test the deployment] section. If the {partner-product-short-name} job fails, more information about the failure is provided in the {partner-product-short-name} process output log, which is uploaded to the S3 bucket you specified. Look for the object in the S3 bucket that has the key name `dragen_log__<timestamp>.txt` for the output log.
 
 Generally, {partner-product-short-name} process logs will give adequate information about failures, but if you need further help, please contact {partner-company-name} at techsupport@illumina.com.
-
-
-[[github-repository]]
-== GitHub Repository
-
-You can visit our https://fwd.aws/be98B[GitHub repository^] to download the templates and scripts for this Quick Start, to post your comments, and to share your customizations with others. The steps to clone the GitHub repository for customization is documented in the https://aws-quickstart.github.io/option1.html[Quick Start Contributor’s Guide^].
 
 [[additional-resources]]
 == Additional Resources
@@ -74,8 +70,3 @@ https://ilmn-dragen-giab-samples.s3.amazonaws.com/Hashtable/hg19-cnv-anchored.v8
 * Small data samples for testing
   - https://ilmn-dragen-giab-samples.s3.amazonaws.com/WES/HG002/NA24385-AJ-Son-R1-NS_S33_L001_R1_001.fastq.gz
   - https://ilmn-dragen-giab-samples.s3.amazonaws.com/WES/HG002/NA24385-AJ-Son-R1-NS_S33_L001_R2_001.fastq.gz
-
-*Quick Start reference deployments*
-
-* AWS Quick Start home page +
-https://aws.amazon.com/quickstart/
