@@ -2,6 +2,9 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: This template deploys an environment to run Edico Genome's DRAGEN software using AWS Batch. (qs-1oqea6246)
 
 Metadata:
+  QuickStartDocumentation:
+    EntrypointName: "Parameters for deploying into a new VPC"
+    Order: "1"
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -215,7 +218,7 @@ Resources:
     Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: !Sub
-        - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/dragen.yaml
+        - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/dragen.template.yaml
         - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
           S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
