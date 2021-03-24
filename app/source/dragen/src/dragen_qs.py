@@ -96,7 +96,7 @@ def exec_cmd(cmd, shell=True):
 #
 class DragenJob(object):
     DRAGEN_PATH = '/opt/edico/bin/dragen'
-    D_HAUL_UTIL = 'python /root/quickstart/d_haul'
+    D_HAUL_UTIL = 'python3 /root/quickstart/d_haul'
     DRAGEN_LOG_FILE_NAME = 'dragen_log_%d.txt'
     DEFAULT_DATA_FOLDER = '/ephemeral/'
     CLOUD_SPILL_FOLDER = '/ephemeral/'
@@ -129,6 +129,30 @@ class DragenJob(object):
 
         self.vc_depth_url = None        # Determine from the ----vc-depth-intervals-bed
         self.vc_depth_index = -1
+
+        self.cnv_normals_list_url = None  # Determine from  --cnv-normals-list option
+        self.cnv_normals_index = -1
+
+        self.cnv_target_bed_url = None    # Determine from --cnv-target-bed option
+        self.cnv_target_index = -1
+
+        self.dbsnp_url = None             # Determine from --dbsnp option
+        self.dbsnp_index = -1
+
+        self.cosmic_url = None            # Determine from --cosmic option
+        self.cosmic_index = -1
+
+        self.qc_cross_cont_vcf_url = None    # Determine from --qc-cross-cont-vcf-url
+        self.qc_cross_cont_vcf_index = -1
+
+        self.qc_coverage_region_1_url = None  # Determine from --qc-coverage-region-1
+        self.qc_coverage_region_1_index = -1
+
+        self.qc_coverage_region_2_url = None  # Determine from --qc-coverage-region-2
+        self.qc_coverage_region_2_index = -1
+
+        self.qc_coverage_region_3_url = None  # Determine from --qc-coverage-region-3
+        self.qc_coverage_region_3_index = -1
 
         # Output info
         self.output_s3_url = None       # Determine from the --output-directory field
@@ -185,6 +209,47 @@ class DragenJob(object):
         if opt_no >= 0:
             self.vc_depth_url = self.orig_args[opt_no + 1]
             self.vc_depth_index = opt_no + 1
+
+        # --cnv-normals-list : URL for CNV normals list
+        opt_no = find_arg_in_list(self.orig_args, '--cnv-normals-list')
+        if opt_no >= 0:
+            self.cnv_normals_list_url = self.orig_args[opt_no + 1]
+            self.cnv_normals_index = opt_no + 1
+
+        opt_no = find_arg_in_list(self.orig_args, '--cnv-target-bed')
+        if opt_no >= 0:
+            self.cnv_target_bed_url = self.orig_args[opt_no + 1]
+            self.cnv_target_index = opt_no + 1
+
+        opt_no = find_arg_in_list(self.orig_args, '--dbsnp')
+        if opt_no >= 0:
+            self.dbsnp_url = self.orig_args[opt_no + 1]
+            self.dbsnp_index = opt_no + 1
+
+        opt_no = find_arg_in_list(self.orig_args, '--cosmic')
+        if opt_no >= 0:
+            self.cosmic_url = self.orig_args[opt_no + 1]
+            self.cosmic_index = opt_no + 1
+
+        opt_no = find_arg_in_list(self.orig_args, '--qc-cross-cont-vcf')
+        if opt_no >= 0:
+            self.qc_cross_cont_vcf_url = self.orig_args[opt_no + 1]
+            self.qc_cross_cont_vcf_index = opt_no + 1
+
+        opt_no = find_arg_in_list(self.orig_args, '--qc-coverage-region-1')
+        if opt_no >= 0:
+            self.qc_coverage_region_1_url = self.orig_args[opt_no + 1]
+            self.qc_coverage_region_1_index = opt_no + 1
+
+        opt_no = find_arg_in_list(self.orig_args, '--qc-coverage-region-2')
+        if opt_no >= 0:
+            self.qc_coverage_region_2_url = self.orig_args[opt_no + 1]
+            self.qc_coverage_region_2_index = opt_no + 1
+
+        opt_no = find_arg_in_list(self.orig_args, '--qc-coverage-region-3')
+        if opt_no >= 0:
+            self.qc_coverage_region_3_url = self.orig_args[opt_no + 1]
+            self.qc_coverage_region_3_index = opt_no + 1
 
         return
 
@@ -388,6 +453,117 @@ class DragenJob(object):
 
             self.new_args[self.vc_depth_index] = target_path
 
+            # --cnv-normals-list file download
+        if self.cnv_normals_list_url:
+            filename = self.cnv_normals_list_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.cnv_normals_list_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                    # Try to download using http
+                self.exec_url_download(self.cnv_normals_list_url, self.input_dir)
+
+            self.new_args[self.cnv_normals_list_index] = target_path
+
+           # --cnv-target-bed file download
+        if self.cnv_target_bed_url:
+            filename = self.cnv_target_bed_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.cnv_target_bed_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                    # Try to download using http
+                self.exec_url_download(self.cnv_target_bed_url, self.input_dir)
+
+            self.new_args[self.cnv_target_bed_index] = target_path
+
+           # --dbsnp file download
+        if self.dbsnp_url:
+            filename = self.dbsnp_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.dbsnp_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                    # Try to download using http
+                self.exec_url_download(self.dbsnp_url, self.input_dir)
+
+            self.new_args[self.dbsnp_index] = target_path
+
+           # --cosmic file download
+        if self.cosmic_url:
+            filename = self.cosmic_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.cosmic_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                    # Try to download using http
+                self.exec_url_download(self.cosmic_url, self.input_dir)
+
+            self.new_args[self.cosmic_index] = target_path
+
+           # --qc-cross-cont-vcf file download
+        if self.qc_cross_cont_vcf_url:
+            filename = self.qc_cross_cont_vcf_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.qc_cross_cont_vcf_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                    # Try to download using http
+                self.exec_url_download(self.qc_cross_cont_vcf_url, self.input_dir)
+
+            self.new_args[self.qc_cross_cont_vcf_index] = target_path
+
+          # --qc-coverage-region-1 file download
+        if self.qc_coverage_region_1_url:
+            filename = self.qc_coverage_region_1_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.qc_coverage_region_1_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                    # Try to download using http
+                self.exec_url_download(self.qc_coverage_region_1_url, self.input_dir)
+
+            self.new_args[self.qc_coverage_region_1_index] = target_path
+
+            # --qc-coverage-region-2 file download
+        if self.qc_coverage_region_2_url:
+            filename = self.qc_coverage_region_2_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.qc_coverage_region_2_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                    # Try to download using http
+                self.exec_url_download(self.qc_coverage_region_2_url, self.input_dir)
+
+            self.new_args[self.qc_coverage_region_2_index] = target_path
+
+            # --qc-coverage-region-3 file download
+        if self.qc_coverage_region_3_url:
+            filename = self.qc_coverage_region_3_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.qc_coverage_region_3_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                 # Try to download using http
+                self.exec_url_download(self.qc_coverage_region_3_url, self.input_dir)
+
+            self.new_args[self.qc_coverage_region_3_index] = target_path
         return
 
     ########################################################################################
@@ -553,9 +729,9 @@ class DragenJob(object):
             sys.exit(self.global_exit_code)
 
         except SystemExit as inst:
-            if inst[0] != 0:  # System exit with exit code 0 is OK
-                printf("Caught SystemExit: Exiting with status %s" % inst[0])
-                sys.exit(inst[0])
+            if inst != 0:  # System exit with exit code 0 is OK
+                printf("Caught SystemExit: Exiting with status %s" % inst)
+                sys.exit(inst)
             else:
                 printf("Caught SystemExit: Exiting normally")
 
