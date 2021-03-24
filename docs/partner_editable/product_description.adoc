@@ -2,15 +2,14 @@
 // Briefly describe the software. Use consistent and clear branding.
 // Include the benefits of using the software on AWS, and provide details on usage scenarios.
 
-This Quick Start was created to get you up and running with {partner-product-short-name} Complete Suite (CS) on AWS.
-{partner-product-short-name} CS offerings enable ultra-rapid analysis of next-generation sequencing (NGS) data, and significantly reduce the time
+This Quick Start was created to get you up and running with {partner-product-short-name} Bio-It Platform on AWS.
+{partner-product-short-name} offerings enable ultra-rapid analysis of next-generation sequencing (NGS) data, and significantly reduce the time
 required to analyze genomic data while also improving accuracy.
-
-{partner-product-short-name} CS includes http://edicogenome.com/pipelines/[many bioinformatics pipelines^] that
-harness the power of the {partner-product-short-name} platform and provide highly optimized algorithms for mapping, aligning, sorting,
-duplicate marking, and haplotype variant calling. These pipelines include {partner-product-short-name} Germline V2, {partner-product-short-name} Somatic V2
-(Tumor and Tumor/Normal), {partner-product-short-name} Virtual Long Read Detection (VLRD), {partner-product-short-name} RNA Gene Fusion, {partner-product-short-name} Joint Genotyping,
-and GATK Best Practices. The {partner-product-short-name} Germline V2 and {partner-product-short-name} Somatic V2 pipelines have improved accuracy in calling single
+It includes bioinformatics pipelines that
+provide highly optimized algorithms for mapping, aligning, sorting,
+duplicate marking, and haplotype variant calling. These pipelines include Germline, Somatic (tumor and tumor/normal),
+RNA, Single Cell RNA, Methylation, Joint Genotyping, and DRAGEN-GATK.
+The {partner-product-short-name} mapping and variant calling pipelines have improved accuracy in calling single
 nucleotide polymorphisms (SNPs) and small insertions and deletions (INDELs) compared with industry standards. For
-performance results, see the https://precision.fda.gov/challenges/1/view/results[PrecisionFDA Hidden Treasures – Warm Up^]
-challenge and the https://blog.dnanexus.com/2018-03-08-how-to-train-your-dragen-evaluating-and-improving-edico-genomes-rapid-wgs-tools/[DRAGEN evaluation^] on the _Inside DNAnexus_ blog.
+performance results, see the https://www.illumina.com/science/genomics-research/dragen-wins-precisionfda-challenge-showcase-accuracy-gains.html[PrecisionFDA Truth Challenge V2^],
+where DRAGEN won best performance in all regions and difficult-to-map regions categories.

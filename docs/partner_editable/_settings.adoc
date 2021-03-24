@@ -1,5 +1,5 @@
 :quickstart-project-name: quickstart-illumina-dragen
-:partner-product-name: Illumina DRAGEN
+:partner-product-name: Illumina DRAGEN Bio-It Platform
 :partner-product-short-name: DRAGEN
 :partner-company-name: Illumina
 :doc-month: February
