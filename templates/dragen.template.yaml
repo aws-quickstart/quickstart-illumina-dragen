@@ -186,6 +186,7 @@ Rules:
         - - us-east-1
           - us-west-2
           - eu-west-1
+          - ap-southeast-2
         - !Ref AWS::Region
       AssertDescription: This Quick Start utilizes DRAGEN Marketplace AMI which is only available
         in the US East (N. Virginia), US West (Oregon), EU (Ireland) regions. Please launch the stack in one of these
