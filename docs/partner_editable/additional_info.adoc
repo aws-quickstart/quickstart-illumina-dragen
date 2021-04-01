@@ -168,7 +168,8 @@ image::../images/image5.png[runjob,width=733,height=427]
 == Best practices for using {partner-product-short-name}  on AWS
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
 
-For simplicity, we recommend that you create your S3 bucket in the AWS Region that you are deploying the Quick Start into. In some use cases, you might need to attach EBS volumes to instances. The {partner-product-short-name} guides are available as links from the https://aws.amazon.com/marketplace/pp/B07CZ3F5HY[{partner-product-short-name} Complete Suite webpage^] in AWS Marketplace (see the _Usage Information_ section on that page).
+For simplicity, we recommend that you create your S3 bucket in the AWS Region that you are deploying the Quick Start into. In some use cases, as outlined in the https://support.illumina.com/downloads/illumina-dragen-bio-it-platform-3-7-user-guide.html[DRAGEN User Guide^] on the Illumina website you might need to attach EBS volumes to instances. 
+The {partner-product-short-name} guides are available as links from the https://aws.amazon.com/marketplace/pp/B07CZ3F5HY[{partner-product-short-name} Bio-IT Platform webpage^] in AWS Marketplace (see the _Usage Information_ section on that page).
 
 == Security
 // Provide post-deployment best practices for using the technology on AWS, including considerations such as migrating data, backups, ensuring high performance, high availability, etc. Link to software documentation for detailed information.
