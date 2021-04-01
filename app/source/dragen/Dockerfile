@@ -32,7 +32,7 @@ RUN yum -y install \
 RUN curl --silent \
     --show-error \
     --retry 5 \
-    https://bootstrap.pypa.io/2.7/get-pip.py | python
+    https://bootstrap.pypa.io/pip/2.7/get-pip.py | python
 
 RUN pip install --upgrade pip && \
   pip install future && \
