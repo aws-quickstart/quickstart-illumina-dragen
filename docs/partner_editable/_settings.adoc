@@ -2,7 +2,7 @@
 :partner-product-name: Illumina DRAGEN Bio-It Platform
 :partner-product-short-name: DRAGEN
 :partner-company-name: Illumina
-:doc-month: February
+:doc-month: April
 :doc-year: 2021
 :partner-contributors: Illumina
 :quickstart-contributors: Will Quiles, Olivia Choudhury, Aaron Friedman, and Vinod Shukla, AWS Quick Start team
