@@ -1,0 +1,6 @@
+//[[overview]]
+//== Overview
+
+This Quick Start guide provides step-by-step instructions for deploying Dynamic Read Analysis for GENomics ({partner-product-short-name}) on the AWS Cloud.
+
+The Quick Start is for users who would like to conduct bioinformatic analysis on next-generation sequencing data using {partner-product-short-name} on AWS.
