@@ -5,6 +5,7 @@
 This Quick Start was created to get you up and running with {partner-product-short-name} Bio-It Platform on AWS.
 {partner-product-short-name} offerings enable ultra-rapid analysis of next-generation sequencing (NGS) data, and significantly reduce the time
 required to analyze genomic data while also improving accuracy.
+
 It includes bioinformatics pipelines that
 provide highly optimized algorithms for mapping, aligning, sorting,
 duplicate marking, and haplotype variant calling. These pipelines include Germline, Somatic (tumor and tumor/normal),
