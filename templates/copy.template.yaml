@@ -5,12 +5,18 @@ Parameters:
   QSS3BucketName:
     Description: The Template Bucket Name.
     Type: String
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
+    Type: String
   QSS3KeyPrefix:
     Description: The Template Bucket Prefix.
     Type: String
   DestinationBucket:
     Type: String
     Default: ""
+Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
 Resources:
   CopyRole:
     Type: AWS::IAM::Role
@@ -36,7 +42,10 @@ Resources:
             Effect: Allow
             Action: 
             - s3:GetObject
-            Resource: !Sub arn:aws:s3:::${QSS3BucketName}/${QSS3KeyPrefix}*
+            Resource:
+              - !Sub
+                - arn:${AWS::Partition}:s3:::${S3Bucket}/${QSS3KeyPrefix}*
+                - S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
           - Sid: S3Put
             Effect: Allow
             Action:
@@ -52,7 +61,7 @@ Resources:
       ServiceToken: !GetAtt CopyZipsFunction.Arn
       DestRegion: !Ref AWS::Region
       DestBucket: !Ref DestinationBucket
-      SourceBucket: !Ref QSS3BucketName
+      SourceBucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Prefix: !Ref QSS3KeyPrefix
       Objects: 
       - "app/packages/dragen/dragen.zip"

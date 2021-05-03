@@ -1,0 +1,2 @@
+
+This Quick Start requires a subscription to the Amazon Machine Image (AMI) for https://aws.amazon.com/marketplace/pp/B07CZ3F5HY[{partner-product-short-name} Bio-IT platform^], which is available with per-hour pricing from AWS Marketplace.

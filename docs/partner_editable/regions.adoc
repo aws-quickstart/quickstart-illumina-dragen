@@ -1,0 +1,8 @@
+This Quick Start supports the following Regions:
+
+* us-east-1, US East (N. Virginia)
+* us-west-1, US West (N. California)
+* us-west-2, US West (Oregon)
+* ap-southeast-2, Asia Pacific (Sydney)
+
+NOTE: This Quick Start uses https://aws.amazon.com/ec2/instance-types/f1/[Amazon EC2 F1 instances^], which aren’t available in all AWS Regions. For a list of supported regions, see https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services[AWS Regional Table^] webpage.

@@ -25,11 +25,15 @@ RUN yum -y install \
 # Install necessary standard packages
 # Note: 'easy_install' used to workaround docker/kernel issue (https://github.com/moby/moby/issues/12327)
 RUN yum -y install \
-  python-devel \
-  python-pip \
-  tree && \
-  yum clean all && \
-  pip install --upgrade pip && \
+    python3-devel \
+    tree && \
+    yum clean all
+RUN curl --silent \
+    --show-error \
+    --retry 5 \
+    https://bootstrap.pypa.io/get-pip.py | python3
+
+RUN pip install --upgrade pip && \
   pip install future && \
   pip install six && \
   pip install requests && \
@@ -49,5 +53,5 @@ WORKDIR "/root/quickstart/"
 RUN tree /root/quickstart/
 
 # Default behaviour. Over-ride with --entrypoint on docker run cmd line
-ENTRYPOINT ["/root/quickstart/dragen_qs.py"]
+ENTRYPOINT ["python3","/root/quickstart/dragen_qs.py"]
 CMD []

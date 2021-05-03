@@ -2,6 +2,15 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: This template deploys an environment to run Edico Genome's DRAGEN software using AWS Batch. (qs-1oqea624b)
 
 Metadata:
+  QuickStartDocumentation:
+    EntrypointName: "Parameters for deploying into an existing VPC"
+    Order: "1"
+  AWSAMIRegionMap:
+    Filters:
+      DRAGEN:
+        owner-alias: aws-marketplace
+        product-code: 9uotaksivr7km6tn0wa0sy2fw
+        product-code.type: marketplace
   AWS::CloudFormation::Interface:
     ParameterGroups:
     - Label:
@@ -25,6 +34,7 @@ Metadata:
         default: AWS Quick Start Configuration
       Parameters:
       - QSS3BucketName
+      - QSS3BucketRegion
       - QSS3KeyPrefix
     ParameterLabels:
       KeyPairName:
@@ -35,6 +45,8 @@ Metadata:
         default: Private Subnet 2 ID
       VPCID:
         default: VPC ID
+      QSS3BucketRegion:
+        default: Quick Start S3 bucket region
       QSS3KeyPrefix:
         default: Quick Start S3 Key Prefix
       QSS3BucketName:
@@ -57,24 +69,24 @@ Metadata:
 Mappings:
   AWSAMIRegionMap:
     AMI:
-      DRAGEN: dragen-completesuite-2.6.3-180508
+      DRAGEN: dragen-completesuite-*
     us-east-1:
-      DRAGEN: ami-0f12aca484bca27a5
+      DRAGEN: ami-0450d6b2b5504cef2
     us-west-2:
-      DRAGEN: ami-0af5c11ee441ce40f
+      DRAGEN: ami-03257cdf427d2397e
     eu-west-1:
-      DRAGEN: ami-0ba4b94467989e99a
+      DRAGEN: ami-0f4fa72160ccb0d27
+    ap-southeast-2:
+      DRAGEN: ami-0bd3c3cf35fa8ac30
 
 Parameters:
-  KeyPairName:
-    Type: AWS::EC2::KeyPair::KeyName
-    Description: Public/private key pairs allow you to securely connect to your instance after it launches.
   InstanceType:
     Type: String
     Description: Amazon EC2 instance type. DRAGEN requires an FPGA to run, so the instance type must be in the F1 instance family.
-    Default: f1.2xlarge
+    Default: f1.4xlarge
     AllowedValues:
     - f1.2xlarge
+    - f1.4xlarge
     - f1.16xlarge
   VPCID:
     Type: AWS::EC2::VPC::Id
@@ -94,6 +106,10 @@ Parameters:
     Description: S3 bucket name for the Quick Start assets. Quick Start bucket name
       can include numbers, lowercase letters, uppercase letters, and hyphens (-).
       It cannot start or end with a hyphen (-).
+    Type: String
+  QSS3BucketRegion:
+    Default: 'us-east-1'
+    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
     Type: String
   QSS3KeyPrefix:
     AllowedPattern: ^[0-9a-zA-Z-/]*$
@@ -163,8 +179,6 @@ Rules:
           - VpcId
         - Fn::RefAll: AWS::EC2::VPC::Id
       AssertDescription: All subnets must be in the VPC
-
-Rules:
   DRAGENSupportedRegionRule:
     Assertions:
     - Assert:
@@ -172,26 +186,37 @@ Rules:
         - - us-east-1
           - us-west-2
           - eu-west-1
+          - ap-southeast-2
         - !Ref AWS::Region
       AssertDescription: This Quick Start utilizes DRAGEN Marketplace AMI which is only available
         in the US East (N. Virginia), US West (Oregon), EU (Ireland) regions. Please launch the stack in one of these
         regions to continue.
 
+Conditions:
+  UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+
 Resources:
   DockerBucketRepository:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/docker-bucket-repository.yaml
+      TemplateURL: !Sub
+        - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/docker-bucket-repository.template.yaml
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
 
   CopyFiles:
     Type: AWS::CloudFormation::Stack
     DependsOn:
     - DockerBucketRepository
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/copy.yaml
+      TemplateURL: !Sub
+        - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/copy.template.yaml
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        QSS3BucketRegion: !Ref QSS3BucketRegion
         DestinationBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
 
   WaitHandleContainerBuild:
@@ -202,7 +227,10 @@ Resources:
     DependsOn:
     - CopyFiles
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/container-build.yaml
+      TemplateURL: !Sub
+        - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/container-build.template.yaml
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         ArtifactBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
         ArtifactKey: !Ref QSS3KeyPrefix
@@ -226,7 +254,10 @@ Resources:
     - ContainerBuild
     - WaitConditionContainerBuild
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/batch.yaml
+      TemplateURL: !Sub
+        - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/batch.template.yaml
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         GenomicsS3Bucket: !Ref GenomicsS3Bucket
         DragenDockerImage: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${DockerBucketRepository.Outputs.Repository}:dragen
@@ -278,12 +309,16 @@ Resources:
     DependsOn:
     - CleanupRole
     Properties:
-      TemplateURL: !Sub https://${QSS3BucketName}.s3.amazonaws.com/${QSS3KeyPrefix}templates/clean-bucket-repository.yaml
+      TemplateURL: !Sub
+        - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/clean-bucket-repository.template.yaml
+        - S3Region: !If [UsingDefaultBucket, !Ref 'AWS::Region', !Ref QSS3BucketRegion]
+          S3Bucket: !If [UsingDefaultBucket, !Sub '${QSS3BucketName}-${AWS::Region}', !Ref QSS3BucketName]
       Parameters:
         Bucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
         Repository: !GetAtt DockerBucketRepository.Outputs.Repository
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
+        QSS3BucketRegion: !Ref QSS3BucketRegion
         RoleArn: !GetAtt CleanupRole.Arn
 
 Outputs:

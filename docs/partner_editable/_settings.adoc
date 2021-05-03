@@ -1,0 +1,15 @@
+:quickstart-project-name: quickstart-illumina-dragen
+:partner-product-name: Illumina DRAGEN Bio-It Platform
+:partner-product-short-name: DRAGEN
+:partner-company-name: Illumina
+:doc-month: April
+:doc-year: 2021
+:partner-contributors: Illumina
+:quickstart-contributors: Will Quiles, Olivia Choudhury, Aaron Friedman, and Vinod Shukla, AWS Quick Start team
+:deployment_time: 15 minutes
+:default_deployment_region: us-east-1
+:parameters_as_appendix:
+:disable_requirements:
+:template_deterministic_ec2_instances:
+:marketplace_subscription: https://aws.amazon.com/marketplace/pp/Illumina-Inc-DRAGEN-Complete-Suite/B07CZ3F5HY
+:marketplace_listing_url: https://aws.amazon.com/marketplace/pp/Illumina-Inc-DRAGEN-Complete-Suite/B07CZ3F5HY

@@ -1,0 +1,25 @@
+
+//[[architecture]]
+//== Architecture
+
+Deploying this Quick Start for a new virtual private cloud (VPC) with *default parameters* builds the following {partner-product-short-name} environment in the AWS Cloud.
+
+:xrefstyle: short
+[#architecture]
+.Quick Start architecture for {partner-product-short-name} on AWS
+image::../images/image1.png[architecture,width=733,height=427]
+
+
+The Quick Start sets up the following:
+
+* A highly available architecture that spans two Availability Zones.*
+* A virtual private cloud (VPC) configured with public and private subnets according to AWS best practices. This provides the network architecture for {partner-product-short-name} deployment.*
+* An internet gateway to provide access to the internet.*
+* In the public subnets, managed NAT gateways to allow outbound internet access for resources in the private subnets.*
+* An AWS CodePipeline pipeline that builds a Docker image and uploads it into an Amazon Elastic Container Registry (Amazon ECR) repository that interfaces with AWS Batch and runs in the {partner-product-short-name} AMI.
+* Two AWS Batch compute environments: one for Amazon Elastic Compute Cloud (Amazon EC2) Spot instances and the other for On-Demand instances. In the default setting, On-Demand instances have been prioritized over Spot instances. In order to reduce computation cost, you can prioritize Spot instances over On-Demand instances by updating the compute environment order under the Job Queue option of AWS Batch in the console.
+* An AWS Batch job queue that prioritizes submission to the compute environment for Spot Instances to optimize for cost.
+* An AWS Batch job definition to run {partner-product-short-name}.
+* AWS Identity and Access Management (IAM) roles and policies for the AWS Batch jobs to run.
+
+*{sp}The template that deploys the Quick Start into an existing VPC skips the tasks marked by asterisks and prompts you for your existing VPC configuration.

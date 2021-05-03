@@ -1,0 +1,16 @@
+// Replace the content in <>
+// Briefly describe the software. Use consistent and clear branding.
+// Include the benefits of using the software on AWS, and provide details on usage scenarios.
+
+This Quick Start was created to get you up and running with {partner-product-short-name} Bio-It Platform on AWS.
+{partner-product-short-name} offerings enable ultra-rapid analysis of next-generation sequencing (NGS) data, and significantly reduce the time
+required to analyze genomic data while also improving accuracy.
+
+It includes bioinformatics pipelines that
+provide highly optimized algorithms for mapping, aligning, sorting,
+duplicate marking, and haplotype variant calling. These pipelines include Germline, Somatic (tumor and tumor/normal),
+RNA, Single Cell RNA, Methylation, Joint Genotyping, and DRAGEN-GATK.
+The {partner-product-short-name} mapping and variant calling pipelines have improved accuracy in calling single
+nucleotide polymorphisms (SNPs) and small insertions and deletions (INDELs) compared with industry standards. For
+performance results, see the https://www.illumina.com/science/genomics-research/dragen-wins-precisionfda-challenge-showcase-accuracy-gains.html[PrecisionFDA Truth Challenge V2^],
+where DRAGEN won best performance in all regions and difficult-to-map regions categories.
