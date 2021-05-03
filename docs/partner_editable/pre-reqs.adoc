@@ -9,7 +9,7 @@ This Quick Start supports `f1.2xlarge`, `f1.4xlarge`, and `f1.16xlarge` instance
 * *S3 bucket for genomic data*. You must have an Amazon Simple Storage Service (Amazon S3) bucket in the AWS Region where you plan to deploy the Quick Start. This S3 bucket should contain:
 +
   ** The genomic input datasets that you want to run in the Quick Start environment
-  ** The {partner-product-short-name}-specific reference hash table directories that are provided by {partner-company-name} or that you create from FASTA files. For instructions on how to create reference hash table directories, refer to https://support.illumina.com/content/dam/illumina-support/help/Illumina_DRAGEN_Bio_IT_Platform_v3_7_1000000141465/Content/SW/Informatics/Dragen/GenerateReference_fDG_dtRef.htm/[DRAGEN Bio-IT Platform User Guide^]
+  ** The {partner-product-short-name}-specific reference hash table directories that are provided by {partner-company-name} or that you create from FASTA files. For instructions on how to create reference hash table directories, refer to https://support-docs.illumina.com/SW/DRAGEN_v38/Content/SW/DRAGEN/RefGenIntro_fDG.htm[DRAGEN Bio-IT Platform User Guide^]
   ** An output folder for {partner-product-short-name} job outputs such as the binary alignment map (BAM) and variant call format (VCF) files
 +
 You’ll be prompted for the bucket name when you deploy the Quick Start. The appropriate roles and policies to read from, and write to, this S3 genomics bucket are created during the Quick Start deployment.
