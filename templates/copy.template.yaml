@@ -72,7 +72,7 @@ Resources:
     Properties:
       Description: Copies objects from a source S3 bucket to a destination
       Handler: index.handler
-      Runtime: python2.7
+      Runtime: python3.7
       Role: !GetAtt CopyRole.Arn
       Timeout: 240
       Code:
@@ -102,7 +102,7 @@ Resources:
               # make sure we send a failure to CloudFormation if the function is going to timeout
               timer = threading.Timer((context.get_remaining_time_in_millis() / 1000.00) - 0.5, timeout, args=[event, context])
               timer.start()
-              print('Received event: %s' % json.dumps(event))
+              print(('Received event: %s' % json.dumps(event)))
               status = cfnresponse.SUCCESS
               try:
                   source_bucket = event['ResourceProperties']['SourceBucket']
