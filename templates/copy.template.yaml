@@ -1,19 +1,18 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: This CloudFormation Template invokes another template responsible for
-  copying files to a local region S3 Bucket for AWS Lambda.
+  copying files to a local region S3 Bucket for AWS Lambda. (qs-1s1cul5ls)
+Metadata:
+  cfn-lint: { config: { ignore_checks: [W9006, W9002, W9003] } }
 Parameters:
   QSS3BucketName:
     Description: The Template Bucket Name.
-    Type: String
-  QSS3BucketRegion:
-    Default: 'us-east-1'
-    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
     Type: String
   QSS3KeyPrefix:
     Description: The Template Bucket Prefix.
     Type: String
   DestinationBucket:
     Type: String
+    Description: "Bucket where Lambda artifacts will be copied to"
     Default: ""
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']

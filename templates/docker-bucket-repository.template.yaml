@@ -1,8 +1,9 @@
 ---
 AWSTemplateFormatVersion: 2010-09-09
 Description: This CloudFormation Template creates the ECR Repository and Artifact
-  Bucket for the Docker Pipeline. Modified from
-  https://github.com/aws-quickstart/saas-identity-cognito/blob/master/templates/docker-bucket-repository.yaml
+  Bucket for the Docker Pipeline. (qs-1s1cul5im)
+Metadata:
+  cfn-lint: { config: { ignore_checks: [W9006, W9002, W9003, W3011] } }
 Resources:
   Dragen:
     Type: AWS::ECR::Repository

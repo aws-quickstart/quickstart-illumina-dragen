@@ -1,12 +1,14 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: This CloudFormation Template removes an Elastic Container Registery Repository.
   (qs-1nlegmi13)
+Metadata:
+  cfn-lint: { config: { ignore_checks: [W9006, W9002, W9003] } }
 Parameters:
   Repository:
     Description: The Repository to be removed.
     Type: String
   ServiceToken:
-    Description: The Role ARN required to execute the Custom Resource.
+    Description: The Role ARN required to run the Custom Resource.
     Type: String
 Resources:
   UpdateConfig:

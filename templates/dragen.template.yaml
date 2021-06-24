@@ -216,7 +216,6 @@ Resources:
       Parameters:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
-        QSS3BucketRegion: !Ref QSS3BucketRegion
         DestinationBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
 
   WaitHandleContainerBuild:
@@ -294,15 +293,15 @@ Resources:
           - Sid: ECR
             Effect: Allow
             Action: ecr:*
-            Resource: !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${DockerBucketRepository.Outputs.Repository}
+            Resource: !Sub arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/${DockerBucketRepository.Outputs.Repository}
           - Sid: S3Bucket
             Effect: Allow
             Action: s3:*
-            Resource: !Sub arn:aws:s3:::${DockerBucketRepository.Outputs.ArtifactBucket}
+            Resource: !Sub arn:${AWS::Partition}:s3:::${DockerBucketRepository.Outputs.ArtifactBucket}
           - Sid: S3Object
             Effect: Allow
             Action: s3:*
-            Resource: !Sub arn:aws:s3:::${DockerBucketRepository.Outputs.ArtifactBucket}/*
+            Resource: !Sub arn:${AWS::Partition}:s3:::${DockerBucketRepository.Outputs.ArtifactBucket}/*
 
   ContainerCleanup:
     Type: AWS::CloudFormation::Stack

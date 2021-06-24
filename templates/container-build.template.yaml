@@ -1,6 +1,7 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: This CloudFormation template creates the CICD pipeline to build the DRAGEN container
-
+Description: This CloudFormation template creates the CICD pipeline to build the DRAGEN container. (qs-1s1cul5ll)
+Metadata:
+  cfn-lint: { config: { ignore_checks: [W9006, W9002, W9003] } }
 Parameters:
   ArtifactBucket:
     Description: Amazon S3 bucket where the DRAGEN artifact resides
@@ -42,13 +43,13 @@ Resources:
             - logs:CreateLogStream
             - logs:PutLogEvents
             - ecr:GetAuthorizationToken
-          - Resource: !Sub arn:aws:s3:::${ArtifactBucket}/*
+          - Resource: !Sub arn:${AWS::Partition}:s3:::${ArtifactBucket}/*
             Effect: Allow
             Action:
             - s3:GetObject
             - s3:PutObject
             - s3:GetObjectVersion
-          - Resource: !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${Repository}
+          - Resource: !Sub arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/${Repository}
             Effect: Allow
             Action:
             - ecr:GetDownloadUrlForLayer
@@ -75,8 +76,8 @@ Resources:
           Version: 2012-10-17
           Statement:
           - Resource:
-            - !Sub arn:aws:s3:::${ArtifactBucket}/*
-            - !Sub arn:aws:s3:::${ArtifactBucket}
+            - !Sub arn:${AWS::Partition}:s3:::${ArtifactBucket}/*
+            - !Sub arn:${AWS::Partition}:s3:::${ArtifactBucket}
             Effect: Allow
             Action:
             - s3:*
