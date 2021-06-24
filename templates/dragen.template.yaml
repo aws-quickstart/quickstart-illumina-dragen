@@ -206,8 +206,6 @@ Resources:
 
   CopyFiles:
     Type: AWS::CloudFormation::Stack
-    DependsOn:
-    - DockerBucketRepository
     Properties:
       TemplateURL: !Sub
         - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/copy.template.yaml
@@ -305,8 +303,6 @@ Resources:
 
   ContainerCleanup:
     Type: AWS::CloudFormation::Stack
-    DependsOn:
-    - CleanupRole
     Properties:
       TemplateURL: !Sub
         - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/clean-bucket-repository.template.yaml

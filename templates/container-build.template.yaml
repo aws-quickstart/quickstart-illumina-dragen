@@ -90,8 +90,6 @@ Resources:
             - logs:*
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
-    DependsOn:
-    - CodeBuildServiceRole
     Properties:
       Name: !Sub ${AWS::StackName}-BuildProject
       Artifacts:
@@ -136,8 +134,6 @@ Resources:
       TimeoutInMinutes: 120
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
-    DependsOn:
-    - CodePipelineServiceRole
     Properties:
       RoleArn: !GetAtt CodePipelineServiceRole.Arn
       ArtifactStore:
@@ -150,7 +146,7 @@ Resources:
           ActionTypeId:
             Category: Source
             Owner: AWS
-            Version: 1
+            Version: "1"
             Provider: S3
           OutputArtifacts:
           - Name: App
@@ -164,7 +160,7 @@ Resources:
           ActionTypeId:
             Category: Build
             Owner: AWS
-            Version: 1
+            Version: "1"
             Provider: CodeBuild
           Configuration:
             ProjectName: !Ref CodeBuildProject

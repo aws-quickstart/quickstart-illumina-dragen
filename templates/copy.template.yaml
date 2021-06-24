@@ -50,11 +50,10 @@ Resources:
             Action:
             - s3:PutObject
             - s3:DeleteObject
-            Resource: !Sub arn:aws:s3:::${DestinationBucket}/*
+            Resource: !Sub arn:${AWS::Partition}:s3:::${DestinationBucket}/*
   CopyZips:
     Type: AWS::CloudFormation::CustomResource
     DependsOn:
-    - CopyZipsFunction
     - CopyRole
     Properties:
       ServiceToken: !GetAtt CopyZipsFunction.Arn
@@ -66,8 +65,6 @@ Resources:
       - "app/packages/dragen/dragen.zip"
   CopyZipsFunction:
     Type: AWS::Lambda::Function
-    DependsOn:
-    - CopyRole
     Properties:
       Description: Copies objects from a source S3 bucket to a destination
       Handler: index.handler
