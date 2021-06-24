@@ -35,8 +35,55 @@ Resources:
           Statement:
           - Sid: Logging
             Effect: Allow
-            Action: logs:*
-            Resource: '*'
+            Action:
+              - logs:AssociateKmsKey
+              - logs:CancelExportTask
+              - logs:CreateExportTask
+              - logs:CreateLogDelivery
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:DeleteDestination
+              - logs:DeleteLogDelivery
+              - logs:DeleteLogGroup
+              - logs:DeleteLogStream
+              - logs:DeleteMetricFilter
+              - logs:DeleteQueryDefinition
+              - logs:DeleteResourcePolicy
+              - logs:DeleteRetentionPolicy
+              - logs:DeleteSubscriptionFilter
+              - logs:DescribeDestinations
+              - logs:DescribeExportTasks
+              - logs:DescribeLogGroups
+              - logs:DescribeLogStreams
+              - logs:DescribeMetricFilters
+              - logs:DescribeQueries
+              - logs:DescribeQueryDefinitions
+              - logs:DescribeResourcePolicies
+              - logs:DescribeSubscriptionFilters
+              - logs:DisassociateKmsKey
+              - logs:FilterLogEvents
+              - logs:GetLogDelivery
+              - logs:GetLogEvents
+              - logs:GetLogGroupFields
+              - logs:GetLogRecord
+              - logs:GetQueryResults
+              - logs:ListLogDeliveries
+              - logs:ListTagsLogGroup
+              - logs:PutDestination
+              - logs:PutDestinationPolicy
+              - logs:PutLogEvents
+              - logs:PutMetricFilter
+              - logs:PutQueryDefinition
+              - logs:PutResourcePolicy
+              - logs:PutRetentionPolicy
+              - logs:PutSubscriptionFilter
+              - logs:StartQuery
+              - logs:StopQuery
+              - logs:TagLogGroup
+              - logs:TestMetricFilter
+              - logs:UntagLogGroup
+              - logs:UpdateLogDelivery
+            Resource: !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:*
           - Sid: S3Get
             Effect: Allow
             Action: 
