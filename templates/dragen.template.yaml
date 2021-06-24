@@ -2,6 +2,13 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: This template deploys an environment to run Edico Genome's DRAGEN software using AWS Batch. (qs-1oqea624b)
 
 Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+       - W9006 # temporary to get rid of warnings
+       - W9002 # temporary to get rid of warnings
+       - W9003 # temporary to get rid of warnings
+       - W9901 # Not passing all the default parameters to reduce verbosity
   QuickStartDocumentation:
     EntrypointName: "Parameters for deploying into an existing VPC"
     Order: "1"
@@ -243,7 +250,7 @@ Resources:
       Handle:
         Ref: WaitHandleContainerBuild
       Timeout: '3600'
-      Count: '1'
+      Count: 1
 
   Batch:
     Type: AWS::CloudFormation::Stack
@@ -267,6 +274,7 @@ Resources:
         MinvCpus: !Ref MinvCpus
         MaxvCpus: !Ref MaxvCpus
         DesiredvCpus: !Ref DesiredvCpus
+        RetryNumber: !Ref RetryNumber
 
   CleanupRole:
     Type: AWS::IAM::Role
