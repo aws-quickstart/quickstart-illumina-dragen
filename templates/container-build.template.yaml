@@ -205,7 +205,7 @@ Resources:
             Action:
             - codebuild:StartBuild
             - codebuild:BatchGetBuilds
-          - Resource: !Sub arn:${AWS::Partition}:iam:${AWS::AccountId}:role/*
+          - Resource: !Sub arn:${AWS::Partition}:iam::${AWS::AccountId}:role/*
             Effect: Allow
             Action:
             - iam:PassRole
