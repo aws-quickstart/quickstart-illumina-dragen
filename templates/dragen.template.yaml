@@ -2,6 +2,13 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: This template deploys an environment to run Edico Genome's DRAGEN software using AWS Batch. (qs-1oqea624b)
 
 Metadata:
+  cfn-lint:
+    config:
+      ignore_checks:
+       - W9006 # temporary to get rid of warnings
+       - W9002 # temporary to get rid of warnings
+       - W9003 # temporary to get rid of warnings
+       - W9901 # Not passing all the default parameters to reduce verbosity
   QuickStartDocumentation:
     EntrypointName: "Parameters for deploying into an existing VPC"
     Order: "1"
@@ -206,8 +213,6 @@ Resources:
 
   CopyFiles:
     Type: AWS::CloudFormation::Stack
-    DependsOn:
-    - DockerBucketRepository
     Properties:
       TemplateURL: !Sub
         - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/copy.template.yaml
@@ -216,7 +221,6 @@ Resources:
       Parameters:
         QSS3BucketName: !Ref QSS3BucketName
         QSS3KeyPrefix: !Ref QSS3KeyPrefix
-        QSS3BucketRegion: !Ref QSS3BucketRegion
         DestinationBucket: !GetAtt DockerBucketRepository.Outputs.ArtifactBucket
 
   WaitHandleContainerBuild:
@@ -246,7 +250,7 @@ Resources:
       Handle:
         Ref: WaitHandleContainerBuild
       Timeout: '3600'
-      Count: '1'
+      Count: 1
 
   Batch:
     Type: AWS::CloudFormation::Stack
@@ -270,6 +274,7 @@ Resources:
         MinvCpus: !Ref MinvCpus
         MaxvCpus: !Ref MaxvCpus
         DesiredvCpus: !Ref DesiredvCpus
+        RetryNumber: !Ref RetryNumber
 
   CleanupRole:
     Type: AWS::IAM::Role
@@ -289,25 +294,220 @@ Resources:
           Statement:
           - Sid: Logging
             Effect: Allow
-            Action: logs:*
-            Resource: '*'
+            Action:
+              - logs:AssociateKmsKey
+              - logs:CancelExportTask
+              - logs:CreateExportTask
+              - logs:CreateLogDelivery
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:DeleteDestination
+              - logs:DeleteLogDelivery
+              - logs:DeleteLogGroup
+              - logs:DeleteLogStream
+              - logs:DeleteMetricFilter
+              - logs:DeleteQueryDefinition
+              - logs:DeleteResourcePolicy
+              - logs:DeleteRetentionPolicy
+              - logs:DeleteSubscriptionFilter
+              - logs:DescribeDestinations
+              - logs:DescribeExportTasks
+              - logs:DescribeLogGroups
+              - logs:DescribeLogStreams
+              - logs:DescribeMetricFilters
+              - logs:DescribeQueries
+              - logs:DescribeQueryDefinitions
+              - logs:DescribeResourcePolicies
+              - logs:DescribeSubscriptionFilters
+              - logs:DisassociateKmsKey
+              - logs:FilterLogEvents
+              - logs:GetLogDelivery
+              - logs:GetLogEvents
+              - logs:GetLogGroupFields
+              - logs:GetLogRecord
+              - logs:GetQueryResults
+              - logs:ListLogDeliveries
+              - logs:ListTagsLogGroup
+              - logs:PutDestination
+              - logs:PutDestinationPolicy
+              - logs:PutLogEvents
+              - logs:PutMetricFilter
+              - logs:PutQueryDefinition
+              - logs:PutResourcePolicy
+              - logs:PutRetentionPolicy
+              - logs:PutSubscriptionFilter
+              - logs:StartQuery
+              - logs:StopQuery
+              - logs:TagLogGroup
+              - logs:TestMetricFilter
+              - logs:UntagLogGroup
+              - logs:UpdateLogDelivery
+            Resource: !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:*
           - Sid: ECR
             Effect: Allow
-            Action: ecr:*
-            Resource: !Sub arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${DockerBucketRepository.Outputs.Repository}
+            Action:
+              - ecr:BatchCheckLayerAvailability
+              - ecr:BatchDeleteImage
+              - ecr:BatchGetImage
+              - ecr:CompleteLayerUpload
+              - ecr:CreateRepository
+              - ecr:DeleteLifecyclePolicy
+              - ecr:DeleteRegistryPolicy
+              - ecr:DeleteRepository
+              - ecr:DeleteRepositoryPolicy
+              - ecr:DescribeImageScanFindings
+              - ecr:DescribeImages
+              - ecr:DescribeRegistry
+              - ecr:DescribeRepositories
+              - ecr:GetAuthorizationToken
+              - ecr:GetDownloadUrlForLayer
+              - ecr:GetLifecyclePolicy
+              - ecr:GetLifecyclePolicyPreview
+              - ecr:GetRegistryPolicy
+              - ecr:GetRepositoryPolicy
+              - ecr:InitiateLayerUpload
+              - ecr:ListImages
+              - ecr:ListTagsForResource
+              - ecr:PutImage
+              - ecr:PutImageScanningConfiguration
+              - ecr:PutImageTagMutability
+              - ecr:PutLifecyclePolicy
+              - ecr:PutRegistryPolicy
+              - ecr:PutReplicationConfiguration
+              - ecr:ReplicateImage
+              - ecr:SetRepositoryPolicy
+              - ecr:StartImageScan
+              - ecr:StartLifecyclePolicyPreview
+              - ecr:TagResource
+              - ecr:UntagResource
+              - ecr:UploadLayerPart
+            Resource: !Sub arn:${AWS::Partition}:ecr:${AWS::Region}:${AWS::AccountId}:repository/${DockerBucketRepository.Outputs.Repository}
           - Sid: S3Bucket
             Effect: Allow
-            Action: s3:*
-            Resource: !Sub arn:aws:s3:::${DockerBucketRepository.Outputs.ArtifactBucket}
-          - Sid: S3Object
-            Effect: Allow
-            Action: s3:*
-            Resource: !Sub arn:aws:s3:::${DockerBucketRepository.Outputs.ArtifactBucket}/*
+            Action:
+              - s3:AbortMultipartUpload
+              - s3:BypassGovernanceRetention
+              - s3:CreateAccessPoint
+              - s3:CreateAccessPointForObjectLambda
+              - s3:CreateBucket
+              - s3:CreateJob
+              - s3:DeleteAccessPoint
+              - s3:DeleteAccessPointForObjectLambda
+              - s3:DeleteAccessPointPolicy
+              - s3:DeleteAccessPointPolicyForObjectLambda
+              - s3:DeleteBucket
+              - s3:DeleteBucketOwnershipControls
+              - s3:DeleteBucketPolicy
+              - s3:DeleteBucketWebsite
+              - s3:DeleteJobTagging
+              - s3:DeleteObject
+              - s3:DeleteObjectTagging
+              - s3:DeleteObjectVersion
+              - s3:DeleteObjectVersionTagging
+              - s3:DeleteStorageLensConfiguration
+              - s3:DeleteStorageLensConfigurationTagging
+              - s3:DescribeJob
+              - s3:GetAccelerateConfiguration
+              - s3:GetAccessPoint
+              - s3:GetAccessPointConfigurationForObjectLambda
+              - s3:GetAccessPointForObjectLambda
+              - s3:GetAccessPointPolicy
+              - s3:GetAccessPointPolicyForObjectLambda
+              - s3:GetAccessPointPolicyStatus
+              - s3:GetAccessPointPolicyStatusForObjectLambda
+              - s3:GetAccountPublicAccessBlock
+              - s3:GetAnalyticsConfiguration
+              - s3:GetBucketAcl
+              - s3:GetBucketCORS
+              - s3:GetBucketLocation
+              - s3:GetBucketLogging
+              - s3:GetBucketNotification
+              - s3:GetBucketObjectLockConfiguration
+              - s3:GetBucketOwnershipControls
+              - s3:GetBucketPolicy
+              - s3:GetBucketPolicyStatus
+              - s3:GetBucketPublicAccessBlock
+              - s3:GetBucketRequestPayment
+              - s3:GetBucketTagging
+              - s3:GetBucketVersioning
+              - s3:GetBucketWebsite
+              - s3:GetEncryptionConfiguration
+              - s3:GetIntelligentTieringConfiguration
+              - s3:GetInventoryConfiguration
+              - s3:GetJobTagging
+              - s3:GetLifecycleConfiguration
+              - s3:GetMetricsConfiguration
+              - s3:GetObject
+              - s3:GetObjectAcl
+              - s3:GetObjectLegalHold
+              - s3:GetObjectRetention
+              - s3:GetObjectTagging
+              - s3:GetObjectTorrent
+              - s3:GetObjectVersion
+              - s3:GetObjectVersionAcl
+              - s3:GetObjectVersionForReplication
+              - s3:GetObjectVersionTagging
+              - s3:GetObjectVersionTorrent
+              - s3:GetReplicationConfiguration
+              - s3:GetStorageLensConfiguration
+              - s3:GetStorageLensConfigurationTagging
+              - s3:GetStorageLensDashboard
+              - s3:ListAccessPoints
+              - s3:ListAccessPointsForObjectLambda
+              - s3:ListAllMyBuckets
+              - s3:ListBucket
+              - s3:ListBucketMultipartUploads
+              - s3:ListBucketVersions
+              - s3:ListJobs
+              - s3:ListMultipartUploadParts
+              - s3:ListStorageLensConfigurations
+              - s3:ObjectOwnerOverrideToBucketOwner
+              - s3:PutAccelerateConfiguration
+              - s3:PutAccessPointConfigurationForObjectLambda
+              - s3:PutAccessPointPolicy
+              - s3:PutAccessPointPolicyForObjectLambda
+              - s3:PutAccountPublicAccessBlock
+              - s3:PutAnalyticsConfiguration
+              - s3:PutBucketAcl
+              - s3:PutBucketCORS
+              - s3:PutBucketLogging
+              - s3:PutBucketNotification
+              - s3:PutBucketObjectLockConfiguration
+              - s3:PutBucketOwnershipControls
+              - s3:PutBucketPolicy
+              - s3:PutBucketPublicAccessBlock
+              - s3:PutBucketRequestPayment
+              - s3:PutBucketTagging
+              - s3:PutBucketVersioning
+              - s3:PutBucketWebsite
+              - s3:PutEncryptionConfiguration
+              - s3:PutIntelligentTieringConfiguration
+              - s3:PutInventoryConfiguration
+              - s3:PutJobTagging
+              - s3:PutLifecycleConfiguration
+              - s3:PutMetricsConfiguration
+              - s3:PutObject
+              - s3:PutObjectAcl
+              - s3:PutObjectLegalHold
+              - s3:PutObjectRetention
+              - s3:PutObjectTagging
+              - s3:PutObjectVersionAcl
+              - s3:PutObjectVersionTagging
+              - s3:PutReplicationConfiguration
+              - s3:PutStorageLensConfiguration
+              - s3:PutStorageLensConfigurationTagging
+              - s3:ReplicateDelete
+              - s3:ReplicateObject
+              - s3:ReplicateTags
+              - s3:RestoreObject
+              - s3:UpdateJobPriority
+              - s3:UpdateJobStatus
+            Resource:
+              - !Sub arn:${AWS::Partition}:s3:::${DockerBucketRepository.Outputs.ArtifactBucket}
+              - !Sub arn:${AWS::Partition}:s3:::${DockerBucketRepository.Outputs.ArtifactBucket}/*
 
   ContainerCleanup:
     Type: AWS::CloudFormation::Stack
-    DependsOn:
-    - CleanupRole
     Properties:
       TemplateURL: !Sub
         - https://${S3Bucket}.s3.${S3Region}.${AWS::URLSuffix}/${QSS3KeyPrefix}templates/clean-bucket-repository.template.yaml

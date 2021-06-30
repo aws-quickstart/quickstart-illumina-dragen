@@ -1,12 +1,14 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: This CloudFormation Template removes non-versioned files from an S3 Bucket.
   (qs-1nlegmi0o)
+Metadata:
+  cfn-lint: { config: { ignore_checks: [W9006, W9002, W9003] } }
 Parameters:
   Bucket:
     Description: The Bucket required for the custom resource to function.
     Type: String
   ServiceToken:
-    Description: The Role ARN required to execute the Custom Resource.
+    Description: The Role ARN required to run the Custom Resource.
     Type: String
 Resources:
   UpdateConfig:

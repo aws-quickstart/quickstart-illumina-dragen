@@ -1,8 +1,9 @@
 AWSTemplateFormatVersion: 2010-09-09
 
-Description: Sets up your AWS Batch Environment for running DRAGEN
+Description: Sets up your AWS Batch Environment for running DRAGEN. (qs-1s1d8j1gr)
 
 Metadata:
+  cfn-lint: { config: { ignore_checks: [W9006, W9002, W9003, E3008] } }
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
@@ -24,7 +25,7 @@ Metadata:
         - InstanceType
         - RetryNumber
     ParameterLabels:
-      S3GenomicsBucket:
+      GenomicsS3Bucket:
         default: Genomics Data Bucket
       RetryNumber:
         default: AWS Batch Retry Number
@@ -120,8 +121,8 @@ Resources:
       VpcId: !Ref VpcId
       SecurityGroupEgress:
       - IpProtocol: tcp
-        FromPort: '443'
-        ToPort: '443'
+        FromPort: 443
+        ToPort: 443
         CidrIp: 0.0.0.0/0
   BatchServiceRole:
     Type: AWS::IAM::Role
@@ -136,7 +137,7 @@ Resources:
             Action:
               - "sts:AssumeRole"
       ManagedPolicyArns:
-      - arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole
+      - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AWSBatchServiceRole
   SpotFleetRole:
     Type: AWS::IAM::Role
     Properties:
@@ -150,7 +151,7 @@ Resources:
             Action:
               - "sts:AssumeRole"
       ManagedPolicyArns:
-      - "arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetTaggingRole"
+      - !Sub "arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonEC2SpotFleetTaggingRole"
   S3ReadWritePolicyInstance:
     Type: AWS::IAM::Policy
     Properties:
@@ -170,8 +171,8 @@ Resources:
             - "s3:ListMultipartUploadParts"
             - "s3:AbortMultipartUpload"
             Resource:
-            - !Sub "arn:aws:s3:::${GenomicsS3Bucket}"
-            - !Sub "arn:aws:s3:::${GenomicsS3Bucket}/*"
+            - !Sub "arn:${AWS::Partition}:s3:::${GenomicsS3Bucket}"
+            - !Sub "arn:${AWS::Partition}:s3:::${GenomicsS3Bucket}/*"
       Roles:
       - !Ref DragenInstanceRole
   S3ReadWritePolicyJob:
@@ -193,8 +194,8 @@ Resources:
             - "s3:ListMultipartUploadParts"
             - "s3:AbortMultipartUpload"
             Resource:
-            - !Sub "arn:aws:s3:::${GenomicsS3Bucket}"
-            - !Sub "arn:aws:s3:::${GenomicsS3Bucket}/*"
+            - !Sub "arn:${AWS::Partition}:s3:::${GenomicsS3Bucket}"
+            - !Sub "arn:${AWS::Partition}:s3:::${GenomicsS3Bucket}/*"
       Roles:
       - !Ref DragenJobRole
   DragenLaunchTemplate:
@@ -328,7 +329,7 @@ Resources:
             Action:
               - "sts:AssumeRole"
       ManagedPolicyArns:
-      - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+      - !Sub arn:${AWS::Partition}:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
   DragenInstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:

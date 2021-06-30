@@ -1,19 +1,18 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: This CloudFormation Template invokes another template responsible for
-  copying files to a local region S3 Bucket for AWS Lambda.
+  copying files to a local region S3 Bucket for AWS Lambda. (qs-1s1cul5ls)
+Metadata:
+  cfn-lint: { config: { ignore_checks: [W9006, W9002, W9003] } }
 Parameters:
   QSS3BucketName:
     Description: The Template Bucket Name.
-    Type: String
-  QSS3BucketRegion:
-    Default: 'us-east-1'
-    Description: 'The AWS Region where the Quick Start S3 bucket (QSS3BucketName) is hosted. When using your own bucket, you must specify this value.'
     Type: String
   QSS3KeyPrefix:
     Description: The Template Bucket Prefix.
     Type: String
   DestinationBucket:
     Type: String
+    Description: "Bucket where Lambda artifacts will be copied to"
     Default: ""
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
@@ -36,8 +35,55 @@ Resources:
           Statement:
           - Sid: Logging
             Effect: Allow
-            Action: logs:*
-            Resource: '*'
+            Action:
+              - logs:AssociateKmsKey
+              - logs:CancelExportTask
+              - logs:CreateExportTask
+              - logs:CreateLogDelivery
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:DeleteDestination
+              - logs:DeleteLogDelivery
+              - logs:DeleteLogGroup
+              - logs:DeleteLogStream
+              - logs:DeleteMetricFilter
+              - logs:DeleteQueryDefinition
+              - logs:DeleteResourcePolicy
+              - logs:DeleteRetentionPolicy
+              - logs:DeleteSubscriptionFilter
+              - logs:DescribeDestinations
+              - logs:DescribeExportTasks
+              - logs:DescribeLogGroups
+              - logs:DescribeLogStreams
+              - logs:DescribeMetricFilters
+              - logs:DescribeQueries
+              - logs:DescribeQueryDefinitions
+              - logs:DescribeResourcePolicies
+              - logs:DescribeSubscriptionFilters
+              - logs:DisassociateKmsKey
+              - logs:FilterLogEvents
+              - logs:GetLogDelivery
+              - logs:GetLogEvents
+              - logs:GetLogGroupFields
+              - logs:GetLogRecord
+              - logs:GetQueryResults
+              - logs:ListLogDeliveries
+              - logs:ListTagsLogGroup
+              - logs:PutDestination
+              - logs:PutDestinationPolicy
+              - logs:PutLogEvents
+              - logs:PutMetricFilter
+              - logs:PutQueryDefinition
+              - logs:PutResourcePolicy
+              - logs:PutRetentionPolicy
+              - logs:PutSubscriptionFilter
+              - logs:StartQuery
+              - logs:StopQuery
+              - logs:TagLogGroup
+              - logs:TestMetricFilter
+              - logs:UntagLogGroup
+              - logs:UpdateLogDelivery
+            Resource: !Sub arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:*
           - Sid: S3Get
             Effect: Allow
             Action: 
@@ -51,11 +97,10 @@ Resources:
             Action:
             - s3:PutObject
             - s3:DeleteObject
-            Resource: !Sub arn:aws:s3:::${DestinationBucket}/*
+            Resource: !Sub arn:${AWS::Partition}:s3:::${DestinationBucket}/*
   CopyZips:
     Type: AWS::CloudFormation::CustomResource
     DependsOn:
-    - CopyZipsFunction
     - CopyRole
     Properties:
       ServiceToken: !GetAtt CopyZipsFunction.Arn
@@ -67,8 +112,6 @@ Resources:
       - "app/packages/dragen/dragen.zip"
   CopyZipsFunction:
     Type: AWS::Lambda::Function
-    DependsOn:
-    - CopyRole
     Properties:
       Description: Copies objects from a source S3 bucket to a destination
       Handler: index.handler

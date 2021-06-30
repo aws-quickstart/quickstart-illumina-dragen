@@ -1,6 +1,8 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: This CloudFormation Template invokes other templates responsible for
   cleaning up AWS Resources (qs-1nlegmi1j)
+Metadata:
+  cfn-lint: { config: { ignore_checks: [W9006, W9002, W9003] } }
 Parameters:
   QSS3BucketName:
     Description: The Template Bucket Name.
