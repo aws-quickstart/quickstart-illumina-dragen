@@ -85,7 +85,17 @@ Mappings:
       DRAGEN: ami-0f4fa72160ccb0d27
     ap-southeast-2:
       DRAGEN: ami-0bd3c3cf35fa8ac30
-
+  PrivateAMIRegionMap:
+    AMI:
+      DRAGEN: dragen-completesuite-*
+    us-east-1:
+      DRAGEN: ami-replace-this
+    us-west-2:
+      DRAGEN: ami-replace-this
+    eu-west-1:
+      DRAGEN: ami-replace-this
+    ap-southeast-2:
+      DRAGEN: ami-replace-this
 Parameters:
   InstanceType:
     Type: String
@@ -167,6 +177,13 @@ Parameters:
       (-).
     Description: S3 bucket name for the bucket to which you'll read and write genomics data. 
     Type: String
+  TestPrivateAMI:
+    Type: String
+    AllowedValues:
+      - yes
+      - no
+    Default: no
+    Description: Keep default value. For Illumina use only. Used by Illumina to test private AMI prior to pushing that to Marketplace.
 
 Rules:
   KeyPairsNotEmpty:
@@ -201,6 +218,7 @@ Rules:
 
 Conditions:
   UsingDefaultBucket: !Equals [!Ref QSS3BucketName, 'aws-quickstart']
+  UsingPrivateAMI: !Equals [!Ref TestPrivateAMI, 'yes']
 
 Resources:
   DockerBucketRepository:
@@ -269,7 +287,7 @@ Resources:
         SubnetIds: !Sub "${PrivateSubnet1ID}, ${PrivateSubnet2ID}"
         BidPercentage: !Ref BidPercentage
         InstanceType: !Ref InstanceType
-        ImageId: !FindInMap [ AWSAMIRegionMap, !Ref "AWS::Region", DRAGEN ]
+        ImageId: !If [UsingPrivateAMI, !FindInMap [ PrivateAMIRegionMap, !Ref "AWS::Region", DRAGEN ], !FindInMap [ AWSAMIRegionMap, !Ref "AWS::Region", DRAGEN ]]
         Ec2KeyPair: !Ref KeyPairName
         MinvCpus: !Ref MinvCpus
         MaxvCpus: !Ref MaxvCpus

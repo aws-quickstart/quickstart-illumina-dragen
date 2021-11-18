@@ -182,6 +182,13 @@ Parameters:
       (-).
     Description: S3 bucket name for the bucket to which you'll read and write genomics data. 
     Type: String
+  TestPrivateAMI:
+    Type: String
+    AllowedValues:
+      - yes
+      - no
+    Default: no
+    Description: Keep default value. For Illumina use only. Used by Illumina to test private AMI prior to pushing that to Marketplace.
 
 Rules:
   DRAGENSupportedRegionRule:
@@ -242,6 +249,7 @@ Resources:
         DesiredvCpus: !Ref DesiredvCpus
         GenomicsS3Bucket: !Ref GenomicsS3Bucket
         RetryNumber: !Ref RetryNumber
+        TestPrivateAMI: !Ref TestPrivateAMI
 
 Outputs:
   DragenJobDefinition:
