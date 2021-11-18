@@ -8,7 +8,7 @@ project:
   - us-east-1
   - us-west-2
 tests:
-  quickstart-illumina-dragent1:
+  private-ami-test:
     parameters:
       AvailabilityZones: $[taskcat_genaz_2]
       BidPercentage: '50'
@@ -27,9 +27,10 @@ tests:
       QSS3KeyPrefix: quickstart-illumina-dragen/
       RetryNumber: '1'
       VPCCIDR: 10.150.0.0/16
+      TestPrivateAMI: 'yes'
     regions:
-    - us-east-1
-    - us-west-2
-    - eu-west-1
+      - us-east-1
+      - us-west-2
+      - eu-west-1
     s3_bucket: ''
     template: templates/dragen-main.template.yaml
