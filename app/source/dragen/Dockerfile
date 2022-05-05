@@ -1,5 +1,5 @@
 # DRAGEN Quickstart Docker image generator --
-FROM centos:centos7
+FROM public.ecr.aws/docker/library/centos:centos7.9.2009
 RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
 # Install Basic packages needed for Dragen
@@ -28,16 +28,12 @@ RUN yum -y install \
     python3-devel \
     tree && \
     yum clean all
-RUN curl --silent \
-    --show-error \
-    --retry 5 \
-    https://bootstrap.pypa.io/get-pip.py | python3
 
-RUN pip install --upgrade pip && \
-  pip install future && \
-  pip install six && \
-  pip install requests && \
-  pip install boto3
+RUN python3 -m pip install --upgrade pip && \
+  python3 -m pip install future && \
+  python3 -m pip install six && \
+  python3 -m pip install requests && \
+  python3 -m pip install boto3
 
 # Install d_haul and dragen_job_execute wrapper functions and associated packages
 RUN mkdir -p /root/quickstart/scheduler && \
