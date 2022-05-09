@@ -81,6 +81,8 @@ Mappings:
       DRAGEN: ami-031e74a44cf78bbe0
     us-west-2:
       DRAGEN: ami-027d691833e1afb2d
+    eu-central-1:
+      DRAGEN: ami-070807320b35acd1d
     eu-west-1:
       DRAGEN: ami-0a3b1dcda746bd01d
     ap-southeast-2:
@@ -192,11 +194,12 @@ Rules:
         Fn::Contains:
         - - us-east-1
           - us-west-2
+          - eu-central-1
           - eu-west-1
           - ap-southeast-2
         - !Ref AWS::Region
       AssertDescription: This Quick Start utilizes DRAGEN Marketplace AMI which is only available
-        in the US East (N. Virginia), US West (Oregon), EU (Ireland) regions. Please launch the stack in one of these
+        in specified AWS Regions. Please launch the stack in one of these
         regions to continue.
 
 Conditions:
