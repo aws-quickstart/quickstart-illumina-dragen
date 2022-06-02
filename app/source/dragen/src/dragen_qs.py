@@ -154,6 +154,12 @@ class DragenJob(object):
         self.qc_coverage_region_3_url = None  # Determine from --qc-coverage-region-3
         self.qc_coverage_region_3_index = -1
 
+        self.pedigree_file_url = None   # Determine from --pedigree-file option
+        self.pedigree_file_index = -1
+
+        self.vc_ml_url = None           # Determine from --vc-ml-dir option
+        self.vc_ml_index = -1
+
         # Output info
         self.output_s3_url = None       # Determine from the --output-directory field
         self.output_s3_index = -1
@@ -250,6 +256,18 @@ class DragenJob(object):
         if opt_no >= 0:
             self.qc_coverage_region_3_url = self.orig_args[opt_no + 1]
             self.qc_coverage_region_3_index = opt_no + 1
+
+        # --pedigree-file: URL for the pedigree table file
+        opt_no = find_arg_in_list(self.orig_args, '--pedigree-file')
+        if opt_no >= 0:
+            self.pedigree_file_url = self.orig_args[opt_no + 1]
+            self.pedigree_file_index = opt_no + 1
+
+        # --vc-ml-dir: URL for the ML model file
+        opt_no = find_arg_in_list(self.orig_args, '--vc-ml-dir')
+        if opt_no >= 0:
+            self.vc_ml_url = self.orig_args[opt_no + 1]
+            self.vc_ml_index = opt_no + 1
 
         return
 
@@ -564,6 +582,35 @@ class DragenJob(object):
                 self.exec_url_download(self.qc_coverage_region_3_url, self.input_dir)
 
             self.new_args[self.qc_coverage_region_3_index] = target_path
+
+            # --pedigree-file file download
+        if self.pedigree_file_url:
+            filename = self.pedigree_file_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.pedigree_file_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                # Try to download using http
+                self.exec_url_download(self.pedigree_file_url, self.input_dir)
+
+            self.new_args[self.pedigree_file_index] = target_path
+
+            # --vc-ml-dir file download
+        if self.vc_ml_url:
+            filename = self.vc_ml_url.split('?')[0].split('/')[-1]
+            target_path = self.input_dir + str(filename)
+
+            s3_valid, s3_bucket, s3_key = get_s3_bucket_key(self.vc_ml_url)
+            if s3_valid:
+                self.download_s3_object(s3_bucket, s3_key, target_path)
+            else:
+                # Try to download using http
+                self.exec_url_download(self.vc_ml_url, self.input_dir)
+
+            self.new_args[self.vc_ml_index] = target_path
+
         return
 
     ########################################################################################
