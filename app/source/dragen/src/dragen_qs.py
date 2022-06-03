@@ -263,7 +263,7 @@ class DragenJob(object):
             self.pedigree_file_url = self.orig_args[opt_no + 1]
             self.pedigree_file_index = opt_no + 1
 
-        # --vc-ml-dir: URL for the ML model file
+        # --vc-ml-dir: URL for the ML model file, needs dragen version 3.9 or later
         opt_no = find_arg_in_list(self.orig_args, '--vc-ml-dir')
         if opt_no >= 0:
             self.vc_ml_url = self.orig_args[opt_no + 1]
