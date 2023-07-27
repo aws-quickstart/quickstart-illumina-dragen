@@ -1,5 +1,8 @@
+// Include any postdeployment steps here, such as steps necessary to test that the deployment was successful. If there are no postdeployment steps, leave this file empty.
 
-== Test the deployment
+== Postdeployment steps
+
+=== Test the deployment
 // If steps are required to test the deployment, add them here. If not, remove the heading
 
 When the deployment is complete, you can verify the environment by running a {partner-product-short-name}  job. This job reads the input datasets and the reference hash table from the S3 genomics data bucket you specified when you deployed the Quick Start, and outputs the analysis results into the designated output location in the S3 bucket. Note that the input datasets and reference hash table must be located in the same S3 bucket, the one specified during deployment.
@@ -159,7 +162,7 @@ For more information, see the https://docs.aws.amazon.com/batch/latest/userguide
 [#runjob]
 .Running a {partner-product-short-name} job from the AWS Batch console
 [link=images/image5.png]
-image::../images/image5.png[runjob,width=733,height=427]
+image::../docs/deployment_guide/images/image5.png[runjob,width=733,height=427]
 +
 6.  Monitor the job status in the AWS Batch window to see if it succeeded or failed. For more information about job states and exit codes, see the https://docs.aws.amazon.com/batch/latest/userguide/job_states.html[AWS Batch documentation^].
 

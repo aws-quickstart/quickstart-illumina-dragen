@@ -1,0 +1,6 @@
+// Include details about any licenses and how to sign up. Provide links as appropriate.
+
+There is no cost to use this Partner Solution, but you will be billed for any AWS services or resources that this Partner Solution deploys. For more information, refer to the https://fwd.aws/rA69w?[AWS Partner Solution General Information Guide^].
+
+
+This Quick Start requires a subscription to the Amazon Machine Image (AMI) for https://aws.amazon.com/marketplace/pp/B07CZ3F5HY[{partner-product-short-name} Complete Suite^], which is available with per-hour pricing from AWS Marketplace.

@@ -1,0 +1,19 @@
+//Include any predeployment steps here, such as signing up for a Marketplace AMI or making any changes to a partner account. If there are no predeployment steps, leave this file empty.
+
+== Predeployment steps
+
+=== Technical requirements
+
+* *Limit increases for F1 instances*. {partner-product-short-name} runs on https://aws.amazon.com/ec2/instance-types/f1/[Amazon EC2 F1 instances^] because it requires a field-programmable gate array (FPGA).
+This Partner Solution supports `f1.2xlarge`, `f1.4xlarge`, and `f1.16xlarge` instance types. You should request limit increases for F1 instances, to support the maximum number of simultaneous DRAGEN jobs that you expect to run.
+* *S3 bucket for genomic data*. You must have an Amazon Simple Storage Service (Amazon S3) bucket in the AWS Region where you plan to deploy the Partner Solution. This S3 bucket should contain:
++
+  ** The genomic input datasets that you want to run in the Partner Solution environment
+  ** The {partner-product-short-name}-specific reference hash table directories that are provided by {partner-company-name} or that you create from FASTA files. For instructions on how to create reference hash table directories, refer to https://support.illumina.com/content/dam/illumina-support/help/Illumina_DRAGEN_Bio_IT_Platform_v3_7_1000000141465/Content/SW/Informatics/Dragen/GenerateReference_fDG_dtRef.htm/[DRAGEN Bio-IT Platform User Guide^]
+  ** An output folder for {partner-product-short-name} job outputs such as the binary alignment map (BAM) and variant call format (VCF) files
++
+You'll be prompted for the bucket name when you deploy the Partner Solution. The appropriate roles and policies to read from, and write to, this S3 genomics bucket are created during the Partner Solution deployment.
+
+=== Marketplace subscription
+
+* Open the page for the https://aws.amazon.com/marketplace/pp/Illumina-Inc-DRAGEN-Complete-Suite/B07CZ3F5HY[DRAGEN AMI in AWS Marketplace], and then choose Continue to Subscribe.

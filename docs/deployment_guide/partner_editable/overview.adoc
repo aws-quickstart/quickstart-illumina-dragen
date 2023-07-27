@@ -1,8 +1,9 @@
-// Replace the content in <>
-// Briefly describe the software. Use consistent and clear branding.
-// Include the benefits of using the software on AWS, and provide details on usage scenarios.
+This guide covers the information you need to deploy the {partner-product-name} Partner Solution in the AWS Cloud.
 
-This Quick Start was created to get you up and running with {partner-product-short-name} Complete Suite (CS) on AWS.
+// Fill in the info in <angle brackets> for use on the landing page only: 
+This Partner Solution guide provides step-by-step instructions for deploying Dynamic Read Analysis for GENomics ({partner-product-short-name}) on the AWS Cloud. The Partner Solution is for users who would like to conduct bioinformatic analysis on next-generation sequencing data using {partner-product-short-name} on AWS.
+
+This Partner Solution was created to get you up and running with {partner-product-short-name} Complete Suite (CS) on AWS.
 {partner-product-short-name} CS offerings enable ultra-rapid analysis of next-generation sequencing (NGS) data, and significantly reduce the time
 required to analyze genomic data while also improving accuracy.
 
@@ -14,3 +15,9 @@ and GATK Best Practices. The {partner-product-short-name} Germline V2 and {partn
 nucleotide polymorphisms (SNPs) and small insertions and deletions (INDELs) compared with industry standards. For
 performance results, see the https://precision.fda.gov/challenges/1/view/results[PrecisionFDA Hidden Treasures – Warm Up^]
 challenge and the https://blog.dnanexus.com/2018-03-08-how-to-train-your-dragen-evaluating-and-improving-edico-genomes-rapid-wgs-tools/[DRAGEN evaluation^] on the _Inside DNAnexus_ blog.
+
+// Deploying this solution does not guarantee an organization’s compliance with any laws, certifications, policies, or other regulations. [Uncomment this statement only for solutions that relate to compliance. We'll add the corresponding reference part to the landing page and get legal approval before publishing.]
+
+// For advanced information about the product, troubleshooting, or additional functionality, refer to the https://{partner-solution-github-org}.github.io/{partner-solution-project-name}/operational/index.html[Operational Guide^].
+
+// For information about using this Partner Solution for migrations, refer to the https://{partner-solution-github-org}.github.io/{partner-solution-project-name}/migration/index.html[Migration Guide^].
